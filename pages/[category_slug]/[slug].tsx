@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import Head from 'next/head'; // Import Head for meta tags
-import '../../app/post.css'; // Adjust the path as necessary
+import Head from 'next/head';
+import '../../app/post.css';
 
 interface Post {
   id: string;
@@ -27,27 +27,30 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const router = useRouter();
   const { category_slug, slug } = router.query;
   const [post, setPost] = useState<Post | null>(initialPost);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(!initialPost);
 
   useEffect(() => {
     const fetchPost = async () => {
-      if (!post && category_slug && slug) {
+      if (category_slug && slug) {
+        setLoading(true); // Start loading when fetching a new post
         try {
           const response = await axios.get(`https://blog.tourismofkashmir.com/apis?post_slug=${slug}`);
           setPost(response.data);
         } catch (error) {
           console.error('Error fetching post:', error);
+          setPost(null); // Optionally handle error state
         } finally {
-          setLoading(false);
+          setLoading(false); // Stop loading regardless of success or failure
         }
-      } else {
-        setLoading(false);
       }
     };
-    fetchPost();
-  }, [post, category_slug, slug]);
 
-  // Function to format dates into relative time
+    // Only fetch post if the slug changes
+    if (slug) {
+      fetchPost();
+    }
+  }, [category_slug, slug]); // Removed `post` from dependencies to avoid unnecessary calls
+
   const formatDate = (dateString: string) => {
     const now = new Date();
     const postDate = new Date(dateString);
@@ -62,9 +65,6 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
     return `${Math.floor(secondsDiff / 31536000)} years ago`;
   };
 
-
-
-  // Determine the full URL
   const domain = typeof window !== 'undefined' ? window.location.origin : '';
 
   return (
@@ -73,32 +73,23 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
         <title>{post ? post.title : 'Loading...'}</title>
         <meta property="og:title" content={post ? post.title : 'Loading...'} />
         <meta property="og:description" content={post ? post.content.slice(0, 150) + '...' : 'Loading...'} />
-        <meta property="og:image" content={post ? `${post.image}` : ''} />
+        <meta property="og:image" content={post ? post.image : ''} />
         <meta property="og:url" content={post ? `${domain}/${category_slug}/${slug}` : ''} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post ? post.title : 'Loading...'} />
         <meta name="twitter:description" content={post ? post.content.slice(0, 150) + '...' : 'Loading...'} />
-        <meta name="twitter:image" content={post ? `${post.image}` : ''} />
+        <meta name="twitter:image" content={post ? post.image : ''} />
       </Head>
 
       <div className="post-container">
         {loading ? (
-        <div className="custom-skeleton">
-        <div className="custom-skeleton-title" />
-        <div className="custom-skeleton-image" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-        <div className="custom-skeleton-text" />
-      </div>
+          <div style={{ marginBottom: '20px' }}>
+            <div style={{ backgroundColor: '#e0e0e0', marginBottom: '10px', borderRadius: '4px', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', height: '30px', width: '80%' }} />
+            <div style={{ backgroundColor: '#e0e0e0', marginBottom: '10px', borderRadius: '12px', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', height: '200px', width: '100%' }} />
+            {Array.from({ length: 10 }, (_, index) => (
+              <div key={index} style={{ backgroundColor: '#e0e0e0', marginBottom: '10px', borderRadius: '4px', boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)', height: '20px', width: '60%' }} />
+            ))}
+          </div>
         ) : !post ? (
           <p>Post not found.</p>
         ) : (

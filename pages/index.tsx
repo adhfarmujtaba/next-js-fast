@@ -1,6 +1,7 @@
 // pages/index.tsx
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router'; // Import useRouter
 import '../app/index.css';
 
 interface Post {
@@ -54,15 +55,28 @@ const formatDate = (date: string): string => {
 
 const Home: React.FC<Props> = ({ initialPosts }) => {
   const [posts, setPosts] = useState<Post[]>(initialPosts || []);
-  const [loading, setLoading] = useState(true);
+  const [customLoading, setCustomLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(2);
+  const router = useRouter(); // Initialize router
 
   useEffect(() => {
-    if (initialPosts) setLoading(false);
-  }, [initialPosts]);
+    // Reset loading state when the component mounts or when the route changes
+    setCustomLoading(true);
+    if (initialPosts) setCustomLoading(false);
+    
+    const handleRouteChangeStart = () => {
+      setCustomLoading(true); // Set loading true on route change
+    };
+
+    router.events.on('routeChangeStart', handleRouteChangeStart);
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart);
+    };
+  }, [initialPosts, router.events]); // Include router.events as a dependency
 
   const fetchPosts = async (page: number) => {
-    setLoading(true);
+    setCustomLoading(true);
     try {
       const response = await fetch(`https://blog.tourismofkashmir.com/apis?posts&page=${page}`);
       if (!response.ok) throw new Error('Network response was not ok');
@@ -75,7 +89,7 @@ const Home: React.FC<Props> = ({ initialPosts }) => {
     } catch (error) {
       console.error('Fetching posts failed:', error);
     } finally {
-      setLoading(false);
+      setCustomLoading(false);
     }
   };
 
@@ -86,7 +100,7 @@ const Home: React.FC<Props> = ({ initialPosts }) => {
 
   return (
     <div className="news-list">
-      {loading ? (
+      {customLoading ? (
         Array.from({ length: 5 }).map((_, index) => (
           <div key={index} className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
             <div style={{ width: '100%', height: '180px', backgroundColor: '#e0e0e0' }} />
@@ -135,8 +149,8 @@ const Home: React.FC<Props> = ({ initialPosts }) => {
           ))
         )
       )}
-      <button onClick={loadMore} style={{ marginTop: '20px' }} disabled={loading}>
-        {loading ? 'Loading...' : 'Load More'}
+      <button onClick={loadMore} style={{ marginTop: '20px' }} disabled={customLoading}>
+        {customLoading ? 'Loading...' : 'Load More'}
       </button>
     </div>
   );

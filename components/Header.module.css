@@ -1,0 +1,118 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 5px; /* Increased padding for better spacing */
+    background-color: #ffffff; /* Light theme */
+    color: rgb(0, 0, 0);
+    height: 50px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .headerContent {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Allow the header content to take up space */
+  }
+  
+  .logo {
+    margin-right: 20px; /* Space between logo and hamburger */
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  /* Keep the hamburger styles as they are */
+  .hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 2px;
+    margin-right: 20px; /* Space between hamburger and icons */
+    padding: 0;
+  }
+  
+  .hamburger span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 5px 0;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .hamburger.open span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+  }
+  
+  .hamburger.open span:nth-child(2) {
+    opacity: 0; /* Middle line fades out */
+  }
+  
+  .hamburger.open span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
+  
+  /* Align icons to the right */
+  .icons {
+    display: flex;
+    gap: 15px; /* Space between icons */
+    margin-left: auto; /* Push icons to the right */
+  }
+  
+  .iconButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px; /* Adjust size */
+    color: #333; /* Icon color */
+  }
+  
+  .iconButton:hover {
+    color: #0070f3; /* Change color on hover */
+  }
+  
+  /* Side Menu styles remain unchanged */
+  .sideMenu {
+    position: fixed;
+    top: 50px;
+    left: -250px; /* Start off-screen */
+    width: 250px;
+    height: calc(100% - 50px); /* Adjust height */
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1;
+    color: #333;
+  }
+  
+  .sideMenuOpen {
+    left: 0; /* Move to visible */
+  }
+  
+  .overlayVisible {
+    display: block; /* Show the overlay */
+  }
+  
+  .navbar ul {
+    list-style: none;
+    padding: 20px;
+    margin: 0;
+  }
+  
+  .navbar li {
+    padding: 15px 0;
+  }
+  
+  .navbar li a {
+    color: rgb(30, 30, 30);
+    text-decoration: none;
+    display: block;
+    transition: background 0.3s;
+  }
+  
+  .navbar li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  

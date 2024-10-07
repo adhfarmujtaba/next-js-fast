@@ -53,33 +53,7 @@ body{
   height: 30px;
 }
 
-.custom-skeleton {
-    margin-bottom: 20px;
-  }
-  
-  .custom-skeleton-item {
-    background-color: #e0e0e0;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for skeleton items */
-  }
-  
-  .custom-skeleton-title {
-    height: 30px;
-    width: 80%;
-  }
-  
-  .custom-skeleton-image {
-    height: 200px;
-    width: 100%;
-    border-radius: 12px; /* Rounded corners for skeleton image */
-  }
-  
-  .custom-skeleton-text {
-    height: 20px;
-    width: 60%;
-  }
-  
+
 /* Responsive Design */
 @media (max-width: 600px) {
   .post-title {
