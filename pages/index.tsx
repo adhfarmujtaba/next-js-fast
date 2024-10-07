@@ -1,7 +1,6 @@
 // pages/index.tsx
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router'; // Import useRouter
 import '../app/index.css';
 
 interface Post {
@@ -16,10 +15,6 @@ interface Post {
   views: number;
   created_at: string;
   read_time: string;
-}
-
-interface Props {
-  initialPosts: Post[] | null;
 }
 
 const truncateText = (text: string, limit: number) => {
@@ -53,49 +48,36 @@ const formatDate = (date: string): string => {
   return Math.floor(days / 365) + ' years ago';
 };
 
-const Home: React.FC<Props> = ({ initialPosts }) => {
-  const [posts, setPosts] = useState<Post[]>(initialPosts || []);
+const Home: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
   const [customLoading, setCustomLoading] = useState(true);
-  const [pageNumber, setPageNumber] = useState(2);
-  const router = useRouter(); // Initialize router
+  const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
-    // Reset loading state when the component mounts or when the route changes
-    setCustomLoading(true);
-    if (initialPosts) setCustomLoading(false);
-    
-    const handleRouteChangeStart = () => {
-      setCustomLoading(true); // Set loading true on route change
-    };
-
-    router.events.on('routeChangeStart', handleRouteChangeStart);
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart);
-    };
-  }, [initialPosts, router.events]); // Include router.events as a dependency
-
-  const fetchPosts = async (page: number) => {
-    setCustomLoading(true);
-    try {
-      const response = await fetch(`https://blog.tourismofkashmir.com/apis?posts&page=${page}`);
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setPosts(prevPosts => [...prevPosts, ...data]);
-      } else {
-        console.error('Expected data to be an array, but got:', data);
+    const fetchPosts = async (page: number) => {
+      setCustomLoading(true);
+      try {
+        const response = await fetch(`https://blog.tourismofkashmir.com/apis?posts&page=${page}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setPosts(prevPosts => [...prevPosts, ...data]);
+        } else {
+          console.error('Expected data to be an array, but got:', data);
+        }
+      } catch (error) {
+        console.error('Fetching posts failed:', error);
+      } finally {
+        setCustomLoading(false);
       }
-    } catch (error) {
-      console.error('Fetching posts failed:', error);
-    } finally {
-      setCustomLoading(false);
-    }
-  };
+    };
+
+    fetchPosts(pageNumber); // Fetch posts when component mounts
+
+  }, [pageNumber]); // Only re-run when pageNumber changes
 
   const loadMore = () => {
-    fetchPosts(pageNumber);
-    setPageNumber(prev => prev + 1);
+    setPageNumber(prev => prev + 1); // Increment page number to load more posts
   };
 
   return (
@@ -155,16 +137,5 @@ const Home: React.FC<Props> = ({ initialPosts }) => {
     </div>
   );
 };
-
-export async function getServerSideProps() {
-  const res = await fetch(`https://blog.tourismofkashmir.com/apis?posts&page=1`);
-  if (!res.ok) {
-    return { props: { initialPosts: null } };
-  }
-  const initialPosts: Post[] = await res.json();
-  return {
-    props: { initialPosts },
-  };
-}
 
 export default Home;
