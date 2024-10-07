@@ -62,15 +62,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
     return `${Math.floor(secondsDiff / 31536000)} years ago`;
   };
 
-  // Skeleton loading representation
-  const Skeleton = () => (
-    <div className="skeleton">
-      <div className="skeleton-item skeleton-title" />
-      <div className="skeleton-item skeleton-image" />
-      <div className="skeleton-item skeleton-text" />
-      <div className="skeleton-item skeleton-text" />
-    </div>
-  );
+
 
   // Determine the full URL
   const domain = typeof window !== 'undefined' ? window.location.origin : '';
@@ -91,7 +83,22 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
 
       <div className="post-container">
         {loading ? (
-          <Skeleton />
+         <div className="skeleton">
+         <div className="skeleton-item skeleton-title" />
+         <div className="skeleton-item skeleton-image" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+         <div className="skeleton-item skeleton-text" />
+       </div>
         ) : !post ? (
           <p>Post not found.</p>
         ) : (
