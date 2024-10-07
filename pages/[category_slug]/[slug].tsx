@@ -83,22 +83,22 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
 
       <div className="post-container">
         {loading ? (
-         <div className="skeleton">
-         <div className="skeleton-item skeleton-title" />
-         <div className="skeleton-item skeleton-image" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-         <div className="skeleton-item skeleton-text" />
-       </div>
+        <div className="custom-skeleton">
+        <div className="custom-skeleton-title" />
+        <div className="custom-skeleton-image" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+        <div className="custom-skeleton-text" />
+      </div>
         ) : !post ? (
           <p>Post not found.</p>
         ) : (
