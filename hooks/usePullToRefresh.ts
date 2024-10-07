@@ -3,14 +3,14 @@ import { useEffect, useState, useCallback } from 'react';
 const usePullToRefresh = (
   fetchData: () => Promise<void>,
   setPullDistance: (distance: number) => void,
-  setIsLoading: (loading: boolean) => void // Add loading state
+  setIsLoading: (loading: boolean) => void
 ) => {
   const [isPulling, setIsPulling] = useState(false);
   const [startY, setStartY] = useState(0);
   const [currentPullDistance, setCurrentPullDistance] = useState(0);
-  const pullScale = 2.4; // Adjust for sensitivity
-  const threshold = 50; // Distance to trigger refresh
-  const maxPullDistance = 100; // Maximum distance to pull down
+  const pullScale = 5.0; // Increased for better responsiveness
+  const threshold = 60; // Increased to reduce false triggers
+  const maxPullDistance = 70; // Increased for a larger pull range
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (window.scrollY === 0) {
@@ -21,7 +21,7 @@ const usePullToRefresh = (
   }, []);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (startY !== 0) { // Only proceed if we started a pull
+    if (startY !== 0) {
       const currentY = e.touches[0].clientY;
       const pullDistance = Math.max(0, (currentY - startY) * pullScale);
       const cappedPullDistance = Math.min(pullDistance, maxPullDistance);
@@ -35,45 +35,50 @@ const usePullToRefresh = (
     }
   }, [startY, pullScale, setPullDistance]);
 
-  const handleTouchEnd = useCallback(async (e: TouchEvent) => {
+  const handleTouchEnd = useCallback(async () => {
     if (isPulling) {
       setIsLoading(true); // Set loading state
       
       if (currentPullDistance > threshold) {
-        // Wait for 1 second before reloading the page
-        await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+        await new Promise(resolve => setTimeout(resolve, 500)); // 0.5 second delay
         window.location.reload();
       } else {
-        // Trigger data fetch if not enough distance
-        await fetchData();
+        await fetchData(); // Trigger data fetch
       }
 
-      // Reset visual pull distance
+      // Reset states and visual pull distance
       setPullDistance(0);
       setIsPulling(false);
-      setCurrentPullDistance(0); // Reset pull distance
-
+      setCurrentPullDistance(0);
       setIsLoading(false); // Reset loading state
     }
   }, [isPulling, fetchData, setPullDistance, currentPullDistance, threshold, setIsLoading]);
 
   useEffect(() => {
+    const preventDefaultScroll = (e: TouchEvent) => {
+      if (isPulling) {
+        e.preventDefault();
+      }
+    };
+
     const handleTouchStartBind = (e: TouchEvent) => handleTouchStart(e);
     const handleTouchMoveBind = (e: TouchEvent) => handleTouchMove(e);
-    const handleTouchEndBind = (e: TouchEvent) => handleTouchEnd(e);
+    const handleTouchEndBind = () => handleTouchEnd();
 
     if (typeof window !== 'undefined') {
       window.addEventListener('touchstart', handleTouchStartBind);
       window.addEventListener('touchmove', handleTouchMoveBind, { passive: false });
       window.addEventListener('touchend', handleTouchEndBind);
+      window.addEventListener('touchmove', preventDefaultScroll, { passive: false });
 
       return () => {
         window.removeEventListener('touchstart', handleTouchStartBind);
         window.removeEventListener('touchmove', handleTouchMoveBind);
         window.removeEventListener('touchend', handleTouchEndBind);
+        window.removeEventListener('touchmove', preventDefaultScroll);
       };
     }
-  }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
+  }, [handleTouchStart, handleTouchMove, handleTouchEnd, isPulling]);
 
   return { isPulling, currentPullDistance };
 };

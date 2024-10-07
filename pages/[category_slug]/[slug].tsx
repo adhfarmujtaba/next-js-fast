@@ -17,6 +17,15 @@ interface Post {
   views: number;
   created_at: string;
   read_time: string;
+  category_name: string; // Add this to hold the category name
+}
+
+interface RelatedPost {
+  id: string;
+  title: string;
+  slug: string;
+  image: string;
+  read_time: string;
 }
 
 interface Props {
@@ -28,30 +37,50 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const { category_slug, slug } = router.query;
   const [post, setPost] = useState<Post | null>(initialPost);
   const [loading, setLoading] = useState<boolean>(!initialPost);
+  const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
 
   useEffect(() => {
     const fetchPost = async () => {
       if (category_slug && slug) {
-        setLoading(true); // Start loading when fetching a new post
+        setLoading(true);
         try {
           const response = await axios.get(`https://blog.tourismofkashmir.com/apis?post_slug=${slug}`);
-          setPost(response.data);
+          const fetchedPost = response.data;
+          setPost(fetchedPost);
+
+          // Fetch related posts
+          const relatedResponse = await axios.get(`https://blog.tourismofkashmir.com/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
+          setRelatedPosts(relatedResponse.data); // Update state with related posts
         } catch (error) {
           console.error('Error fetching post:', error);
-          setPost(null); // Optionally handle error state
+          setPost(null);
         } finally {
-          setLoading(false); // Stop loading regardless of success or failure
+          setLoading(false);
         }
       }
     };
 
-    // Only fetch post if the slug changes
     if (slug) {
       fetchPost();
     }
-  }, [category_slug, slug]); // Removed `post` from dependencies to avoid unnecessary calls
+  }, [category_slug, slug]);
+
+  const formatViews = (views: number): string => {
+    // Formatting function remains the same
+    if (views >= 10000000) return Math.floor(views / 10000000) + 'cr';
+    if (views >= 1000000) return Math.floor(views / 1000000) + 'M';
+    if (views >= 100000) return Math.floor(views / 100000) + 'L';
+    if (views >= 1000) return Math.floor(views / 1000) + 'k';
+    return views.toString();
+  };
+
+  const truncateText = (text: string, limit: number) => {
+    const words = text.split(' ');
+    return words.length > limit ? `${words.slice(0, limit).join(' ')}...` : text;
+  };
 
   const formatDate = (dateString: string) => {
+    // Formatting function remains the same
     const now = new Date();
     const postDate = new Date(dateString);
     const secondsDiff = Math.floor((now.getTime() - postDate.getTime()) / 1000);
@@ -104,12 +133,33 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
                 src={`https://blog.tourismofkashmir.com/${post.avatar}`} 
                 alt='Avatar' 
               />
-              <span>{post.username} • {post.views} views</span>
+              <span>{post.username} • {formatViews(post.views)} views</span>
               <span> • {formatDate(post.created_at)}</span>
               <span> • {post.read_time} min read</span>
             </div>
             <h1 className="post-title">{post.title}</h1>
             <div className="post-content" dangerouslySetInnerHTML={{ __html: post.content }} />
+
+            {/* Related Posts Section */}
+            {relatedPosts.length > 0 && (
+              <div className="related-posts">
+                <h2>Related Posts</h2>
+                <ul>
+  {relatedPosts.map((relatedPost) => (
+    <li key={relatedPost.id}>
+      <a href={`/${post.category_slug}/${relatedPost.slug}`} className="related-post-link">
+        <div className="related-post-image-container">
+          <img src={relatedPost.image} alt={relatedPost.title} className="related-post-image" />
+          <span className="read-time-overlay">{relatedPost.read_time} min read</span>
+        </div>
+        <span>{truncateText(relatedPost.title, 10)}</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+              </div>
+            )}
           </>
         )}
       </div>

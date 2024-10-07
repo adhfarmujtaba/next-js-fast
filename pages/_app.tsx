@@ -2,24 +2,30 @@ import { AppProps } from 'next/app';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '../components/Header';
 import usePullToRefresh from '../hooks/usePullToRefresh';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
 import '../app/globals.css';
 
 const MyApp = ({ Component, pageProps, router }: AppProps) => {
   const [pullDistance, setPullDistance] = useState(0);
-  const [isLoading, setIsLoading] = useState(false); // Add loading state
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true); // Track initial load
+
   const fetchNewData = async () => {
     console.log("Fetching new data...");
-    // Remove the delay for faster loading
-    // await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate network delay
-    // You can replace this with your actual fetch logic if needed
+    // Replace this with your actual fetch logic if needed
     console.log("Data fetched");
   };
 
   const { isPulling, currentPullDistance } = usePullToRefresh(fetchNewData, setPullDistance, setIsLoading);
+
+  useEffect(() => {
+    // Set initialLoad to false after the first render
+    setInitialLoad(false);
+  }, []);
+
+  const isIndexPage = router.route === '/'; // Check if the current route is the index page
 
   return (
     <AnimatePresence mode="wait">
@@ -29,7 +35,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
         {isPulling && !isLoading && (
           <div style={{
             position: 'absolute',
-            top: '60px', // Adjust based on your header height
+            top: '60px',
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '10px',
@@ -47,7 +53,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
         {isLoading && (
           <div style={{
             position: 'absolute',
-            top: '60px', // Adjust based on your header height
+            top: '60px',
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '10px',
@@ -64,10 +70,10 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
 
         <motion.div
           key={router.route}
-          initial={{ opacity: 0, y: 0 }}
-          animate={{ opacity: 1, y: pullDistance }}
-          exit={{ opacity: 0, y: 0 }}
-          transition={{ duration: 0.3 }}
+          initial={initialLoad || isIndexPage ? { opacity: 1, x: 0 } : { opacity: 0, x: '100%' }} // Don't animate for index page
+          animate={initialLoad  ? { opacity: 1, x: 0 } : { opacity: 1, x: 0, y: pullDistance }}
+          exit={initialLoad  ? {} : { opacity: 0, x: '100%' }} // Exit off-screen right
+          transition={{ duration: 0.2 }}
           style={{
             transform: `translateY(${pullDistance}px)`,
             transition: 'transform 0.3s ease-in-out',
