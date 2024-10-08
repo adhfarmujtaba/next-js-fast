@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Head from 'next/head';
-import Image from 'next/image';
 import '../../app/post.css';
 
 interface Post {
@@ -122,16 +121,16 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
           <p>Post not found.</p>
         ) : (
           <>
-            <Image 
+            <img 
               src={post.image} 
               alt={post.title} 
               width={800} 
               height={400} 
               className="post-image" 
-              layout="responsive"
+              
             />
             <div className="post-meta">
-              <Image 
+              <img 
                 src={`https://blog.tourismofkashmir.com/${post.avatar}`} 
                 alt='Avatar' 
                 width={40}
@@ -154,13 +153,12 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
                     <li key={relatedPost.id}>
                       <a href={`/${post.category_slug}/${relatedPost.slug}`} className="related-post-link">
                         <div className="related-post-image-container">
-                          <Image 
+                          <img 
                             src={relatedPost.image} 
                             alt={relatedPost.title} 
-                            width={200} 
-                            height={100} 
+                          
                             className="related-post-image"
-                            layout="responsive"
+                        
                           />
                           <span className="read-time-overlay">{relatedPost.read_time} min read</span>
                         </div>
