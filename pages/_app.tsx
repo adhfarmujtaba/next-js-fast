@@ -2,12 +2,12 @@ import { AppProps } from 'next/app';
 import { AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
 import usePullToRefresh from '../hooks/usePullToRefresh';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSync } from '@fortawesome/free-solid-svg-icons';
 import '../app/globals.css';
 
-const MyApp = ({ Component, pageProps, router }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
