@@ -10,7 +10,6 @@ import '../app/globals.css';
 const MyApp = ({ Component, pageProps, router }: AppProps) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true); // Track initial load
 
   const fetchNewData = async () => {
     console.log("Fetching new data...");
@@ -19,13 +18,6 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
   };
 
   const { isPulling, currentPullDistance } = usePullToRefresh(fetchNewData, setPullDistance, setIsLoading);
-
-  useEffect(() => {
-    // Set initialLoad to false after the first render
-    setInitialLoad(false);
-  }, []);
-
-  const isIndexPage = router.route === '/'; // Check if the current route is the index page
 
   return (
     <AnimatePresence mode="wait">
