@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Head from 'next/head';
+import Image from 'next/image';
 import '../../app/post.css';
 
 interface Post {
@@ -17,7 +18,7 @@ interface Post {
   views: number;
   created_at: string;
   read_time: string;
-  category_name: string; // Add this to hold the category name
+  category_name: string;
 }
 
 interface RelatedPost {
@@ -50,7 +51,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
 
           // Fetch related posts
           const relatedResponse = await axios.get(`https://blog.tourismofkashmir.com/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
-          setRelatedPosts(relatedResponse.data); // Update state with related posts
+          setRelatedPosts(relatedResponse.data);
         } catch (error) {
           console.error('Error fetching post:', error);
           setPost(null);
@@ -66,7 +67,6 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   }, [category_slug, slug]);
 
   const formatViews = (views: number): string => {
-    // Formatting function remains the same
     if (views >= 10000000) return Math.floor(views / 10000000) + 'cr';
     if (views >= 1000000) return Math.floor(views / 1000000) + 'M';
     if (views >= 100000) return Math.floor(views / 100000) + 'L';
@@ -80,7 +80,6 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   };
 
   const formatDate = (dateString: string) => {
-    // Formatting function remains the same
     const now = new Date();
     const postDate = new Date(dateString);
     const secondsDiff = Math.floor((now.getTime() - postDate.getTime()) / 1000);
@@ -123,15 +122,21 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
           <p>Post not found.</p>
         ) : (
           <>
-            <img 
+            <Image 
               src={post.image} 
               alt={post.title} 
+              width={800} 
+              height={400} 
               className="post-image" 
+              layout="responsive"
             />
             <div className="post-meta">
-              <img 
+              <Image 
                 src={`https://blog.tourismofkashmir.com/${post.avatar}`} 
                 alt='Avatar' 
+                width={40}
+                height={40}
+                className="avatar-image"
               />
               <span>{post.username} • {formatViews(post.views)} views</span>
               <span> • {formatDate(post.created_at)}</span>
@@ -145,19 +150,25 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
               <div className="related-posts">
                 <h2>Related Posts</h2>
                 <ul>
-  {relatedPosts.map((relatedPost) => (
-    <li key={relatedPost.id}>
-      <a href={`/${post.category_slug}/${relatedPost.slug}`} className="related-post-link">
-        <div className="related-post-image-container">
-          <img src={relatedPost.image} alt={relatedPost.title} className="related-post-image" />
-          <span className="read-time-overlay">{relatedPost.read_time} min read</span>
-        </div>
-        <span>{truncateText(relatedPost.title, 10)}</span>
-      </a>
-    </li>
-  ))}
-</ul>
-
+                  {relatedPosts.map((relatedPost) => (
+                    <li key={relatedPost.id}>
+                      <a href={`/${post.category_slug}/${relatedPost.slug}`} className="related-post-link">
+                        <div className="related-post-image-container">
+                          <Image 
+                            src={relatedPost.image} 
+                            alt={relatedPost.title} 
+                            width={200} 
+                            height={100} 
+                            className="related-post-image"
+                            layout="responsive"
+                          />
+                          <span className="read-time-overlay">{relatedPost.read_time} min read</span>
+                        </div>
+                        <span>{truncateText(relatedPost.title, 10)}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </>
