@@ -1,6 +1,7 @@
 // pages/index.tsx
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Head from 'next/head'; // Import Head component
 import '../app/index.css';
 
 interface Post {
@@ -15,6 +16,13 @@ interface Post {
   views: number;
   created_at: string;
   read_time: string;
+}
+
+interface SiteInfo {
+  site_title: string;
+  site_description: string;
+  site_url: string;
+  logo_url: string;
 }
 
 const truncateText = (text: string, limit: number) => {
@@ -52,6 +60,7 @@ const Home: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [customLoading, setCustomLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
+  const [siteInfo, setSiteInfo] = useState<SiteInfo | null>(null);
 
   useEffect(() => {
     const fetchPosts = async (page: number) => {
@@ -72,7 +81,19 @@ const Home: React.FC = () => {
       }
     };
 
+    const fetchSiteInfo = async () => {
+      try {
+        const response = await fetch('https://blog.tourismofkashmir.com/site_info_api.php');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        setSiteInfo(data);
+      } catch (error) {
+        console.error('Fetching site info failed:', error);
+      }
+    };
+
     fetchPosts(pageNumber); // Fetch posts when component mounts
+    fetchSiteInfo(); // Fetch site info when component mounts
 
   }, [pageNumber]); // Only re-run when pageNumber changes
 
@@ -82,6 +103,17 @@ const Home: React.FC = () => {
 
   return (
     <div className="news-list">
+      <Head>
+        <title>{siteInfo?.site_title || 'Leak News'}</title>
+        <meta name="description" content={siteInfo?.site_description || 'Latest news and stories.'} />
+        <meta property="og:title" content={siteInfo?.site_title || 'Leak News'} />
+        <meta property="og:description" content={siteInfo?.site_description || 'Latest news and stories.'} />
+        <meta property="og:url" content={siteInfo?.site_url || 'https://leaknews.net'} />
+        <meta property="og:image" content={siteInfo?.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
+        <meta property="og:type" content="website" />
+        <link rel="icon" href={siteInfo?.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
+
+           </Head>
       {customLoading ? (
         Array.from({ length: 5 }).map((_, index) => (
           <div key={index} className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>

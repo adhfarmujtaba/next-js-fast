@@ -106,6 +106,9 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
         <meta name="twitter:title" content={post ? post.title : 'Loading...'} />
         <meta name="twitter:description" content={post ? post.content.slice(0, 150) + '...' : 'Loading...'} />
         <meta name="twitter:image" content={post ? post.image : ''} />
+        {post && (
+          <link rel="icon" href={post.image} sizes="any" />
+          )}
       </Head>
 
       <div className="post-container">
