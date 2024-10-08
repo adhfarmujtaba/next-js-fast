@@ -1,0 +1,24 @@
+/* globals.css */
+
+.nprogress {
+    pointer-events: none;
+  }
+  
+  .nprogress .bar {
+    background: #29d; /* Color of the progress bar */
+    position: fixed;
+    z-index: 1031; /* Above other elements */
+    top: 0; /* Position at the top */
+    left: 0;
+    width: 100%; /* Full width */
+    height: 2px; /* Height of the bar */
+  }
+  
+  .nprogress .peg {
+    display: none; /* Hide the peg */
+  }
+  
+  .nprogress .spinner {
+    display: none; /* Hide the spinner */
+  }
+  

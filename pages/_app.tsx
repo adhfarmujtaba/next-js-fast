@@ -1,5 +1,5 @@
 import { AppProps } from 'next/app';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
 import usePullToRefresh from '../hooks/usePullToRefresh';
 import { useState, useEffect } from 'react';
@@ -31,7 +31,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
     <AnimatePresence mode="wait">
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <Header />
-        
+
         {isPulling && !isLoading && (
           <div style={{
             position: 'absolute',
@@ -68,12 +68,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
           </div>
         )}
 
-        <motion.div
-          key={router.route}
-          initial={initialLoad || isIndexPage ? { opacity: 1, x: 0 } : { opacity: 0, x: '100%' }} // Don't animate for index page
-          animate={initialLoad  ? { opacity: 1, x: 0 } : { opacity: 1, x: 0, y: pullDistance }}
-          exit={initialLoad  ? {} : { opacity: 0, x: '100%' }} // Exit off-screen right
-          transition={{ duration: 0.2 }}
+        <div
           style={{
             transform: `translateY(${pullDistance}px)`,
             transition: 'transform 0.3s ease-in-out',
@@ -82,7 +77,7 @@ const MyApp = ({ Component, pageProps, router }: AppProps) => {
           }}
         >
           <Component {...pageProps} />
-        </motion.div>
+        </div>
       </div>
     </AnimatePresence>
   );
