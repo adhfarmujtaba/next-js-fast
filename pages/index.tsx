@@ -1,7 +1,7 @@
 // pages/index.tsx
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Head from 'next/head'; // Import Head component
+import Head from 'next/head';
 import '../app/index.css';
 
 interface Post {
@@ -56,11 +56,14 @@ const formatDate = (date: string): string => {
   return Math.floor(days / 365) + ' years ago';
 };
 
-const Home: React.FC = () => {
+interface Props {
+  siteInfo: SiteInfo;
+}
+
+const Home: React.FC<Props> = ({ siteInfo }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [customLoading, setCustomLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
-  const [siteInfo, setSiteInfo] = useState<SiteInfo | null>(null);
 
   useEffect(() => {
     const fetchPosts = async (page: number) => {
@@ -81,21 +84,8 @@ const Home: React.FC = () => {
       }
     };
 
-    const fetchSiteInfo = async () => {
-      try {
-        const response = await fetch('https://blog.tourismofkashmir.com/site_info_api.php');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        setSiteInfo(data);
-      } catch (error) {
-        console.error('Fetching site info failed:', error);
-      }
-    };
-
     fetchPosts(pageNumber); // Fetch posts when component mounts
-    fetchSiteInfo(); // Fetch site info when component mounts
-
-  }, [pageNumber]); // Only re-run when pageNumber changes
+  }, [pageNumber]);
 
   const loadMore = () => {
     setPageNumber(prev => prev + 1); // Increment page number to load more posts
@@ -104,16 +94,16 @@ const Home: React.FC = () => {
   return (
     <div className="news-list">
       <Head>
-        <title>{siteInfo?.site_title || 'Leak News'}</title>
-        <meta name="description" content={siteInfo?.site_description || 'Latest news and stories.'} />
-        <meta property="og:title" content={siteInfo?.site_title || 'Leak News'} />
-        <meta property="og:description" content={siteInfo?.site_description || 'Latest news and stories.'} />
-        <meta property="og:url" content={siteInfo?.site_url || 'https://leaknews.net'} />
-        <meta property="og:image" content={siteInfo?.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
+        <title>{siteInfo.site_title || 'Leak News'}</title>
+        <meta name="description" content={siteInfo.site_description || 'Latest news and stories.'} />
+        <meta property="og:title" content={siteInfo.site_title || 'Leak News'} />
+        <meta property="og:description" content={siteInfo.site_description || 'Latest news and stories.'} />
+        <meta property="og:url" content={siteInfo.site_url || 'https://leaknews.net'} />
+        <meta property="og:image" content={siteInfo.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
         <meta property="og:type" content="website" />
-        <link rel="icon" href={siteInfo?.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
+        <link rel="icon" href={siteInfo.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
+      </Head>
 
-           </Head>
       {customLoading ? (
         Array.from({ length: 5 }).map((_, index) => (
           <div key={index} className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
@@ -151,10 +141,8 @@ const Home: React.FC = () => {
               </Link>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
                 <Link href={`/profile/${post.username}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                  <div style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                    <img src={`https://blog.tourismofkashmir.com/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
-                    <span className='username'>{post.username}</span>
-                  </div>
+                  <img src={`https://blog.tourismofkashmir.com/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
+                  <span className='username'>{post.username}</span>
                 </Link>
                 <span className='views'> • {formatViews(post.views)} views</span>
                 <span className='date'> • {formatDate(post.created_at)}</span>
@@ -168,6 +156,32 @@ const Home: React.FC = () => {
       </button>
     </div>
   );
+};
+
+export const getServerSideProps = async () => {
+  try {
+    const response = await fetch('https://blog.tourismofkashmir.com/site_info_api.php');
+    if (!response.ok) throw new Error('Network response was not ok');
+    const siteInfo = await response.json();
+
+    return {
+      props: {
+        siteInfo,
+      },
+    };
+  } catch (error) {
+    console.error('Fetching site info failed:', error);
+    return {
+      props: {
+        siteInfo: {
+          site_title: 'Leak News',
+          site_description: 'Latest news and stories.',
+          site_url: 'https://leaknews.net',
+          logo_url: 'https://blog.tourismofkashmir.com/site/logo.png',
+        },
+      },
+    };
+  }
 };
 
 export default Home;
