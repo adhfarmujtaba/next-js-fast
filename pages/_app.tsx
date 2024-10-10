@@ -14,16 +14,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const fetchNewData = async () => {
     console.log("Fetching new data...");
     // Simulate data fetching
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     console.log("Data fetched");
   };
 
-  const { isPulling, currentPullDistance } = usePullToRefresh(
-    fetchNewData,
-    setPullDistance,
-    setIsLoading,
-    menuOpen // Pass the menuOpen state
-  );
+    const { isPulling, currentPullDistance } = usePullToRefresh(fetchNewData, setPullDistance, setIsLoading,  menuOpen);
+
 
   const toggleMenu = () => {
     setMenuOpen(prev => !prev);
@@ -50,14 +46,14 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             alignItems: 'center',
             transition: 'opacity 0.3s',
           }}>
-            <span className="material-icons" style={{ marginRight: '8px', fontSize:'15px' }}>
+            <span className="material-icons" style={{ marginRight: '8px', fontSize: '15px' }}>
               {currentPullDistance > 50 ? 'arrow_downward' : 'arrow_upward'}
             </span>
             <span>{currentPullDistance > 50 ? 'Release to refresh...' : 'Pull to refresh...'}</span>
           </div>
         )}
 
-        {isLoading && (
+        {isLoading && (  
           <div style={{
             position: 'absolute',
             top: '60px',
@@ -74,7 +70,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               <span className="dot"></span>
               <span className="dot"></span>
               <span className="dot"></span>
-              <span style={{ marginLeft: '2px', fontSize:'15px' }}>Loading...</span>
+              <span style={{ marginLeft: '2px', fontSize: '15px' }}>Loading...</span>
             </span>
           </div>
         )}
@@ -94,4 +90,5 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default MyApp;
+export default MyApp;  
+      

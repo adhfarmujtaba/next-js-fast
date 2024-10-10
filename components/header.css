@@ -8,7 +8,7 @@
     height: 20px; /* Consider adjusting the height to accommodate content */
 }
 header {
-  position: relative;
+  position: fixed;
   top: 0;
   width: 100%;
   z-index: 10; /* Ensure the header stays above other content */

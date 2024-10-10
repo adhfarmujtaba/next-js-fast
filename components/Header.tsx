@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import './header.css'; // Import CSS file
 
@@ -10,6 +10,11 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const menuIconRef = useRef<HTMLDivElement>(null);
+  
+  // State to manage header visibility and position
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isAtTop, setIsAtTop] = useState(true); // New state for top position
 
   const handleToggleMenu = () => toggleMenu();
 
@@ -30,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
 
       document.addEventListener('mousedown', handleClickOutside);
       document.addEventListener('touchstart', handleClickOutside);
-      
+
       return () => {
         document.removeEventListener('mousedown', handleClickOutside);
         document.removeEventListener('touchstart', handleClickOutside);
@@ -41,8 +46,35 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
     }
   }, [isMenuOpen, toggleMenu]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Check if scrolling down or up
+      if (currentScrollY > lastScrollY) {
+        setIsVisible(false); // Scrolling down
+      } else {
+        setIsVisible(true); // Scrolling up
+      }
+
+      // Check if at the top of the page
+      setIsAtTop(currentScrollY === 0);
+
+      setLastScrollY(currentScrollY); // Update last scroll position
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY]);
+
   return (
-    <header style={{ top: '0', transition: 'top 0.3s' }}>
+    <header style={{ 
+      top: isVisible ? '0' : '-80px', 
+      position: isAtTop ? 'relative' : 'fixed',
+      transition: 'top 0.3s, position 0.3s'
+    }}>
       <div className="custom-header">
         <div className="menu-and-logo">
           <div

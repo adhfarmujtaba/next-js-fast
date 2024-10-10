@@ -1,7 +1,7 @@
-// pages/index.tsx
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import { ClipLoader } from 'react-spinners';
 import '../app/index.css';
 
 interface Post {
@@ -56,40 +56,82 @@ const formatDate = (date: string): string => {
   return Math.floor(days / 365) + ' years ago';
 };
 
+const SkeletonLoader = () => {
+  return (
+    <div className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
+      <div style={{ width: '100%', height: '180px', backgroundColor: '#e0e0e0' }} />
+      <h2 style={{ height: '20px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
+      <p style={{ height: '16px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
+      <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px' }}>
+        <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#e0e0e0', marginRight: '5px' }} />
+        <span style={{ height: '16px', backgroundColor: '#e0e0e0' }} />
+      </div>
+    </div>
+  );
+};
+
 interface Props {
   siteInfo: SiteInfo;
 }
 
 const Home: React.FC<Props> = ({ siteInfo }) => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [customLoading, setCustomLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async (page: number) => {
-      setCustomLoading(true);
+      setLoading(true);
       try {
         const response = await fetch(`https://blog.tourismofkashmir.com/apis?posts&page=${page}`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
+        
+        // Check for a message indicating no more posts
+        if (data.message) {
+          console.error('Expected data to be an array, but got:', data);
+          setHasMore(false);
+          return; // Exit the function if no more posts
+        }
+
+        // Assuming data should be an array here
         if (Array.isArray(data)) {
-          setPosts(prevPosts => [...prevPosts, ...data]);
+          if (data.length === 0) {
+            setHasMore(false);
+          } else {
+            setPosts(prevPosts => [...prevPosts, ...data]);
+          }
         } else {
           console.error('Expected data to be an array, but got:', data);
+          setHasMore(false);
         }
       } catch (error) {
         console.error('Fetching posts failed:', error);
       } finally {
-        setCustomLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchPosts(pageNumber); // Fetch posts when component mounts
+    fetchPosts(pageNumber);
   }, [pageNumber]);
 
-  const loadMore = () => {
-    setPageNumber(prev => prev + 1); // Increment page number to load more posts
+  const loadMorePosts = () => {
+    if (!loading && hasMore) {
+      setPageNumber(prev => prev + 1);
+    }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.offsetHeight) {
+        loadMorePosts();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loading, hasMore]);
 
   return (
     <div className="news-list">
@@ -104,56 +146,46 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
         <link rel="icon" href={siteInfo.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
       </Head>
 
-      {customLoading ? (
-        Array.from({ length: 5 }).map((_, index) => (
-          <div key={index} className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
-            <div style={{ width: '100%', height: '180px', backgroundColor: '#e0e0e0' }} />
-            <h2 style={{ height: '20px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
-            <p style={{ height: '16px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
-            <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px' }}>
-              <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#e0e0e0', marginRight: '5px' }} />
-              <span style={{ height: '16px', backgroundColor: '#e0e0e0' }} />
+      {loading && posts.length === 0 ? (
+        Array.from({ length: 5 }).map((_, index) => <SkeletonLoader key={index} />)
+      ) : posts.length === 0 ? (
+        <p>No posts available.</p>
+      ) : (
+        posts.map(post => (
+          <div key={post.id} className="card">
+            <Link href={`/${post.category_slug}/${post.slug}`} className="news-item-link">
+              <div className="image-container" style={{ position: 'relative' }}>
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="news-item-image"
+                  style={{ width: '100%', height: '180px', objectFit: 'cover' }}
+                />
+                <div style={{ position: 'absolute', bottom: '10px', right: '10px', backgroundColor: 'rgba(0, 0, 0, 0.5)', color: 'white', padding: '5px', borderRadius: '5px', fontSize: '0.8rem' }}>
+                  {post.read_time} min read
+                </div>
+              </div>
+              <div className='card-content'>
+                <h2>{truncateText(post.title, 10)}</h2>
+                <p>{truncateText(post.meta_description, 20)}</p>
+              </div>
+            </Link>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+              <Link href={`/profile/${post.username}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+                <img src={`https://blog.tourismofkashmir.com/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
+                <span className='username'>{post.username}</span>
+              </Link>
+              <span className='views'> • {formatViews(post.views)} views</span>
+              <span className='date'> • {formatDate(post.created_at)}</span>
             </div>
           </div>
         ))
-      ) : (
-        posts.length === 0 ? (
-          <p>No posts available.</p>
-        ) : (
-          posts.map(post => (
-            <div key={post.id} className="card">
-              <Link href={`/${post.category_slug}/${post.slug}`} className="news-item-link">
-                <div className="image-container" style={{ position: 'relative' }}>
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    className="news-item-image"
-                    style={{ width: '100%', height: '180px', objectFit: 'cover' }}
-                  />
-                  <div style={{ position: 'absolute', bottom: '10px', right: '10px', backgroundColor: 'rgba(0, 0, 0, 0.5)', color: 'white', padding: '5px', borderRadius: '5px', fontSize: '0.8rem' }}>
-                    {post.read_time} min read
-                  </div>
-                </div>
-                <div className='card-content'>
-                  <h2>{truncateText(post.title, 10)}</h2>
-                  <p>{truncateText(post.meta_description, 20)}</p>
-                </div>
-              </Link>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
-                <Link href={`/profile/${post.username}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                  <img src={`https://blog.tourismofkashmir.com/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
-                  <span className='username'>{post.username}</span>
-                </Link>
-                <span className='views'> • {formatViews(post.views)} views</span>
-                <span className='date'> • {formatDate(post.created_at)}</span>
-              </div>
-            </div>
-          ))
-        )
       )}
-      <button onClick={loadMore} style={{ marginTop: '20px' }} disabled={customLoading}>
-        {customLoading ? 'Loading...' : 'Load More'}
-      </button>
+      {loading && hasMore && (
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+          <ClipLoader color="#000" loading={loading} size={30} />
+        </div>
+      )}
     </div>
   );
 };
