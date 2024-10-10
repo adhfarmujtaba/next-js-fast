@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios'; // Import axios
 import './header.css'; // Import CSS file
 
 interface HeaderProps {
@@ -7,16 +8,37 @@ interface HeaderProps {
   isMenuOpen: boolean;
 }
 
+// Define the type for category
+interface Category {
+  name: string;
+  slug: string;
+}
+
 const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const menuIconRef = useRef<HTMLDivElement>(null);
-  
+
   // State to manage header visibility and position
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAtTop, setIsAtTop] = useState(true); // New state for top position
+  const [categories, setCategories] = useState<Category[]>([]); // Update to use Category type
 
   const handleToggleMenu = () => toggleMenu();
+
+  useEffect(() => {
+    // Fetch categories when component mounts
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('https://blog.tourismofkashmir.com/apis?categories&order_index=asc&header_menu_is_included=TRUE');
+        setCategories(response.data); // Make sure the data matches the expected structure
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []); // Empty dependency array means this runs once on mount
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -70,43 +92,52 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   }, [lastScrollY]);
 
   return (
-    <header style={{ 
-      top: isVisible ? '0' : '-80px', 
-      position: isAtTop ? 'relative' : 'fixed',
-      transition: 'top 0.3s, position 0.3s'
-    }}>
-      <div className="custom-header">
-        <div className="menu-and-logo">
-          <div
-            ref={menuIconRef}
-            className={`menu-icon ${isMenuOpen ? 'change' : ''}`}
-            onClick={handleToggleMenu}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
+    <>
+      <header style={{ 
+        top: isVisible ? '0' : '-80px', 
+        position: isAtTop ? 'relative' : 'fixed',
+        transition: 'top 0.3s, position 0.3s'
+      }}>
+        <div className="custom-header">
+          <div className="menu-and-logo">
+            <div
+              ref={menuIconRef}
+              className={`menu-icon ${isMenuOpen ? 'change' : ''}`}
+              onClick={handleToggleMenu}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div className="logo">
+              <Link href="/" className="logo-link">Leak News</Link>
+            </div>
           </div>
-          <div className="logo">
-            <Link href="/" className="logo-link">Leak News</Link>
+
+          <div className="header-icons">
+            <span className="material-icons icon notification-icon">notifications</span>
+            <span className="material-icons icon search-icon">search</span>
+            <span className="material-icons icon user-icon">account_circle</span>
+          </div>
+
+          <div ref={menuRef} className={`side-menu ${isMenuOpen ? 'open' : ''}`}>
+            <ul>
+              <li><Link href="/" onClick={handleToggleMenu}>Home</Link></li>
+              <li><Link href="/about" onClick={handleToggleMenu}>About</Link></li>
+              <li><Link href="/contact" onClick={handleToggleMenu}>Contact</Link></li>
+              <li><Link href="/bookmark" onClick={handleToggleMenu}>Bookmark</Link></li>
+            </ul>
           </div>
         </div>
+      </header>
 
-        <div className="header-icons">
-          <span className="material-icons icon notification-icon">notifications</span>
-          <span className="material-icons icon search-icon">search</span>
-          <span className="material-icons icon user-icon">account_circle</span>
-        </div>
+      <div className="category-tags">
+  {categories.map((category) => (
+    <span key={category.slug} className="category-tag">{category.name}</span>
+  ))}
+</div>
 
-        <div ref={menuRef} className={`side-menu ${isMenuOpen ? 'open' : ''}`}>
-          <ul>
-            <li><Link href="/" onClick={handleToggleMenu}>Home</Link></li>
-            <li><Link href="/about" onClick={handleToggleMenu}>About</Link></li>
-            <li><Link href="/contact" onClick={handleToggleMenu}>Contact</Link></li>
-            <li><Link href="/bookmark" onClick={handleToggleMenu}>Bookmark</Link></li>
-          </ul>
-        </div>
-      </div>
-    </header>
+    </>
   );
 };
 

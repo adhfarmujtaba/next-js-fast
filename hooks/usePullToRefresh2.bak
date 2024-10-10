@@ -8,51 +8,40 @@ const usePullToRefresh = (
 ) => {
   const [isPulling, setIsPulling] = useState(false);
   const [startY, setStartY] = useState(0);
-  const [startX, setStartX] = useState(0);
   const [currentPullDistance, setCurrentPullDistance] = useState(0);
-  const pullScale = 5.0;
-  const threshold = 60;
-  const maxPullDistance = 70;
+  const pullScale = 5.0; // Increased for better responsiveness
+  const threshold = 60; // Increased to reduce false triggers
+  const maxPullDistance = 70; // Increased for a larger pull range
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (window.scrollY === 0 && !menuOpen) {
+    if (window.scrollY === 0 && !menuOpen) { // Check if menu is open
       setStartY(e.touches[0].clientY);
-      setStartX(e.touches[0].clientX);
     } else {
       setStartY(0); // Reset if not at top or if menu is open
     }
   }, [menuOpen]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (startY !== 0 && !menuOpen) {
+    if (startY !== 0 && !menuOpen) { // Check if menu is open
       const currentY = e.touches[0].clientY;
-      const currentX = e.touches[0].clientX;
+      const pullDistance = Math.max(0, (currentY - startY) * pullScale);
+      const cappedPullDistance = Math.min(pullDistance, maxPullDistance);
 
-      // Determine the movement direction
-      const deltaY = currentY - startY;
-      const deltaX = currentX - startX;
-
-      // Only allow pulling if the movement is primarily vertical
-      if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        const pullDistance = Math.max(0, deltaY * pullScale);
-        const cappedPullDistance = Math.min(pullDistance, maxPullDistance);
-
-        if (cappedPullDistance > 0) {
-          setIsPulling(true);
-          setCurrentPullDistance(cappedPullDistance);
-          setPullDistance(cappedPullDistance);
-          e.preventDefault(); // Prevent default behavior during move
-        }
+      if (cappedPullDistance > 0) {
+        setIsPulling(true);
+        setCurrentPullDistance(cappedPullDistance);
+        setPullDistance(cappedPullDistance);
+        e.preventDefault(); // Prevent default behavior during move
       }
     }
-  }, [startY, startX, pullScale, setPullDistance, menuOpen]);
+  }, [startY, pullScale, setPullDistance, menuOpen]);
 
   const handleTouchEnd = useCallback(async () => {
     if (isPulling) {
-      setIsLoading(true);
+      setIsLoading(true); // Set loading state
       
       if (currentPullDistance > threshold) {
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate loading
+        await new Promise(resolve => setTimeout(resolve, 1500)); // 0.5 second delay
         window.location.reload();
       } else {
         await fetchData(); // Trigger data fetch
@@ -62,7 +51,7 @@ const usePullToRefresh = (
       setPullDistance(0);
       setIsPulling(false);
       setCurrentPullDistance(0);
-      setIsLoading(false);
+      setIsLoading(false); // Reset loading state
     }
   }, [isPulling, fetchData, setPullDistance, currentPullDistance, threshold, setIsLoading]);
 
