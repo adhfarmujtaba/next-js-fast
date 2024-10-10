@@ -56,16 +56,30 @@ const formatDate = (date: string): string => {
   return Math.floor(days / 365) + ' years ago';
 };
 
-interface Props {
-  siteInfo: SiteInfo;
-}
-
-const Home: React.FC<Props> = ({ siteInfo }) => {
+const Home: React.FC = () => {
+  const [siteInfo, setSiteInfo] = useState<SiteInfo | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [customLoading, setCustomLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
 
   useEffect(() => {
+    const fetchSiteInfo = async () => {
+      try {
+        const response = await fetch('https://blog.tourismofkashmir.com/site_info_api.php');
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        setSiteInfo(data);
+      } catch (error) {
+        console.error('Fetching site info failed:', error);
+        setSiteInfo({
+          site_title: 'Leak News',
+          site_description: 'Latest news and stories.',
+          site_url: 'https://leaknews.net',
+          logo_url: 'https://blog.tourismofkashmir.com/site/logo.png',
+        });
+      }
+    };
+
     const fetchPosts = async (page: number) => {
       setCustomLoading(true);
       try {
@@ -84,25 +98,28 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
       }
     };
 
-    fetchPosts(pageNumber); // Fetch posts when component mounts
+    fetchSiteInfo();
+    fetchPosts(pageNumber);
   }, [pageNumber]);
 
   const loadMore = () => {
-    setPageNumber(prev => prev + 1); // Increment page number to load more posts
+    setPageNumber(prev => prev + 1);
   };
 
   return (
     <div className="news-list">
-      <Head>
-        <title>{siteInfo.site_title || 'Leak News'}</title>
-        <meta name="description" content={siteInfo.site_description || 'Latest news and stories.'} />
-        <meta property="og:title" content={siteInfo.site_title || 'Leak News'} />
-        <meta property="og:description" content={siteInfo.site_description || 'Latest news and stories.'} />
-        <meta property="og:url" content={siteInfo.site_url || 'https://leaknews.net'} />
-        <meta property="og:image" content={siteInfo.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
-        <meta property="og:type" content="website" />
-        <link rel="icon" href={siteInfo.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
-      </Head>
+      {siteInfo && (
+        <Head>
+          <title>{siteInfo.site_title || 'Leak News'}</title>
+          <meta name="description" content={siteInfo.site_description || 'Latest news and stories.'} />
+          <meta property="og:title" content={siteInfo.site_title || 'Leak News'} />
+          <meta property="og:description" content={siteInfo.site_description || 'Latest news and stories.'} />
+          <meta property="og:url" content={siteInfo.site_url || 'https://leaknews.net'} />
+          <meta property="og:image" content={siteInfo.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
+          <meta property="og:type" content="website" />
+          <link rel="icon" href={siteInfo.logo_url || 'https://blog.tourismofkashmir.com/site/logo.png'} />
+        </Head>
+      )}
 
       {customLoading ? (
         Array.from({ length: 5 }).map((_, index) => (
@@ -156,32 +173,6 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
       </button>
     </div>
   );
-};
-
-export const getServerSideProps = async () => {
-  try {
-    const response = await fetch('https://blog.tourismofkashmir.com/site_info_api.php');
-    if (!response.ok) throw new Error('Network response was not ok');
-    const siteInfo = await response.json();
-
-    return {
-      props: {
-        siteInfo,
-      },
-    };
-  } catch (error) {
-    console.error('Fetching site info failed:', error);
-    return {
-      props: {
-        siteInfo: {
-          site_title: 'Leak News',
-          site_description: 'Latest news and stories.',
-          site_url: 'https://leaknews.net',
-          logo_url: 'https://blog.tourismofkashmir.com/site/logo.png',
-        },
-      },
-    };
-  }
 };
 
 export default Home;
