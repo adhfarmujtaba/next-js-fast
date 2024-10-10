@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faBell, faUser } from '@fortawesome/free-solid-svg-icons';
 import styles from './Header.module.css';
 
 const Header: React.FC = () => {
@@ -27,13 +29,13 @@ const Header: React.FC = () => {
           </Link>
           <div className={styles.icons}>
             <button className={styles.iconButton}>
-              <span className="material-icons">search</span>
+              <FontAwesomeIcon icon={faSearch} />
             </button>
             <button className={styles.iconButton}>
-              <span className="material-icons">notifications</span>
+              <FontAwesomeIcon icon={faBell} />
             </button>
             <button className={styles.iconButton}>
-              <span className="material-icons">account_circle</span>
+              <FontAwesomeIcon icon={faUser} />
             </button>
           </div>
         </div>

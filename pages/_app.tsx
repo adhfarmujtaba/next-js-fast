@@ -3,8 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
 import usePullToRefresh from '../hooks/usePullToRefresh';
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync } from '@fortawesome/free-solid-svg-icons';
+import Head from 'next/head';
 import '../app/globals.css';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
@@ -21,6 +20,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   return (
     <AnimatePresence mode="wait">
+      <Head>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+      </Head>
       <div style={{ overflow: 'hidden', position: 'relative' }}>
         <Header />
 
@@ -37,7 +39,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             alignItems: 'center',
             transition: 'opacity 0.3s',
           }}>
-            <FontAwesomeIcon icon={faSync} spin style={{ marginRight: '8px' }} />
+            <span className="material-icons" style={{ marginRight: '8px' }}>refresh</span>
             <span>{currentPullDistance > 50 ? 'Release to refresh...' : 'Pull to refresh...'}</span>
           </div>
         )}
@@ -55,7 +57,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             alignItems: 'center',
             transition: 'opacity 0.3s',
           }}>
-            <FontAwesomeIcon icon={faSync} spin style={{ marginRight: '8px' }} />
+            <span className="material-icons" style={{ marginRight: '8px' }}>refresh</span>
             <span>Loading...</span>
           </div>
         )}
