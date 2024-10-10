@@ -22,3 +22,42 @@
     display: none; /* Hide the spinner */
   }
   
+body{
+  background-color: #f5f5f5;
+}  
+
+/* globals.css or a specific CSS file */
+.loading-dots {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  width: 5px; /* Dot size */
+  height: 5px;
+  background-color: #333; /* Dot color */
+  border-radius: 50%; /* Make dots circular */
+  margin: 0 3px; /* Space between dots */
+  animation: bounce 0.6s infinite alternate;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0s; /* No delay for the first dot */
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s; /* Slight delay for the second dot */
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s; /* Longer delay for the third dot */
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px); /* Adjust for bounce height */
+  }
+}

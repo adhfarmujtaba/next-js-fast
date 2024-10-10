@@ -1,0 +1,151 @@
+.custom-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 20px; /* Consider adjusting the height to accommodate content */
+}
+header {
+  position: relative;
+  top: 0;
+  width: 100%;
+  z-index: 10; /* Ensure the header stays above other content */
+  transition: top 0.3s; /* Smooth transition for showing/hiding the header */
+}
+
+.menu-and-logo {
+    display: flex;
+    align-items: center;
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+.icon:last-child {
+    margin-right: 0; /* Reduced margin on the right for the last icon */
+}
+
+
+
+
+.logo-link {
+    text-decoration: none;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.menu-icon {
+    cursor: pointer;
+    margin-right: 20px; /* Space between the menu icon and the logo */
+}
+
+.menu-icon span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    margin: 5px 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.menu-icon.change span:first-child {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.menu-icon.change span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-icon.change span:last-child {
+    transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.side-menu {
+    position: fixed;
+    top: 52.1px;
+    left: -250px; /* Start off-screen */
+    width: 250px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1;
+}
+
+.side-menu.open {
+    left: 0; /* Slide in */
+}
+
+.side-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.side-menu ul li a {
+    display: block;
+    padding: 1rem;
+    text-decoration: none;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+}
+
+.side-menu ul li a:hover {
+    background-color: #f8f9fa;
+}
+
+
+.user-icon {
+  width: 28px; /* Adjust the width as needed */
+  height: 28px; /* Adjust the height as needed */
+  cursor: pointer;
+  border-radius: 50%;
+
+}
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+    .custom-header {
+        background-color: #333; /* Dark background color */
+        box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1); /* Lighter shadow for contrast */
+        color: #fff; /* Light text color */
+    }
+
+    .logo-link {
+        color: #fff; /* Light logo text color */
+    }
+
+    .menu-icon span {
+        background-color: #fff; /* Light menu icon color */
+    }
+
+    .side-menu {
+        background-color: #444; /* Dark background color for side menu */
+        box-shadow: 2px 0 5px rgba(255, 255, 255, 0.1); /* Lighter shadow for contrast */
+    }
+
+    .side-menu ul li a {
+        color: #fff; /* Light text color for side menu links */
+        border-bottom: 1px solid #666; /* Dark border color for contrast */
+    }
+
+    .side-menu ul li a:hover {
+        background-color: #555; /* Dark background color on hover */
+    }
+
+    .user-icon {
+        border: 2px solid #fff; /* Light border color for user icon */
+    }
+
+    /* Additional adjustments as needed for dark mode */
+    /* ... */
+}

@@ -9,14 +9,25 @@ import '../app/globals.css';
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const fetchNewData = async () => {
     console.log("Fetching new data...");
-    // Replace this with your actual fetch logic if needed
+    // Simulate data fetching
+    await new Promise(resolve => setTimeout(resolve, 1000));
     console.log("Data fetched");
   };
 
-  const { isPulling, currentPullDistance } = usePullToRefresh(fetchNewData, setPullDistance, setIsLoading);
+  const { isPulling, currentPullDistance } = usePullToRefresh(
+    fetchNewData,
+    setPullDistance,
+    setIsLoading,
+    menuOpen // Pass the menuOpen state
+  );
+
+  const toggleMenu = () => {
+    setMenuOpen(prev => !prev);
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -24,7 +35,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
       </Head>
       <div style={{ overflow: 'hidden', position: 'relative' }}>
-        <Header />
+        <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />
 
         {isPulling && !isLoading && (
           <div style={{
@@ -39,7 +50,9 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             alignItems: 'center',
             transition: 'opacity 0.3s',
           }}>
-            <span className="material-icons" style={{ marginRight: '8px' }}>refresh</span>
+            <span className="material-icons" style={{ marginRight: '8px', fontSize:'15px' }}>
+              {currentPullDistance > 50 ? 'arrow_downward' : 'arrow_upward'}
+            </span>
             <span>{currentPullDistance > 50 ? 'Release to refresh...' : 'Pull to refresh...'}</span>
           </div>
         )}
@@ -57,8 +70,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             alignItems: 'center',
             transition: 'opacity 0.3s',
           }}>
-            <span className="material-icons" style={{ marginRight: '8px' }}>refresh</span>
-            <span>Loading...</span>
+            <span className="loading-dots" style={{ display: 'flex', alignItems: 'center' }}>
+              <span className="dot"></span>
+              <span className="dot"></span>
+              <span className="dot"></span>
+              <span style={{ marginLeft: '2px', fontSize:'15px' }}>Loading...</span>
+            </span>
           </div>
         )}
 

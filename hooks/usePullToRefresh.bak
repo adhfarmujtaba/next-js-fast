@@ -3,8 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 const usePullToRefresh = (
   fetchData: () => Promise<void>,
   setPullDistance: (distance: number) => void,
-  setIsLoading: (loading: boolean) => void,
-  menuOpen: boolean // Accept the menuOpen state
+  setIsLoading: (loading: boolean) => void
 ) => {
   const [isPulling, setIsPulling] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -14,15 +13,15 @@ const usePullToRefresh = (
   const maxPullDistance = 70; // Increased for a larger pull range
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (window.scrollY === 0 && !menuOpen) { // Check if menu is open
+    if (window.scrollY === 0) {
       setStartY(e.touches[0].clientY);
     } else {
-      setStartY(0); // Reset if not at top or if menu is open
+      setStartY(0); // Reset if not at top
     }
-  }, [menuOpen]);
+  }, []);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (startY !== 0 && !menuOpen) { // Check if menu is open
+    if (startY !== 0) {
       const currentY = e.touches[0].clientY;
       const pullDistance = Math.max(0, (currentY - startY) * pullScale);
       const cappedPullDistance = Math.min(pullDistance, maxPullDistance);
@@ -34,7 +33,7 @@ const usePullToRefresh = (
         e.preventDefault(); // Prevent default behavior during move
       }
     }
-  }, [startY, pullScale, setPullDistance, menuOpen]);
+  }, [startY, pullScale, setPullDistance]);
 
   const handleTouchEnd = useCallback(async () => {
     if (isPulling) {
