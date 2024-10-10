@@ -196,6 +196,12 @@ header {
     transform: translateY(-2px); /* Slight lift effect on hover */
   }
   
+  .category-tag.active {
+    font-weight: bold;
+    background: #0070f3;
+    color: #f8f9fa; /* Adjust color to match your design */
+  }
+  
   /* Hide scrollbar on mobile devices */
 @media (max-width: 768px) {
     .category-tags {

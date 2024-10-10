@@ -36,7 +36,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         {isPulling && !isLoading && (
           <div style={{
             position: 'absolute',
-            top: '60px',
+            top: '120px',
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '10px',
@@ -56,7 +56,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         {isLoading && (  
           <div style={{
             position: 'absolute',
-            top: '60px',
+            top: '120px',
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '10px',

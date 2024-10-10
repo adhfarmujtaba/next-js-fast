@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios'; // Import axios
-import './header.css'; // Import CSS file
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import './header.css';
 
 interface HeaderProps {
   toggleMenu: () => void;
   isMenuOpen: boolean;
 }
 
-// Define the type for category
 interface Category {
   name: string;
   slug: string;
@@ -17,28 +17,27 @@ interface Category {
 const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const menuIconRef = useRef<HTMLDivElement>(null);
-
-  // State to manage header visibility and position
+  
+  const router = useRouter();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isAtTop, setIsAtTop] = useState(true); // New state for top position
-  const [categories, setCategories] = useState<Category[]>([]); // Update to use Category type
+  const [isAtTop, setIsAtTop] = useState(true);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const handleToggleMenu = () => toggleMenu();
 
   useEffect(() => {
-    // Fetch categories when component mounts
     const fetchCategories = async () => {
       try {
         const response = await axios.get('https://blog.tourismofkashmir.com/apis?categories&order_index=asc&header_menu_is_included=TRUE');
-        setCategories(response.data); // Make sure the data matches the expected structure
+        setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
 
     fetchCategories();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -51,7 +50,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
           menuRef.current && !menuRef.current.contains(target as Node) &&
           menuIconRef.current && !menuIconRef.current.contains(target as Node)
         ) {
-          toggleMenu(); // Close the menu
+          toggleMenu();
         }
       };
 
@@ -72,17 +71,14 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Check if scrolling down or up
       if (currentScrollY > lastScrollY) {
-        setIsVisible(false); // Scrolling down
+        setIsVisible(false);
       } else {
-        setIsVisible(true); // Scrolling up
+        setIsVisible(true);
       }
 
-      // Check if at the top of the page
       setIsAtTop(currentScrollY === 0);
-
-      setLastScrollY(currentScrollY); // Update last scroll position
+      setLastScrollY(currentScrollY);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -90,6 +86,10 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [lastScrollY]);
+
+  const handleCategoryClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+  };
 
   return (
     <>
@@ -132,11 +132,22 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
       </header>
 
       <div className="category-tags">
-  {categories.map((category) => (
-    <span key={category.slug} className="category-tag">{category.name}</span>
-  ))}
-</div>
-
+        <Link href="/" className={`category-tag ${router.asPath === '/' ? 'active' : ''}`} onClick={handleCategoryClick}>All</Link>
+        {categories.map((category) => {
+          const isActive = router.asPath === `/${category.slug}`;
+          console.log(`Checking ${category.slug}: ${isActive}`); // Debug log
+          return (
+            <Link 
+              key={category.slug} 
+              href={`/${category.slug}`} 
+              className={`category-tag ${isActive ? 'active' : ''}`} 
+              onClick={handleCategoryClick}
+            >
+              {category.name}
+            </Link>
+          );
+        })}
+      </div>
     </>
   );
 };
