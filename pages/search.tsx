@@ -52,11 +52,11 @@ const SearchPage: React.FC = () => {
     };
   }, [query, debouncedFetchResults]);
 
-  const handleClose = () => {
-    // Clear the search query when closing
-    setQuery('');
-    setResults([]);
-  };
+//   const handleClose = () => {
+//     // Clear the search query when closing
+//     setQuery('');
+//     setResults([]);
+//   };
 
   return (
     <>
@@ -70,7 +70,7 @@ const SearchPage: React.FC = () => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <IconButton color="inherit" onClick={handleClose} style={{ marginLeft: 'auto' }}>
+          <IconButton color="inherit" onClick={() => window.history.back()}  style={{ marginLeft: 'auto' }}>
             <CloseIcon />
           </IconButton>
         </Toolbar>
