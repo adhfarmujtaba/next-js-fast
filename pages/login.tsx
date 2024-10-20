@@ -32,7 +32,8 @@ const LoginPage = () => {
 
             if (response.data && response.data.user) {
                 localStorage.setItem('user', JSON.stringify(response.data.user));
-                toast.success(`Login successful! Welcome ${escapeApostrophes(response.data.user.name)}!`, {
+                const userName = escapeApostrophes(response.data.user.name);
+                toast.success(`Login successful! Welcome ${userName}!`, {
                     position: "top-center",
                     autoClose: 2000,
                     hideProgressBar: false,
