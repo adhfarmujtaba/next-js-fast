@@ -10,9 +10,9 @@ import Link from 'next/link';
 import '../app/LoginPage.css'; // Import the SASS file directly
 
 const LoginPage = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
 
     const formVariants = {
@@ -21,16 +21,18 @@ const LoginPage = () => {
         exit: { opacity: 0, y: -50, transition: { duration: 0.3 } }
     };
 
+    const escapeApostrophes = (str: string) => str.replace(/'/g, '&#39;');
+
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
 
         try {
             const response = await axios.post(`${CONFIG.BASE_URL}/apilogin.php`, { username, password });
-            
+
             if (response.data && response.data.user) {
                 localStorage.setItem('user', JSON.stringify(response.data.user));
-                toast.success(`Login successful! Welcome ${response.data.user.name}!`, {
+                toast.success(`Login successful! Welcome ${escapeApostrophes(response.data.user.name)}!`, {
                     position: "top-center",
                     autoClose: 2000,
                     hideProgressBar: false,
@@ -38,7 +40,7 @@ const LoginPage = () => {
                     pauseOnHover: true,
                     draggable: true,
                 });
-                
+
                 setTimeout(() => router.push('/'), 2000);
             } else {
                 toast.error('Login failed. Please check your credentials.');
@@ -52,7 +54,7 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="login-page"   style={{ backgroundImage: `url(${CONFIG.BASE_URL}/login_png/login.png)` }}>
+        <div className="login-page" style={{ backgroundImage: `url(${CONFIG.BASE_URL}/login_png/login.png)` }}>
             <div onClick={() => router.back()}>
                 <FaArrowLeft className="back-arrow" />
             </div>
