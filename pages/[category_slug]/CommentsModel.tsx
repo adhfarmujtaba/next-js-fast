@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'react-toastify';
-import CONFIG from '@/utils/config'; '../../utils/config';
+import CONFIG from '../../utils/config';
 import '../../app/commentsModal.css';
 
 
