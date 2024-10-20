@@ -61,7 +61,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
         };
 
         try {
-            await axios.post('${CONFIG.BASE_URL}/api_comments.php', commentData);
+            await axios.post(`${CONFIG.BASE_URL}/api_comments.php`, commentData);
             fetchComments();
             setNewComment('');
         } catch (error) {
