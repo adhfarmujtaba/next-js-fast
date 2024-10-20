@@ -1,5 +1,5 @@
 import { AppProps } from 'next/app';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import Header from '../components/Header';
 import SideMenu from '../components/sideMenu';
 import usePullToRefresh from '../hooks/usePullToRefresh';
@@ -9,12 +9,6 @@ import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
 import '../app/globals.css';
 
-const pageTransition = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
-};
-
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,29 +17,28 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   const fetchNewData = async () => {
     console.log("Fetching new data...");
+    // Simulate data fetching
     console.log("Data fetched");
   };
 
   const isPostPage = router.pathname.includes('/[category_slug]/[slug]');
-  const isLoginPage = router.pathname === '/login';
-  const isSearchPage = router.pathname === '/search';
+  const isLoginPage = router.pathname === '/login'; // Check if the current page is the LoginPage
+  const SearchPage = router.pathname === '/search'; // Check if the current page is the LoginPage
 
   const { isPulling, currentPullDistance } = usePullToRefresh(
     fetchNewData,
     setPullDistance,
     setIsLoading,
     menuOpen,
-    isPostPage,
-    isLoginPage,
-    isSearchPage
+    isPostPage
   );
-
+  
   const toggleMenu = () => {
     setMenuOpen(prev => !prev);
   };
 
   useEffect(() => {
-    if (isPostPage && isLoginPage && isSearchPage) {
+    if (isPostPage) {
       setPullDistance(0);
       setIsLoading(false);
     }
@@ -61,12 +54,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       </Head>
 
       <div className={`main ${menuOpen ? 'menu-open' : ''}`} style={{ height: '100vh' }}>
-        <ToastContainer />
+        <ToastContainer /> 
         <div className={`overlay`}></div>
 
-        {!isLoginPage && !isPostPage && !isSearchPage && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
+        {/* Render Header only if not on LoginPage */}
+        {!isLoginPage && !isPostPage && !SearchPage && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
 
-        {isPulling && !isLoading && !isPostPage && !isSearchPage &&  !isLoginPage &&(
+        {isPulling && !isLoading && !isPostPage && (
           <div style={{
             position: 'absolute',
             top: '120px',
@@ -86,7 +80,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           </div>
         )}
 
-        {isLoading && !isPostPage  && !isLoginPage && !isSearchPage && (
+        {isLoading && !isPostPage && (  
           <div style={{
             position: 'absolute',
             top: '120px',
@@ -108,35 +102,16 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           </div>
         )}
 
-        {/* Conditional rendering based on the current route */}
-        {isSearchPage   ? (
-          <motion.div
-            key={router.pathname}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            variants={pageTransition}
-            style={ {
-              transform: `translateY(${pullDistance}px)`,
-              transition: 'transform 0.3s ease-in-out',
-              willChange: 'transform',
-              position: 'relative',
-          } }
-          >
-            <Component {...pageProps} />
-          </motion.div>
-        ) : (
-          <div style={!isPostPage ? {
+        <div
+          style={!isPostPage ? {
             transform: `translateY(${pullDistance}px)`,
             transition: 'transform 0.3s ease-in-out',
             willChange: 'transform',
             position: 'relative',
           } : { position: 'relative' }}
-          
-          >
-            <Component {...pageProps} />
-          </div>
-        )}
+        >
+          <Component {...pageProps} />
+        </div>
       </div>
     </AnimatePresence>
   );

@@ -4,7 +4,10 @@ const usePullToRefresh = (
   fetchData: () => Promise<void>,
   setPullDistance: (distance: number) => void,
   setIsLoading: (loading: boolean) => void,
-  menuOpen: boolean // Accept the menuOpen state
+  menuOpen: boolean, // Accept the menuOpen state
+  isPostPage: boolean, // Accept isPostPage state
+  isLoginPage: boolean,
+  isSearchPage: boolean
 ) => {
   const [isPulling, setIsPulling] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -51,7 +54,7 @@ const usePullToRefresh = (
     if (isPulling) {
       setIsLoading(true);
       
-      if (currentPullDistance > threshold) {
+      if (currentPullDistance > threshold && !isPostPage && !isLoginPage && !isSearchPage) {
         await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate loading
         window.location.reload();
       } else {
@@ -64,7 +67,7 @@ const usePullToRefresh = (
       setCurrentPullDistance(0);
       setIsLoading(false);
     }
-  }, [isPulling, fetchData, setPullDistance, currentPullDistance, threshold, setIsLoading]);
+  }, [isPulling, fetchData, setPullDistance, currentPullDistance, threshold, setIsLoading, isPostPage, isLoginPage, isSearchPage]);
 
   useEffect(() => {
     const preventDefaultScroll = (e: TouchEvent) => {

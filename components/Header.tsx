@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import UserDropdown from './UserDropdown';
 import './header.css';
 
 interface HeaderProps {
@@ -15,16 +16,21 @@ interface Category {
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
-  const menuRef = useRef<HTMLDivElement>(null);
   const menuIconRef = useRef<HTMLDivElement>(null);
-  
   const router = useRouter();
   const [isVisible, setIsVisible] = useState(true);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isAtTop, setIsAtTop] = useState(true);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const handleToggleMenu = () => toggleMenu();
+
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(prev => !prev);
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -40,43 +46,9 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   }, []);
 
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
-
-      const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-        const target = event instanceof MouseEvent ? event.target : (event as TouchEvent).target;
-
-        if (
-          menuRef.current && !menuRef.current.contains(target as Node) &&
-          menuIconRef.current && !menuIconRef.current.contains(target as Node)
-        ) {
-          toggleMenu();
-        }
-      };
-
-      document.addEventListener('mousedown', handleClickOutside);
-      document.addEventListener('touchstart', handleClickOutside);
-
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-        document.removeEventListener('touchstart', handleClickOutside);
-        document.body.style.overflow = 'auto';
-      };
-    } else {
-      document.body.style.overflow = 'auto';
-    }
-  }, [isMenuOpen, toggleMenu]);
-
-  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-
+      setIsVisible(currentScrollY <= lastScrollY);
       setIsAtTop(currentScrollY === 0);
       setLastScrollY(currentScrollY);
     };
@@ -87,9 +59,47 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
     };
   }, [lastScrollY]);
 
+  const updateUserState = () => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setIsLoggedIn(true);
+      setAvatarUrl(parsedUser.avatar);
+    } else {
+      setIsLoggedIn(false);
+      setAvatarUrl(null);
+    }
+  };
+
+  useEffect(() => {
+    updateUserState(); // Set initial state
+
+    // Listen for storage changes
+    window.addEventListener('storage', updateUserState);
+    
+    return () => {
+      window.removeEventListener('storage', updateUserState);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const menuIcon = document.querySelector('.mm') as HTMLElement | null;
+      if (menuIcon) {
+        menuIcon.style.display = isMenuOpen ? 'none' : 'block';
+      } else {
+        console.warn('Menu icon not found');
+      }
+    }
+  }, [isMenuOpen]);
+
   const handleCategoryClick = (event: React.MouseEvent) => {
     event.stopPropagation();
   };
+
+  const handleSearchClick = () => {
+    router.push('/search');
+};
 
   return (
     <>
@@ -102,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
           <div className="menu-and-logo">
             <div
               ref={menuIconRef}
-              className={`menu-icon ${isMenuOpen ? 'change' : ''}`}
+              className={`menu-icon mm ${isMenuOpen ? 'change' : ''}`}
               onClick={handleToggleMenu}
             >
               <span></span>
@@ -116,18 +126,16 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
 
           <div className="header-icons">
             <span className="material-icons icon notification-icon">notifications</span>
-            <span className="material-icons icon search-icon">search</span>
-            <span className="material-icons icon user-icon">account_circle</span>
+            <span className="material-icons icon search-icon" onClick={handleSearchClick} style={{ cursor: 'pointer' }}>
+                search
+            </span>
+                {isLoggedIn && avatarUrl ? (
+              <img src={avatarUrl} alt="User Avatar" className="user-avatar-login" onClick={toggleUserDropdown} style={{ cursor: 'pointer' }} />
+            ) : (
+              <span className="material-icons icon user-icon" onClick={toggleUserDropdown} style={{ cursor: 'pointer' }}>account_circle</span>
+            )}
           </div>
-
-          <div ref={menuRef} className={`side-menu ${isMenuOpen ? 'open' : ''}`}>
-            <ul>
-              <li><Link href="/" onClick={handleToggleMenu}>Home</Link></li>
-              <li><Link href="/about" onClick={handleToggleMenu}>About</Link></li>
-              <li><Link href="/contact" onClick={handleToggleMenu}>Contact</Link></li>
-              <li><Link href="/bookmark" onClick={handleToggleMenu}>Bookmark</Link></li>
-            </ul>
-          </div>
+          {isUserDropdownOpen && <UserDropdown onClose={() => setIsUserDropdownOpen(false)} />}
         </div>
       </header>
 
@@ -135,7 +143,6 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
         <Link href="/" className={`category-tag ${router.asPath === '/' ? 'active' : ''}`} onClick={handleCategoryClick}>All</Link>
         {categories.map((category) => {
           const isActive = router.asPath === `/${category.slug}`;
-          console.log(`Checking ${category.slug}: ${isActive}`); // Debug log
           return (
             <Link 
               key={category.slug} 

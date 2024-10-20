@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 import Head from 'next/head'; // Import Head
+import CONFIG from '../utils/config'; // Adjust the path as needed
 import '../app/index.css';
 
 const SkeletonLoader = () => (
@@ -55,7 +56,7 @@ const CategoryList = () => {
         if (!category_slug) return;
         setLoading(true);
         try {
-            const response = await axios.get(`https://blog.tourismofkashmir.com/apis?category_slug=${category_slug}&page=${pageNum}`);
+            const response = await axios.get(`${CONFIG.BASE_URL}/apis?category_slug=${category_slug}&page=${pageNum}`);
             const newPosts: Post[] = response.data;
 
             if (Array.isArray(newPosts) && newPosts.length > 0) {

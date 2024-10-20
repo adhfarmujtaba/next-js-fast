@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { ClipLoader } from 'react-spinners';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import CONFIG from '../utils/config'; // Adjust the path as needed
 import '../app/index.css';
 
 interface Post {
@@ -80,12 +81,12 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
   const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
+  
   useEffect(() => {
     const fetchPosts = async (page: number) => {
       setLoading(true);
       try {
-        const response = await fetch(`https://blog.tourismofkashmir.com/apis?posts&page=${page}`);
+        const response = await fetch(`${CONFIG.BASE_URL}/apis?posts&page=${page}`);
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         
@@ -156,13 +157,13 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
                   </div>
                 </div>
                 <div className='card-content'>
-                  <h2>{truncateText(post.title, 10)}</h2>
-                  <p>{truncateText(post.meta_description, 20)}</p>
+                  <h2>{truncateText(post.title, 20)}</h2>
+                  <p>{truncateText(post.meta_description, 28)}</p>
                 </div>
               </Link>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
                 <Link href={`/profile/${post.username}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                  <img src={`https://blog.tourismofkashmir.com/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
+                  <img src={`${CONFIG.BASE_URL}/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
                   <span className='username'>{post.username}</span>
                 </Link>
                 <span className='views'> • {formatViews(post.views)} views</span>
@@ -178,7 +179,7 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
 
 export const getServerSideProps = async () => {
   try {
-    const response = await fetch('https://blog.tourismofkashmir.com/site_info_api.php');
+    const response = await fetch('${CONFIG.BASE_URL}/site_info_api.php');
     if (!response.ok) throw new Error('Network response was not ok');
     const siteInfo = await response.json();
 

@@ -6,6 +6,7 @@
     background-color: #f8f9fa;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     height: 20px; /* Consider adjusting the height to accommodate content */
+    z-index: 99;
 }
 header {
   position: fixed;
@@ -47,6 +48,30 @@ header {
 .menu-icon {
     cursor: pointer;
     margin-right: 20px; /* Space between the menu icon and the logo */
+    z-index: 1000;
+}
+
+
+.mm-icon span{
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: #ffffff;
+    margin: 5px 0;
+    transition: all 2.0s ease-in-out;
+    
+}
+
+.mm-icon.change span:first-child {
+    transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.mm-icon.change span:nth-child(2) {
+    opacity: 0;
+}
+
+.mm-icon.change span:last-child {
+    transform: rotate(45deg) translate(-5px, -6px);
 }
 
 .menu-icon span {
@@ -72,19 +97,49 @@ header {
 
 .side-menu {
     position: fixed;
-    top: 52.1px;
-    left: -250px; /* Start off-screen */
-    width: 250px;
+    top: 0;
+    left: 0; /* Start off-screen */
+    width: 270px;
     height: 100%;
-    background-color: #fff;
+    /* background-color: #fff; */
+    background-color: #f5f5f5;
+    transform: translateX(-100%);
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: left 0.3s ease-in-out;
-    z-index: 1;
+    transition: transform 0.5s ease; /* Smooth transition */
+
 }
 
+.menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    height: 22px;
+    background: #6b5b95;
+    color: white;
+  }
+
 .side-menu.open {
-    left: 0; /* Slide in */
+    background-color: transparent !important;
+    transform: translateX(0);
+    transition: transform 0.5s ease; /* Smooth transition */
+
+  }
+
+  
+  .main.menu-open {
+    transform: translateX(270px); /* Push body content to the right */
+    transition: transform 0.8s ease; /* Smooth transition */
 }
+
+.main{
+    transition: transform 0.5s ease;
+}
+
+.menu-body {
+    padding: 15px;
+  }
+  
 
 .side-menu ul {
     list-style: none;
@@ -93,16 +148,25 @@ header {
 }
 
 .side-menu ul li a {
-    display: block;
+    /* display: block;
     padding: 1rem;
     text-decoration: none;
-    color: #333;
+    color: #333; */
+    color: #6b5b95;
+    text-decoration: none;
+    padding: 10px 0;
+    display: block;
+    transition: background 0.3s;
     border-bottom: 1px solid #ddd;
 }
 
 .side-menu ul li a:hover {
     background-color: #f8f9fa;
 }
+
+.side-menu li svg {
+    margin-right: 10px;
+  }
 
 
 .user-icon {
@@ -213,4 +277,10 @@ header {
     .category-tags::-webkit-scrollbar {
       display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
     }
+  }
+
+  .user-avatar-login{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
   }
