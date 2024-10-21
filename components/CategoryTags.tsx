@@ -1,3 +1,4 @@
+// pages/category-tags.tsx
 import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
@@ -32,8 +33,9 @@ const CategoryTags: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    // Scroll to the active tag after categories are fetched
     if (activeTagRef.current) {
-      activeTagRef.current.scrollIntoView({ behavior: 'auto', block: 'start' });
+      activeTagRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [categories]);
 
@@ -58,8 +60,8 @@ const CategoryTags: React.FC = () => {
             const isActive = router.asPath === `/${category.slug}`;
             return (
               <Link key={category.slug} href={`/${category.slug}`}>
-                <div 
-                  ref={isActive ? activeTagRef : null} 
+                <div
+                  ref={isActive ? activeTagRef : null}
                   className={`category-tag ${isActive ? 'active' : ''}`}
                 >
                   {category.name}

@@ -219,6 +219,7 @@ header {
     display: flex;
     gap: 10px; /* Add space between tags without affecting overflow */
     overflow-x: auto;
+    white-space: nowrap; /* Prevent line breaks */
     padding: 10px 0;
     position: relative;
     background-color: #f8f9fa;
