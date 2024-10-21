@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import { useRouter } from 'next/router';
 import UserDropdown from './UserDropdown';
 import './header.css';
@@ -8,11 +7,6 @@ import './header.css';
 interface HeaderProps {
   toggleMenu: () => void;
   isMenuOpen: boolean;
-}
-
-interface Category {
-  name: string;
-  slug: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
@@ -23,9 +17,6 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isAtTop, setIsAtTop] = useState(true);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const handleToggleMenu = () => toggleMenu();
 
@@ -34,26 +25,15 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      setIsLoading(true); // Start loading
-      try {
-        const response = await axios.get('https://blog.tourismofkashmir.com/apis?categories&order_index=asc&header_menu_is_included=TRUE');
-        setCategories(response.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      } finally {
-        setIsLoading(false); // Stop loading
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setIsVisible(currentScrollY <= lastScrollY);
-      setIsAtTop(currentScrollY === 0);
+
+      if (currentScrollY > 80) {
+        setIsVisible(currentScrollY <= lastScrollY); // Show on scroll up
+      } else {
+        setIsVisible(true); // Always show if within 80px
+      }
+
       setLastScrollY(currentScrollY);
     };
 
@@ -97,82 +77,47 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
     }
   }, [isMenuOpen]);
 
-  const handleCategoryClick = (event: React.MouseEvent) => {
-    event.stopPropagation();
-  };
-
   const handleSearchClick = () => {
     router.push('/search');
   };
 
   return (
-    <>
-      <header style={{ 
-        top: isVisible ? '0' : '-80px', 
-        position: isAtTop ? 'relative' : 'fixed',
-        transition: 'top 0.3s, position 0.3s'
-      }}>
-        <div className="custom-header">
-          <div className="menu-and-logo">
-            <div
-              ref={menuIconRef}
-              className={`menu-icon mm ${isMenuOpen ? 'change' : ''}`}
-              onClick={handleToggleMenu}
-            >
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <div className="logo">
-              <Link href="/" className="logo-link">Leak News</Link>
-            </div>
+    <header style={{ 
+      top: isVisible ? '0' : '-80px', 
+      position: lastScrollY <= 80 ? 'relative' : 'fixed',
+      transition: 'top 0.3s ease-in-out',
+      opacity: lastScrollY > 80 ? (isVisible ? 1 : 0.8) : 1 // Slightly transparent after 80px
+    }}>
+      <div className="custom-header">
+        <div className="menu-and-logo">
+          <div
+            ref={menuIconRef}
+            className={`menu-icon mm ${isMenuOpen ? 'change' : ''}`}
+            onClick={handleToggleMenu}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-
-          <div className="header-icons">
-            <span className="material-icons icon notification-icon">notifications</span>
-            <span className="material-icons icon search-icon" onClick={handleSearchClick} style={{ cursor: 'pointer' }}>
-              search
-            </span>
-            {isLoggedIn && avatarUrl ? (
-              <img src={avatarUrl} alt="User Avatar" className="user-avatar-login" onClick={toggleUserDropdown} style={{ cursor: 'pointer' }} />
-            ) : (
-              <span className="material-icons icon user-icon" onClick={toggleUserDropdown} style={{ cursor: 'pointer' }}>account_circle</span>
-            )}
+          <div className="logo">
+            <Link href="/" className="logo-link">Leak News</Link>
           </div>
-          {isUserDropdownOpen && <UserDropdown onClose={() => setIsUserDropdownOpen(false)} />}
         </div>
-      </header>
 
-      <div className="category-tags">
-        {!isLoading && (
-          <Link href="/" className={`category-tag ${router.asPath === '/' ? 'active' : ''}`} onClick={handleCategoryClick}>All</Link>
-        )}
-
-        {isLoading ? (
-            <div className="category-tags-loading">
-            {/* Skeleton loading states */}
-            <div className="loading-tag" style={{ width: '50px', height: '35px' }}></div>
-            <div className="loading-tag" style={{ width: '120px', height: '35px' }}></div>
-            <div className="loading-tag" style={{ width: '90px', height: '35px' }}></div>
-            <div className="loading-tag" style={{ width: '110px', height: '35px' }}></div>
-          </div>
-        ) : (
-          categories.map((category) => {
-            const isActive = router.asPath === `/${category.slug}`;
-            return (
-              <Link 
-                key={category.slug} 
-                href={`/${category.slug}`} 
-                className={`category-tag ${isActive ? 'active' : ''}`} 
-                onClick={handleCategoryClick}
-              >
-                {category.name}
-              </Link>
-            );
-          })
-        )}
+        <div className="header-icons">
+          <span className="material-icons icon notification-icon">notifications</span>
+          <span className="material-icons icon search-icon" onClick={handleSearchClick} style={{ cursor: 'pointer' }}>
+            search
+          </span>
+          {isLoggedIn && avatarUrl ? (
+            <img src={avatarUrl} alt="User Avatar" className="user-avatar-login" onClick={toggleUserDropdown} style={{ cursor: 'pointer' }} />
+          ) : (
+            <span className="material-icons icon user-icon" onClick={toggleUserDropdown} style={{ cursor: 'pointer' }}>account_circle</span>
+          )}
+        </div>
+        {isUserDropdownOpen && <UserDropdown onClose={() => setIsUserDropdownOpen(false)} />}
       </div>
-    </>
+    </header>
   );
 };
 

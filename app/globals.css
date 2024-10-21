@@ -85,3 +85,45 @@ body{
   z-index: 20;
   /* clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 50px, 50px 50px, 50px 0); */
 }
+
+
+.pull-refresh-indicator,
+.loading-indicator {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s;
+}
+
+.loading-dots {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: #000;
+  border-radius: 50%;
+  margin: 0 2px;
+  animation: dotFlashing 1s infinite;
+}
+
+@keyframes dotFlashing {
+  0%, 20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+

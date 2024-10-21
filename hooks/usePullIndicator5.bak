@@ -13,14 +13,16 @@ const usePullToRefresh = (
   const [startY, setStartY] = useState(0);
   const [startX, setStartX] = useState(0);
   const [currentPullDistance, setCurrentPullDistance] = useState(0);
-  const pullScale = 0.5; // Adjusted for smoother pull
-  const threshold = 69; 
-  const maxPullDistance = 70; // Increased for a more pronounced effect
+  const pullScale = 3.0; // Lower scale for easier pull
+  const threshold = 69; // Lower threshold for triggering refresh
+  const maxPullDistance = 70; // Allow greater max pull distance
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (window.scrollY === 0 && !menuOpen) {
       setStartY(e.touches[0].clientY);
       setStartX(e.touches[0].clientX);
+    } else {
+      setStartY(0);
     }
   }, [menuOpen]);
 
@@ -33,39 +35,42 @@ const usePullToRefresh = (
       const deltaX = currentX - startX;
 
       if (Math.abs(deltaY) > Math.abs(deltaX)) {
-        const pullDistance = Math.min(Math.max(0, deltaY * pullScale), maxPullDistance);
-        
-        if (pullDistance > 0) {
+        const pullDistance = Math.max(0, deltaY * pullScale);
+        const cappedPullDistance = Math.min(pullDistance, maxPullDistance);
+
+        if (cappedPullDistance > 0) {
           setIsPulling(true);
-          setCurrentPullDistance(pullDistance);
-          setPullDistance(pullDistance);
-          e.preventDefault();
+          setCurrentPullDistance(cappedPullDistance);
+          setPullDistance(cappedPullDistance);
+          e.preventDefault(); // Prevent default behavior during move
         }
       }
     }
   }, [startY, startX, pullScale, setPullDistance, menuOpen]);
 
   const handleTouchEnd = useCallback(async () => {
+    // Only trigger actions if the user has pulled beyond the threshold
     if (isPulling && currentPullDistance > threshold) {
+      // Add vibration feedback
       if (navigator.vibrate) {
-        navigator.vibrate(100);
+        navigator.vibrate(100); // Vibrate for 100 milliseconds
       }
 
-      setIsLoading(true);
+      setIsLoading(true); // Show loading
 
       if (!isPostPage && !isLoginPage && !isSearchPage) {
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate loading
         window.location.reload();
       } else {
-        await fetchData();
+        await fetchData(); // Trigger data fetch
       }
     }
 
-    // Reset states
+    // Reset states regardless of the pull distance
     setPullDistance(0);
     setIsPulling(false);
     setCurrentPullDistance(0);
-    setIsLoading(false);
+    setIsLoading(false); // Hide loading after handling
   }, [isPulling, fetchData, setPullDistance, currentPullDistance, threshold, setIsLoading, isPostPage, isLoginPage, isSearchPage]);
 
   useEffect(() => {
@@ -97,4 +102,4 @@ const usePullToRefresh = (
   return { isPulling, currentPullDistance };
 };
 
-export default usePullToRefresh;  
+export default usePullToRefresh;
