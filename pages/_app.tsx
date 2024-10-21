@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS file for toast notifications
 import '../app/globals.css';
 
 const pageTransition = {
