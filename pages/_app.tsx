@@ -85,7 +85,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     transition: 'top 0.3s ease-in-out, opacity 0.3s ease-in-out', // Smooth transition effect
   }}>
     <span className="material-icons" style={{ marginRight: '8px', fontSize: '15px' }}>
-      {currentPullDistance > 50 ? 'arrow_downward' : 'arrow_upward'}
+      {currentPullDistance > 50 ? 'arrow_upward' : 'arrow_downward'}
     </span>
     <span>{currentPullDistance > 50 ? 'Release to refresh...' : 'Pull to refresh...'}</span>
   </div>
