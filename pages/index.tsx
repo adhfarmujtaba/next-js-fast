@@ -60,15 +60,32 @@ const formatDate = (date: string): string => {
 
 const SkeletonLoader = () => {
   return (
-    <div className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
-      <div style={{ width: '100%', height: '180px', backgroundColor: '#e0e0e0' }} />
-      <h2 style={{ height: '20px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
-      <p style={{ height: '16px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
-      <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px' }}>
-        <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#e0e0e0', marginRight: '5px' }} />
-        <span style={{ height: '16px', backgroundColor: '#e0e0e0' }} />
+    // <div className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
+    //   <div style={{ width: '100%', height: '180px', backgroundColor: '#e0e0e0' }} />
+    //   <h2 style={{ height: '20px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
+    //   <p style={{ height: '16px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
+    //   <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px' }}>
+    //     <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#e0e0e0', marginRight: '5px' }} />
+    //     <span style={{ height: '16px', backgroundColor: '#e0e0e0' }} />
+    //   </div>
+    // </div>
+
+    <div className='skeleton-container'>
+    {Array.from({ length: 10 }).map((_, index) => (
+      <div key={index} className='card skeleton-card'>
+        <div className='skeleton-image'></div>
+        <div className='card-content'>
+          <div className='skeleton-title'></div>
+          <div className='skeleton-content'></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className='skeleton-avatar'></div>
+            <div className='skeleton-username'></div>
+            <div className='skeleton-date'></div>
+          </div>
+        </div>
       </div>
-    </div>
+    ))}
+  </div>
   );
 };
 

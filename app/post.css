@@ -334,7 +334,7 @@ position: relative;
   align-items: center;
   padding: 1rem;
   background-color: #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   height: 20px; /* Consider adjusting the height to accommodate content */
   z-index: 99;
 }

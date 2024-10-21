@@ -358,7 +358,10 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
       <header>
       <div className="custom-header">
     
-      <ArrowBackIcon style={{ cursor: 'pointer', marginRight: '5px' }} onClick={() => window.history.back()} />
+      <ArrowBackIcon
+  style={{ cursor: 'pointer', marginRight: '5px' }}
+  onClick={() => router.back()}
+/>
     
     <p className='post-title-he'>
     {post ? truncateTitle(post.title, 100) : 'Loading...'}
