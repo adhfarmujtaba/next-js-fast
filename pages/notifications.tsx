@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/router';
 import Link from 'next/link';
 import '../app/notifications.css';
 
@@ -19,7 +18,6 @@ const Notifications: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [pageNum, setPageNum] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const router = useRouter();
   
   const observer = useRef<IntersectionObserver | null>(null);
 
