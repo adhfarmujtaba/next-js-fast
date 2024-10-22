@@ -28,14 +28,14 @@ const Notifications: React.FC = () => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-  
+
       // Check if data is an array
       if (!Array.isArray(data)) {
         console.warn('Expected an array but received:', data);
         setHasMore(false);
         return; // Exit the function
       }
-  
+
       if (data.length === 0) {
         setHasMore(false); // No more notifications to load
       } else {
@@ -57,26 +57,26 @@ const Notifications: React.FC = () => {
     }
   };
 
-  const markNotificationsAsRead =  async () => {
+  const markNotificationsAsRead = async () => {
     try {
-        await fetch(`https://blog.tourismofkashmir.com/apinotification.php?update_all_notifications=1&user_id=${userId}`, {
-          method: 'GET',
-        });
-      } catch (error) {
-        console.error('Error updating notifications:', error);
-      }
+      await fetch(`https://blog.tourismofkashmir.com/apinotification.php?update_all_notifications=1&user_id=${userId}`, {
+        method: 'GET',
+      });
+    } catch (error) {
+      console.error('Error updating notifications:', error);
+    }
   };
 
   const deleteNotification = async (notificationId: string) => {
     try {
-        await fetch(`https://blog.tourismofkashmir.com/apinotification.php?delete_notification=true&user_id=${userId}&notification_id=${notificationId}`, {
-          method: 'GET',
-        });
+      await fetch(`https://blog.tourismofkashmir.com/apinotification.php?delete_notification=true&user_id=${userId}&notification_id=${notificationId}`, {
+        method: 'GET',
+      });
   
-        setNotifications(prev => prev.filter(notification => notification.id !== notificationId));
-      } catch (error) {
-        console.error('Error deleting notification:', error);
-      }
+      setNotifications(prev => prev.filter(notification => notification.id !== notificationId));
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
   };
 
   useEffect(() => {
@@ -109,21 +109,19 @@ const Notifications: React.FC = () => {
 
   return (
     <div className="notifications-container">
-      {/* <h2 className="notifications-title">Notifications</h2> */}
       <ul className="notifications-list">
         {notifications.map(notification => (
-                  <Link href={`/${notification.url}`} style={{ color: 'inherit', textDecoration: 'none'}}>
-
-          <li key={notification.id} className={`notification-item ${notification.is_read === "0" ? 'unread' : ''}`}>
-            {notification.fromAvatar && (
-              <img src={notification.fromAvatar} alt={`${notification.fromUsername}'s avatar`} className="notification-avatar" />
-            )}
-            <span className="notification-message">
-              {notification.fromUsername ? <strong>{notification.fromUsername}</strong> : null}
-              {notification.fromUsername ? `: ${notification.message}` : notification.message}
-            </span>
-            <button className="delete-button" onClick={() => deleteNotification(notification.id)}>Delete</button>
-          </li>
+          <Link key={notification.id} href={`/${notification.url}`} style={{ color: 'inherit', textDecoration: 'none'}}>
+            <li className={`notification-item ${notification.is_read === "0" ? 'unread' : ''}`}>
+              {notification.fromAvatar && (
+                <img src={notification.fromAvatar} alt={`${notification.fromUsername}'s avatar`} className="notification-avatar" />
+              )}
+              <span className="notification-message">
+                {notification.fromUsername ? <strong>{notification.fromUsername}</strong> : null}
+                {notification.fromUsername ? `: ${notification.message}` : notification.message}
+              </span>
+              <button className="delete-button" onClick={() => deleteNotification(notification.id)}>Delete</button>
+            </li>
           </Link>
         ))}
       </ul>
