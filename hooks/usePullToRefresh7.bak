@@ -25,7 +25,7 @@ const usePullToRefresh = (
   }, [menuOpen]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (startY !== 0 && !menuOpen && window.scrollY === 0) {
+    if (startY !== 0 && !menuOpen) {
       const currentY = e.touches[0].clientY;
       const currentX = e.touches[0].clientX;
 
@@ -47,6 +47,10 @@ const usePullToRefresh = (
 
   const handleTouchEnd = useCallback(async () => {
     if (isPulling && currentPullDistance > threshold) {
+      if (navigator.vibrate) {
+        navigator.vibrate(100);
+      }
+
       setIsLoading(true);
 
       if (!isPostPage && !isLoginPage && !isSearchPage) {
@@ -93,4 +97,4 @@ const usePullToRefresh = (
   return { isPulling, currentPullDistance };
 };
 
-export default usePullToRefresh;
+export default usePullToRefresh;  

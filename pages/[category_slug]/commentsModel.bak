@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { formatDistanceToNow } from 'date-fns';
-import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import CONFIG from '../../utils/config';
 import '../../app/commentsModal.css';
+
 
 interface CommentsModalProps {
     isOpen: boolean;
@@ -19,7 +19,6 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
     const [user, setUser] = useState<{ id: string; avatar: string } | null>(null);
     const [showFullComment, setShowFullComment] = useState<Record<number, boolean>>({});
     const [isLoadingMore, setIsLoadingMore] = useState(false);
-    const [hasMoreComments, setHasMoreComments] = useState(true); // Track if there are more comments
 
     useEffect(() => {
         const loggedInUser = localStorage.getItem('user');
@@ -35,7 +34,6 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
             try {
                 const response = await axios.get(`${CONFIG.BASE_URL}/api_comments.php?post_id=${postId}`);
                 setComments(response.data);
-                setHasMoreComments(response.data.length > 0); // Check if there are any comments
             } catch (error) {
                 console.error("There was an error fetching the comments:", error);
             } finally {
@@ -79,36 +77,28 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
     };
 
     const loadMoreComments = useCallback(async () => {
-        if (!hasMoreComments ) return; // Stop if there are no more comments
-
         setIsLoadingMore(true);
         await new Promise(resolve => setTimeout(resolve, 50));
         const offset = comments.length;
         const limit = 10;
         try {
             const response = await axios.get(`${CONFIG.BASE_URL}/api_comments.php?post_id=${postId}&offset=${offset}&limit=${limit}`);
-            if (response.data.length > 0) {
-                setComments(prevComments => [...prevComments, ...response.data]);
-            } else {
-                setHasMoreComments(false); // No more comments to load
-            }
+            setComments(prevComments => [...prevComments, ...response.data]);
         } catch (error) {
             console.error("There was an error fetching more comments:", error);
         } finally {
             setIsLoadingMore(false);
         }
-    }, [comments.length, postId, hasMoreComments]);
+    }, [comments.length, postId]);
 
     const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
         const target = entries[0];
-        if (target.isIntersecting && hasMoreComments) {
+        if (target.isIntersecting) {
             loadMoreComments();
         }
-    }, [loadMoreComments, hasMoreComments]);
+    }, [loadMoreComments]);
 
     useEffect(() => {
-        if (!hasMoreComments) return; // Skip observer setup if no more comments
-
         const observer = new IntersectionObserver(handleObserver, { threshold: 1 });
         const targetElement = document.getElementById('observer-target');
         if (targetElement) {
@@ -119,7 +109,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
                 observer.unobserve(targetElement);
             }
         };
-    }, [handleObserver, hasMoreComments]);
+    }, [handleObserver]);
 
     return isOpen ? (
         <div className={`modal show ${isOpen ? 'modal-visible' : ''}`}>
@@ -151,7 +141,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
                                     {comments.map((comment, index) => (
                                         <div key={index} className="comment">
                                             <div className="comment-avatar">
-                                                <img src={comment.avatar} alt="Avatar" />
+                                                <img src={comment.avatar} alt="Avatar"/>
                                             </div>
                                             <div className="comment-content">
                                                 <div className="comment-header">
@@ -187,9 +177,9 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
                     )}
                 </div>
                 {isLoadingMore && (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-                    <ClipLoader color="#000" size={30} />
-                </div>
+                    <div className="loader">
+                        <img src="https://blog.tourismofkashmir.com/kOnzy.gif" alt="Loading..." />
+                    </div>
                 )}
                 <div className="modal-footer">
                     <input

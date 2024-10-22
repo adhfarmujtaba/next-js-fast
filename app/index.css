@@ -266,6 +266,7 @@ body {
         
         .card  {
             width: calc(25% - 20px); /* Set card width for desktop (4 cards per row) */
+            box-sizing: border-box;
             margin-bottom: 20px; /* Add margin between cards */
             background-color: #fff; /* Card background color */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle box shadow for depth */

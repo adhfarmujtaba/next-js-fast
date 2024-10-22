@@ -112,7 +112,24 @@ const CategoryList = () => {
                     <SkeletonLoader />
                 ) : isEmpty ? (
                     <div className="empty-category-message">
-                        <p>There are no posts in this category.</p>
+                    <div 
+                        style={{ 
+                            textAlign: 'center', 
+                            padding: '30px', 
+                            border: '1px solid #ddd', 
+                            borderRadius: '8px', 
+                            backgroundColor: '#f0f4f8', 
+                            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' 
+                        }}
+                    >
+                        <p style={{ fontSize: '20px', color: '#333', marginBottom: '10px' }}>
+                            No Posts Available
+                        </p>
+                        <p style={{ fontSize: '16px', color: '#666', marginBottom: '20px' }}>
+                            There are currently no posts in this category.
+                        </p>
+                       
+                    </div>
                     </div>
                 ) : (
                     <InfiniteScroll
@@ -140,8 +157,8 @@ const CategoryList = () => {
                                         </div>
                                     </div>
                                     <div className='card-content'>
-                                        <h2>{post.title}</h2>
-                                        <p>{post.meta_description}</p>
+                                    <h2>{truncateText(post.title, 20)}</h2>
+                                    <p>{truncateText(post.meta_description, 22)}</p>
                                     </div>
                                 </Link>
                                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
@@ -202,5 +219,10 @@ export const formatDate = (date: string): string => {
         return yearsDifference + ' years ago';
     }
 };
+
+const truncateText = (text: string, limit: number) => {
+    const words = text.split(' ');
+    return words.length > limit ? `${words.slice(0, limit).join(' ')}...` : text;
+  };
 
 export default CategoryList;

@@ -248,7 +248,7 @@ background-color: var(--bg-color);
 .modal-body {
     padding: 15px;
     height: 300px;
-    overflow-y: auto;
+    overflow-y: auto ;
     position: relative; /* Necessary for absolute positioned loader */
 }
 /* Loading skeleton styles */
@@ -314,3 +314,4 @@ background-color: var(--bg-color);
 .modal-visible .modal-content {
     animation: slide-in 0.4s ease forwards; /* Apply the animation */
 }
+

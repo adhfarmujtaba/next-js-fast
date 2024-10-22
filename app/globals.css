@@ -127,3 +127,28 @@ body{
   }
 }
 
+
+.notifications-title {
+  overflow: hidden;
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis; /* Add ellipsis when text is truncated */
+  font-size: 1.5rem; /* Adjust size as necessary */
+  max-width: 100%; /* Ensure it doesn't overflow the container */
+  display: block; /* Necessary for ellipsis to work */
+
+ }
+
+ .notification-header{
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  height: 20px; /* Consider adjusting the height to accommodate content */
+  z-index: 99;
+position: fixed;
+top: 0;
+width: 100%;
+z-index: 10; /* Ensure the header stays above other content */
+transition: top 0.3s; /* Smooth transition for showing/hiding the header */
+ }

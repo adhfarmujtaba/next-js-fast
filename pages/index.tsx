@@ -174,7 +174,7 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
                   </div>
                 </div>
                 <div className='card-content'>
-                  <h2>{truncateText(post.title, 20)}</h2>
+                  <h2>{truncateText(post.title, 22)}</h2>
                   <p>{truncateText(post.meta_description, 28)}</p>
                 </div>
               </Link>

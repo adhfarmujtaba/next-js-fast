@@ -81,6 +81,9 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
     router.push('/search');
   };
 
+  const handleNotificationClick = () => {
+    router.push('/notifications');
+  };
   return (
     <header style={{ 
       top: isVisible ? '0' : '-80px', 
@@ -105,7 +108,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
         </div>
 
         <div className="header-icons">
-          <span className="material-icons icon notification-icon">notifications</span>
+          <span className="material-icons icon notification-icon" onClick={handleNotificationClick}>notifications</span>
           <span className="material-icons icon search-icon" onClick={handleSearchClick} style={{ cursor: 'pointer' }}>
             search
           </span>

@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import SideMenu from '../components/sideMenu';
 import usePullToRefresh from '../hooks/usePullToRefresh';
 import CategoryTags from '../components/CategoryTags'; // Import the new component
+import NotificationHeader  from '../components/notifications-header';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -21,6 +22,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isOffline, setIsOffline] = useState(false); // Start as false
   const router = useRouter();
 
   const fetchNewData = async () => {
@@ -31,6 +33,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const isPostPage = router.pathname.includes('/[category_slug]/[slug]');
   const isLoginPage = router.pathname === '/login';
   const isSearchPage = router.pathname === '/search';
+  const isNotifications = router.pathname === '/notifications';
 
   const { isPulling, currentPullDistance } = usePullToRefresh(
     fetchNewData,
@@ -53,6 +56,29 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     }
   }, [isPostPage]);
 
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+      console.log('Online');
+    };
+
+    const handleOffline = () => {
+      setIsOffline(true);
+      console.log('Offline');
+    };
+    setIsOffline(!navigator.onLine); // Check on initial load
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+  console.log('Current Pull Distance:', currentPullDistance);
+
   return (
     <AnimatePresence mode="wait">
       <SideMenu isMenuOpen={menuOpen} handleToggleMenu={toggleMenu} />
@@ -62,16 +88,45 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
       </Head>
 
+
+      {isOffline ? (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100vh',
+          backgroundColor: '#f8d7da',
+          color: '#721c24',
+          textAlign: 'center',
+          padding: '20px',
+          boxSizing: 'border-box',
+          position: 'absolute',
+          width: '100%',
+          top: 0,
+          left: 0,
+          zIndex: 1000,
+        }}>
+          <div>
+            <span className="material-icons" style={{ fontSize: '48px' }}>
+              signal_wifi_off
+            </span>
+            <h2 style={{ margin: '10px 0' }}>No Internet Connection</h2>
+            <p>Please check your internet connection and try again.</p>
+          </div>
+        </div>
+      ) : (
+
       <div className={`main ${menuOpen ? 'menu-open' : ''}`} style={{ height: '100vh' }}>
         <ToastContainer />
         <div className={`overlay`}></div>
-
-        {!isLoginPage && !isPostPage && !isSearchPage && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
+       { isNotifications && <NotificationHeader /> }
+        {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
 
         {isPulling && !isLoading && !isPostPage && !isSearchPage && !isLoginPage && (
+          
   <div style={{
     position: 'absolute',
-    top: `${Math.max(10, currentPullDistance)}px`, // Sets top based on currentPullDistance, ensuring it doesn't go below 0
+    top: `${Math.max(10, currentPullDistance)}px`, // Conditional top value // Sets top based on currentPullDistance, ensuring it doesn't go below 0
     left: '50%',
     transform: 'translateX(-50%)',
     padding: '10px',
@@ -137,7 +192,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             <Component {...pageProps} />
           </motion.div>
         ) : (
-          <div style={!isPostPage ? {
+          <div style={!isPostPage && !isSearchPage ? {
             transform: `translateY(${pullDistance}px)`,
             transition: 'transform 0.3s ease-in-out',
             willChange: 'transform',
@@ -145,11 +200,12 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           } : { position: 'relative' }}
           
           >
-              {!isLoginPage && !isPostPage && !isSearchPage &&<CategoryTags />}
+              {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications &&<CategoryTags />}
             <Component {...pageProps} />
           </div>
         )}
       </div>
+      )}
     </AnimatePresence>
   );
 };
