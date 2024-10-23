@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import UserDropdown from './UserDropdown';
+import CONFIG from '../utils/config'; // Adjust the path as needed
 import './header.css';
 
 interface HeaderProps {
@@ -17,12 +18,35 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [siteInfo, setSiteInfo] = useState<any>(null); // Adjust type as needed
 
   const handleToggleMenu = () => toggleMenu();
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(prev => !prev);
   };
+
+  useEffect(() => {
+    const fetchSiteInfo = async () => {
+      try {
+        const response = await fetch(`${CONFIG.BASE_URL}/site_info_api.php`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        setSiteInfo(data); // Update the state with the fetched site info
+      } catch (err) {
+        if (err instanceof Error) {
+          console.error("Error fetching site info:", err.message);
+          console.error(err.message);
+        } else {
+          console.error('An unknown error occurred');
+        }
+      }
+    };
+
+    fetchSiteInfo(); // Call the fetch function
+  }, []); // Empty dependency array means this runs once on mount
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -84,6 +108,18 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const handleNotificationClick = () => {
     router.push('/notifications');
   };
+
+  const skeletonStyle = {
+    height: '20px', // Adjust height as needed
+    backgroundColor: '#e0e0e0', // Light grey background
+    borderRadius: '4px', // Rounded corners
+    animation: 'pulse 1.5s infinite',
+    '@keyframes pulse': {
+      '0%': { backgroundColor: '#e0e0e0' },
+      '50%': { backgroundColor: '#d0d0d0' }, // Slightly darker grey
+      '100%': { backgroundColor: '#e0e0e0' },
+    },
+  };
   return (
     <header style={{ 
       top: isVisible ? '0' : '-80px', 
@@ -103,12 +139,14 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
             <span></span>
           </div>
           <div className="logo">
-            <Link href="/" className="logo-link">Leak News</Link>
+          <Link href="/" className="logo-link">
+    {siteInfo ? siteInfo.site_title : <div style={skeletonStyle}></div>}
+  </Link>
           </div>
         </div>
 
         <div className="header-icons">
-          <span className="material-icons icon notification-icon" onClick={handleNotificationClick}>notifications</span>
+        {isLoggedIn && <span className="material-icons icon notification-icon" onClick={handleNotificationClick}>notifications</span>}
           <span className="material-icons icon search-icon" onClick={handleSearchClick} style={{ cursor: 'pointer' }}>
             search
           </span>

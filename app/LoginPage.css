@@ -1,144 +1,130 @@
-/* Define custom colors, gradients, and shadow */
-:root {
-    --custom-primary-color: #4e54c8;
-    --custom-secondary-color: #8f94fb;
-    --custom-background-gradient: linear-gradient(135deg, var(--custom-primary-color) 0%, var(--custom-secondary-color) 100%);
-    --custom-text-color: #ffffff;
-    --custom-input-background: rgba(255, 255, 255, 0.2);
-    --custom-input-border-color: rgba(255, 255, 255, 0.4);
-    --custom-button-gradient: linear-gradient(135deg, var(--custom-primary-color), var(--custom-secondary-color));
-    --custom-button-hover-color: #a1a6fc; /* Calculated using lighten() function */
-    --custom-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Import font for a modern look */
-  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-  
-  .login-page * {
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 90vh;
-    background: var(--custom-background-gradient), url('https://blog.tourismofkashmir.com/login_png/login.png');
-    background-size: cover;
-    background-position: center;
-    padding: 20px;
-  }
-  
-  .login-page .back-arrow {
-    position: absolute;
-    top: 40px;
-    left: 20px;
-    color: var(--custom-secondary-color);
-    cursor: pointer;
-    font-size: 24px;
-    transition: transform 0.2s;
-  }
-  
-  .login-page .back-arrow:hover {
-    transform: scale(1.2);
-  }
-  
-  .login-page .login-form {
-    background-color: rgba(3, 3, 3, 0.25);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 50px;
-    width: 100%;
-    max-width: 450px;
-    box-shadow: var(--custom-shadow);
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  
-  .login-page .login-form:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
-  }
-  
-  .login-page .login-form h2 {
-    color: var(--custom-text-color);
-    margin-bottom: 30px;
-    text-align: center;
-    font-weight: 500;
-  }
-  
-  .login-page .login-form .input-wrapper {
-    position: relative;
-    margin-bottom: 30px;
-  }
-  
-  .login-page .login-form .input-wrapper svg {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 15px;
-    color: var(--custom-text-color);
-  }
-  
-  .login-page .login-form .input-wrapper input {
-    width: 100%;
-    background: var(--custom-input-background);
-    border: 1px solid var(--custom-input-border-color);
-    border-radius: 10px;
-    padding: 15px 15px 15px 45px;
-    color: var(--custom-text-color);
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
-  
-  .login-page .login-form .input-wrapper input:focus {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-color: var(--custom-secondary-color);
-  }
-  
-  .login-page .login-form .input-wrapper input::placeholder {
-    color: #f3f3f3;
-  }
-  
-  .login-page .login-form .login-button {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    background: var(--custom-button-gradient);
-    color: var(--custom-text-color);
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.3s, transform 0.2s;
-  }
-  
-  .login-page .login-form .login-button:hover {
-    background: var(--custom-button-hover-color);
-    transform: translateY(-5px);
-  }
-  
-  .login-page .login-form .login-button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-  
-  .login-page .login-form .login-help {
-    margin-top: 30px;
-    text-align: center;
-  }
-  
-  .login-page .login-form .login-help p {
-    color: var(--custom-text-color);
-    margin: 5px 0;
-  }
-  
-  .login-page .login-form .login-help p a {
-    color: #ccc;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-  
-  .login-page .login-form .login-help p a:hover {
-    color: var(--custom-button-hover-color);
-  }
-  
+/* LoginPage.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Pacifico&display=swap');
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  font-family: "Pacifico", cursive;
+  font-style: normal;
+    height: 100vh; /* Full viewport height */
+  background-color: #f8f9fa; /* Light background for contrast */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Softer shadow */
+}
+
+.login-form {
+  margin-top: 150px;
+
+  border-radius: 12px; /* Slightly larger rounded corners */
+  padding: 20px; /* Increased padding for spacious feel */
+  max-width: 400px; /* Slightly wider max width */
+  width: 100%; /* Full width */
+}
+
+.logo{
+  display: flex;
+  justify-content: center;
+}
+
+.logo-link-login{
+background-color: black;
+ color: #fff;
+ padding: 25px 8px;
+ text-decoration: none;
+ box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+ font-weight: bold;
+ font-family: "Montserrat Alternates", serif;
+ font-style: normal;
+margin-bottom: 40px;
+}
+
+.welcome-text h1 {
+  color: #343a40; /* Darker text for better contrast */
+  margin-bottom: 25px; /* More spacing below the header */
+  font-weight: 600; /* Bolder font for emphasis */
+  font-size: 1.875rem; /* Larger font size for the title */
+  line-height: 2.25rem;
+  text-align: center; /* Center the logo */
+}
+
+.login-page .items {
+  margin-bottom: 25px; /* Increased spacing between fields */
+}
+
+.login-page .input {
+  position: relative; /* Relative positioning for icons */
+}
+
+.login-page .input-i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%); /* Center icon vertically */
+  color: #6c757d; /* Gray for icons */
+}
+
+.login-page input {
+  width: 100%; /* Full width */
+  padding: 14px 40px; /* Increased padding */
+  box-sizing: border-box;
+  border: 1px solid #ced4da; /* Lighter border */
+  border-radius: 6px; /* Slightly rounded corners */
+  font-size: 16px; /* Font size */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  outline: none; /* No outline on focus */
+  transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+}
+
+.login-page input:focus {
+  border-color: #007bff; /* Blue border on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Glow effect on focus */
+}
+
+.login-page .btn {
+  background-color: #000000; /* Primary button color */
+  color: white; /* White text */
+  border: none; /* No border */
+  border-radius: 6px; /* Rounded corners */
+  padding: 14px; /* Padding */
+  cursor: pointer; /* Pointer cursor on hover */
+  font-size: 16px; /* Font size */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+  width: 100%; /* Full width */
+}
+
+.login-page .btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.login-page .forgot-password {
+  margin-top: 20px; /* Spacing above the link */
+  text-align: center; /* Center the link */
+}
+
+.login-page .forgot-password a {
+  color: #007bff; /* Link color */
+  text-decoration: none; /* No underline */
+  font-size: 14px; /* Smaller font size */
+  transition: text-decoration 0.2s; /* Smooth transition */
+}
+
+.login-page .forgot-password a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+
+.login-header{
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  height: 20px; /* Consider adjusting the height to accommodate content */
+  z-index: 99;
+position: fixed;
+top: 0;
+width: 100%;
+z-index: 10; /* Ensure the header stays above other content */
+transition: top 0.3s; /* Smooth transition for showing/hiding the header */
+}

@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import CONFIG from '../utils/config'; // Adjust the path as needed
+import { useRouter } from 'next/router'; // Import useRouter
 import '../app/notifications.css';
 
 interface Notification {
@@ -12,7 +14,8 @@ interface Notification {
 }
 
 const Notifications: React.FC = () => {
-  const userId = 1; // Hardcoded user ID
+  const router = useRouter(); // Initialize the router
+  const [userId, setUserId] = useState<number | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -21,9 +24,30 @@ const Notifications: React.FC = () => {
   
   const observer = useRef<IntersectionObserver | null>(null);
 
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem('user');
+    if (loggedInUser) {
+      const foundUser = JSON.parse(loggedInUser);
+      setUserId(foundUser.id);
+    }else {
+      router.push('/login');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userId !== null) {
+      fetchNotifications(pageNum); // Pass the current page number instead
+    } else {
+
+      console.warn("User ID is still not set.");
+    }
+  }, [userId, pageNum]);
+  
+
+
   const fetchNotifications = async (page: number) => {
     try {
-      const response = await fetch(`https://blog.tourismofkashmir.com/apinotification.php?get_notifications&user_id=${userId}&page=${page}`);
+      const response = await fetch(`${CONFIG.BASE_URL}/apinotification.php?get_notifications&user_id=${userId}&page=${page}`);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -59,7 +83,7 @@ const Notifications: React.FC = () => {
 
   const markNotificationsAsRead = async () => {
     try {
-      await fetch(`https://blog.tourismofkashmir.com/apinotification.php?update_all_notifications=1&user_id=${userId}`, {
+      await fetch(`${CONFIG.BASE_URL}?update_all_notifications=1&user_id=${userId}`, {
         method: 'GET',
       });
     } catch (error) {
@@ -69,7 +93,7 @@ const Notifications: React.FC = () => {
 
   const deleteNotification = async (notificationId: string) => {
     try {
-      await fetch(`https://blog.tourismofkashmir.com/apinotification.php?delete_notification=true&user_id=${userId}&notification_id=${notificationId}`, {
+      await fetch(`${CONFIG.BASE_URL}/apinotification.php?delete_notification=true&user_id=${userId}&notification_id=${notificationId}`, {
         method: 'GET',
       });
   

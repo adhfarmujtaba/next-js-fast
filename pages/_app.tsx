@@ -13,10 +13,11 @@ import 'react-toastify/dist/ReactToastify.css'; // Import the CSS file for toast
 import '../app/globals.css';
 
 const pageTransition = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 50 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
+  exit: { opacity: 0, y: -40 },
 };
+
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [pullDistance, setPullDistance] = useState(0);
@@ -175,7 +176,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         )}
 
         {/* Conditional rendering based on the current route */}
-        {isSearchPage   ? (
+        {isSearchPage || isLoginPage ? (
           <motion.div
             key={router.pathname}
             initial="initial"
@@ -192,7 +193,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
             <Component {...pageProps} />
           </motion.div>
         ) : (
-          <div style={!isPostPage && !isSearchPage ? {
+          <div style={!isPostPage && !isSearchPage && !isLoginPage ? {
             transform: `translateY(${pullDistance}px)`,
             transition: 'transform 0.3s ease-in-out',
             willChange: 'transform',

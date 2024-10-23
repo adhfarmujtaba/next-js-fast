@@ -66,12 +66,14 @@ const SearchPage: React.FC = () => {
       </Head>
       <AppBar position="static" color="default">
         <Toolbar style={{ justifyContent: 'space-between' }}>
-          <InputBase
+          <div className="seach-hed">
+          <InputBase 
             inputRef={inputRef} // Attach the ref to the input
             placeholder="Search…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          </div>
           <IconButton color="inherit" onClick={() => window.history.back()} style={{ marginLeft: 'auto' }}>
             <CloseIcon />
           </IconButton>

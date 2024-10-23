@@ -1,25 +1,21 @@
+// pages/login.tsx
+
 import { useState } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { motion } from 'framer-motion';
+import axios from 'axios';
 import CONFIG from '../utils/config'; // Adjust the path as needed
 import { FaUser, FaLock, FaSignInAlt, FaArrowLeft } from 'react-icons/fa';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Back arrow icon
 import Link from 'next/link';
-import '../app/LoginPage.css'; // Import the SASS file directly
+import { useRouter } from 'next/router';
+import '../app/LoginPage.css'; // Import the CSS file directly
 
 const LoginPage = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
-
-    const formVariants = {
-        hidden: { opacity: 0, y: 50 },
-        visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.6 } },
-        exit: { opacity: 0, y: -50, transition: { duration: 0.3 } }
-    };
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -37,6 +33,7 @@ const LoginPage = () => {
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
+                    className: 'custom-toast-success' // Custom class for styling
                 });
                 
                 setTimeout(() => router.push('/'), 2000);
@@ -46,61 +43,75 @@ const LoginPage = () => {
         } catch (error) {
             console.error('Error during login:', error);
             toast.error('An error occurred during login. Please try again later.');
+        } finally {
+            setIsLoading(false);
         }
-
-        setIsLoading(false);
     };
 
     return (
-        <div className="login-page"   style={{ backgroundImage: `url(${CONFIG.BASE_URL}/login_png/login.png)` }}>
-            <div onClick={() => router.back()}>
-                <FaArrowLeft className="back-arrow" />
-            </div>
-            <motion.form
-                className="login-form"
-                onSubmit={handleLogin}
-                variants={formVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-            >
-                <h2>Welcome Back</h2>
-                <div className="input-wrapper">
-                    <FaUser />
-                    <input
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        autoFocus
-                    />
-                </div>
-                <div className="input-wrapper">
-                    <FaLock />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    type="submit"
-                    disabled={isLoading}
-                    className="login-button"
-                >
-                    {isLoading ? <FaSignInAlt className="loading-icon" /> : 'Login'}
-                </motion.button>
-                <div className="login-help">
-                    <p>Don&apos;t have an account? <Link href="/register">Register</Link></p>
-                    <p>Need help? <Link href="/forget_password">Get help</Link></p>
-                </div>
-            </motion.form>
+        <>  <header>
+        <div className="login-header">
+      
+        <ArrowBackIcon
+    style={{ cursor: 'pointer', marginRight: '5px' }}
+    onClick={() => router.back()}
+  />
+      
+      <div className="login-logo-h" style={{ display: 'flex', alignItems: 'center' }}>
+          <p className='logo-title-h' style={{ fontSize: '20px', fontWeight: 'bold' }}>
+            Login
+          </p>
         </div>
+    </div>
+     </header> 
+        <div className="login-page">
+            <div className="login-form">
+                <div className="logo">
+                <Link href="/"  className='logo-link-login'>Leak News</Link>
+                </div>
+                <div className="welcome-text"><h1>Welcome Back!</h1></div>
+            
+                <form onSubmit={handleLogin}>
+                    <div className="items">
+                        <div className="input">
+                            <FaUser  className='input-i' />
+                            <input
+                                id="username"
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="items">
+                        <div className="input">
+                            <FaLock className='input-i' />
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div className="form-signin">
+                        <button type="submit" className="btn" disabled={isLoading}>
+                            {isLoading ? 'Loading...' : <><FaSignInAlt /> Login</>}
+                        </button>
+                    </div>
+                </form>
+                <div className="forgot-password">
+                    <Link href="/forgot-password">
+                        <FaArrowLeft /> Forgot Password?
+                    </Link>
+                </div>
+            </div>
+        </div>
+        </>
     );
 };
 
