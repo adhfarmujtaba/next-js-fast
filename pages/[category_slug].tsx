@@ -183,11 +183,13 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
     );
 };
 
-export const getServerSideProps = async (context: any) => {
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const { category_slug } = context.query;
 
     // Set the category name based on the slug, or use a default name
-    const categoryName = category_slug ? category_slug.replace(/-/g, ' ') : 'Default Category';
+    const categoryName = category_slug ? (category_slug as string).replace(/-/g, ' ') : 'Default Category';
 
     return {
         props: {
@@ -195,6 +197,7 @@ export const getServerSideProps = async (context: any) => {
         },
     };
 };
+
 
 export const formatViews = (views: number): string => {
     if (views >= 10000000) {
