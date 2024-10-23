@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Link from 'next/link';
 import CONFIG from '../utils/config'; // Adjust the path as needed
 import { useRouter } from 'next/router'; // Import useRouter
 import '../app/notifications.css';
