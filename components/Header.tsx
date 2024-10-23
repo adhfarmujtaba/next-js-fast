@@ -10,6 +10,11 @@ interface HeaderProps {
   isMenuOpen: boolean;
 }
 
+interface SiteInfo {
+  site_title: string;
+  // Add other properties based on your API response
+}
+
 const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const menuIconRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -18,13 +23,14 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [siteInfo, setSiteInfo] = useState<any>(null); // Adjust type as needed
+  const [siteInfo, setSiteInfo] = useState<SiteInfo | null>(null); // Use the SiteInfo type
 
   const handleToggleMenu = () => toggleMenu();
 
   const toggleUserDropdown = () => {
     setIsUserDropdownOpen(prev => !prev);
   };
+
 
   useEffect(() => {
     const fetchSiteInfo = async () => {
