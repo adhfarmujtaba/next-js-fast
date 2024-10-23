@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import CONFIG from '../utils/config'; // Adjust the path as needed
 import { FaUser, FaLock, FaSignInAlt, FaArrowLeft } from 'react-icons/fa';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Back arrow icon
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import '../app/LoginPage.css'; // Import the CSS file directly
