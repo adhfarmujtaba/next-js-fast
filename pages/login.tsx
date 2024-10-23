@@ -49,21 +49,7 @@ const LoginPage = () => {
     };
 
     return (
-        <>  <header>
-        <div className="login-header">
-      
-        <ArrowBackIcon
-    style={{ cursor: 'pointer', marginRight: '5px' }}
-    onClick={() => router.back()}
-  />
-      
-      <div className="login-logo-h" style={{ display: 'flex', alignItems: 'center' }}>
-          <p className='logo-title-h' style={{ fontSize: '20px', fontWeight: 'bold' }}>
-            Login
-          </p>
-        </div>
-    </div>
-     </header> 
+        <div className='login'>  
         <div className="login-page">
             <div className="login-form">
                 <div className="logo">
@@ -111,7 +97,7 @@ const LoginPage = () => {
                 </div>
             </div>
         </div>
-        </>
+        </div>
     );
 };
 

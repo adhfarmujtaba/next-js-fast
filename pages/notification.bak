@@ -52,7 +52,7 @@ const Notifications: React.FC = () => {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-    console.log(data);
+
       // Check if data is an array
       if (!Array.isArray(data)) {
         console.warn('Expected an array but received:', data);
@@ -139,7 +139,8 @@ const Notifications: React.FC = () => {
     <div className="notifications-container">
       <ul className="notifications-list">
         {notifications.map(notification => (
-          <li className={`notification-item ${notification.is_read === "0" ? 'unread' : ''}`}  onClick={() => handleNotificationClick(notification.url)}>
+          <Link key={notification.id} href={`/${notification.url}`} style={{ color: 'inherit', textDecoration: 'none' }} onClick={() => handleNotificationClick(notification.url)}>
+          <li className={`notification-item ${notification.is_read === "0" ? 'unread' : ''}`}>
               {notification.fromAvatar && (
                 <img src={notification.fromAvatar} alt={`${notification.fromUsername}'s avatar`} className="notification-avatar" />
               )}
@@ -152,6 +153,7 @@ const Notifications: React.FC = () => {
     deleteNotification(notification.id);
   }}>Delete</button>
             </li>
+          </Link>
         ))}
       </ul>
       {loading && <div className="loading">Loading more...</div>}

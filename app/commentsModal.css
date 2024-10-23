@@ -74,6 +74,7 @@ background-color: var(--bg-color);
   overflow: hidden;
 }
 
+
 .modal-visible .modal-content {
     transform: translateY(0); /* Slide up into view */
 }

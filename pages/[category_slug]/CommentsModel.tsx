@@ -187,7 +187,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
                     )}
                 </div>
                 {isLoadingMore && (
-                    <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+                    <div className='loader'>
                     <ClipLoader color="#000" size={30} />
                 </div>
                 )}

@@ -5,6 +5,7 @@ import SideMenu from '../components/sideMenu';
 import usePullToRefresh from '../hooks/usePullToRefresh';
 import CategoryTags from '../components/CategoryTags'; // Import the new component
 import NotificationHeader  from '../components/notifications-header';
+import LoginHeader from '../components/login-header';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -121,6 +122,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         <ToastContainer />
         <div className={`overlay`}></div>
        { isNotifications && <NotificationHeader /> }
+       { isLoginPage && <LoginHeader /> }
         {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
 
         {isPulling && !isLoading && !isPostPage && !isSearchPage && !isLoginPage && (

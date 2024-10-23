@@ -42,14 +42,8 @@ interface Post {
     created_at: string;
 }
 
-interface CategoryListProps {
-    categoryName: string; // Category name passed as prop
-}
-
-
-
-const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
-        const [categoryPosts, setCategoryPosts] = useState<Post[]>([]);
+const CategoryList = () => {
+    const [categoryPosts, setCategoryPosts] = useState<Post[]>([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
@@ -102,6 +96,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
         }
     };
 
+    const categoryName = categoryPosts[0]?.category_name ; // Use category_name
 
     return (
         <>
@@ -183,19 +178,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
     );
 };
 
-export const getServerSideProps = async (context: any) => {
-    const { category_slug } = context.query;
-
-    // Set the category name based on the slug, or use a default name
-    const categoryName = category_slug ? category_slug.replace(/-/g, ' ') : 'Default Category';
-
-    return {
-        props: {
-            categoryName,
-        },
-    };
-};
-
 export const formatViews = (views: number): string => {
     if (views >= 10000000) {
         return Math.floor(views / 10000000) + 'cr';
@@ -243,4 +225,4 @@ const truncateText = (text: string, limit: number) => {
     return words.length > limit ? `${words.slice(0, limit).join(' ')}...` : text;
   };
 
-export default CategoryList;  
+export default CategoryList;
