@@ -31,7 +31,7 @@ const Notifications: React.FC = () => {
     }else {
       router.push('/login');
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     if (userId !== null) {
@@ -138,7 +138,7 @@ const Notifications: React.FC = () => {
     <div className="notifications-container">
       <ul className="notifications-list">
         {notifications.map(notification => (
-          <li className={`notification-item ${notification.is_read === "0" ? 'unread' : ''}`}  onClick={() => handleNotificationClick(notification.url)}>
+          <li key={notification.id} className={`notification-item ${notification.is_read === "0" ? 'unread' : ''}`}  onClick={() => handleNotificationClick(notification.url)}>
               {notification.fromAvatar && (
                 <img src={notification.fromAvatar} alt={`${notification.fromUsername}'s avatar`} className="notification-avatar" />
               )}
