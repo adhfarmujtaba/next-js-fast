@@ -6,6 +6,7 @@ import usePullToRefresh from '../hooks/usePullToRefresh';
 import CategoryTags from '../components/CategoryTags'; // Import the new component
 import NotificationHeader  from '../components/notifications-header';
 import LoginHeader from '../components/login-header';
+import ProfileHeader from '../components/profile-header';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -25,6 +26,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isOffline, setIsOffline] = useState(false); // Start as false
+  
   const router = useRouter();
 
   const fetchNewData = async () => {
@@ -36,6 +38,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   const isLoginPage = router.pathname === '/login';
   const isSearchPage = router.pathname === '/search';
   const isNotifications = router.pathname === '/notifications';
+  const isProfilePage = router.pathname.startsWith('/profile'); // Use startsWith for dynamic routes
+  
 
   const { isPulling, currentPullDistance } = usePullToRefresh(
     fetchNewData,
@@ -44,7 +48,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     menuOpen,
     isPostPage,
     isLoginPage,
-    isSearchPage
+    isSearchPage,
   );
 
   const toggleMenu = () => {
@@ -121,12 +125,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
         </div>
       ) : (
 
-      <div className={`main ${menuOpen ? 'menu-open' : ''}`} style={{ height: '100vh' }}>
+      <div className={`main ${menuOpen ? 'menu-open' : ''}`} style={{ height: '100vh' }} id='main'>
         <ToastContainer />
         <div className={`overlay`}></div>
+        { isProfilePage && <ProfileHeader /> }
        { isNotifications && <NotificationHeader /> }
-       { isLoginPage && <LoginHeader /> }
-        {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
+       { isLoginPage && <LoginHeader  /> }
+        {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && !isProfilePage && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
 
         {isPulling && !isLoading && !isPostPage && !isSearchPage && !isLoginPage && (
           
@@ -206,7 +211,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           } : { position: 'relative' }}
           
           >
-              {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications &&<CategoryTags />}
+              {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && !isProfilePage &&<CategoryTags />}
             <Component {...pageProps} />
           </div>
         )}

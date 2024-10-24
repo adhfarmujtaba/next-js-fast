@@ -71,6 +71,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
         }
     };
 
+
     const toggleFullComment = (commentIndex: number) => {
         setShowFullComment((prev) => ({
             ...prev,

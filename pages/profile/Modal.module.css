@@ -1,0 +1,79 @@
+.modalOverlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .modalOverlay img {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+  }
+  
+  .modalContent {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 500px;
+    height: 90vh; /* Adjust height as needed */
+    width: 90%;
+overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    animation: slideUp 0.3s ease; /* Use slideUp animation */
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px); /* Start below the final position */
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .closeButton {
+    background: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .closeButton:hover {
+    background: #ff6b81;
+  }
+  
+  .modalTitle {
+    margin: 0 0 15px;
+    font-size: 24px;
+    color: #333;
+  }
+  

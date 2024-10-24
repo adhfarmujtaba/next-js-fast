@@ -132,7 +132,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
       position: lastScrollY <= 80 ? 'relative' : 'fixed',
       transition: 'top 0.3s ease-in-out',
       opacity: lastScrollY > 80 ? (isVisible ? 1 : 0.8) : 1 // Slightly transparent after 80px
-    }}>
+    }} id='header'>
       <div className="custom-header">
         <div className="menu-and-logo">
           <div
