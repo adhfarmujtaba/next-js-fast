@@ -12,6 +12,14 @@ interface User {
   avatar: string;
 }
 
+interface Post {
+  id: string;
+  image: string;
+  title: string;
+  meta_description: string;
+  read_time: string; // or number, depending on the API response
+}
+
 interface ProfileProps {
   username: string;
   currentUserID: string | null;
@@ -19,7 +27,7 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ username, currentUserID }) => {
   const [userData, setUserData] = useState<User | null>(null);
-  const [userPosts, setUserPosts] = useState<any[]>([]);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
