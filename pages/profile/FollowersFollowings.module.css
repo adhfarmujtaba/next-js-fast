@@ -1,23 +1,50 @@
+.modalwrapper {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Optional: Background overlay */
+}
+
 .modal {
     background-color: white;
     border-radius: 8px;
+    position: relative;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 250px;
-    margin: 0 auto;
+    width: 100%;
+    max-width: 600px; /* Set a max width for larger screens */
+    height: 550px;
     padding: 20px;
-    top: 0;
-    height: 100vh;
-    position: absolute;
-    animation: slideIn 0.3s ease-out; /* Add animation here */
-  }
-  
+    animation: slideInFromBottom 0.3s ease-out; /* Animation */
+}
+
+ .modalHead{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 16px; /* Space below header */
+ }
+
+ .modalHead h2 {
+    font-size: 1.5rem; /* Larger font size */
+    font-weight: 600; /* Semi-bold weight */
+    color: #333; /* Dark text color */
+    margin: 0; /* Remove default margin */
+}
+
   .closeButton {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    position: absolute;
-    top: 15px;
-    right: 15px;
+    margin-left: auto;
+    font-size: 20px;
     color: #555;
     transition: color 0.2s;
 }
@@ -29,7 +56,7 @@
 .userList {
     list-style-type: none;
     overflow-y: auto;
-    height: calc(100vh - 150px);
+    height: calc(100vh - 100px);
     padding: 0;
     margin: 20px 0 0; /* Add margin above the list */
 }
@@ -56,13 +83,14 @@
 .userItem {
     display: flex;
     align-items: center;
-    padding: 12px;
+    padding: 12px 16px; /* Slightly increase horizontal padding */
     border-bottom: 1px solid #e0e0e0;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease, transform 0.2s ease; /* Add transform effect */
 }
 
 .userItem:hover {
-    background-color: #f9f9f9; /* Subtle hover effect for items */
+    background-color: #f5f5f5; /* Softer hover color */
+    transform: translateY(-2px); /* Subtle lift effect on hover */
 }
 
 .userItem:last-child {
@@ -71,19 +99,21 @@
 
 .userAvatar {
     border-radius: 50%;
-    height: 32px;
-    width: 32px;
+    height: 40px; /* Slightly larger avatar */
+    width: 40px; /* Slightly larger avatar */
     margin-right: 15px;
     object-fit: cover; /* Ensure images cover the avatar space */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 .userInfo {
     flex-grow: 1;
+    line-height: 1.4; /* Better line spacing for readability */
 }
 
 .userInfo h3 {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 1rem; /* Slightly increase font size */
     color: #333;
     font-weight: 600; /* Make the name slightly bolder */
     word-wrap: break-word;
@@ -93,7 +123,7 @@
     margin: 4px 0 0; /* Adjust margin for better spacing */
     color: #666; /* A softer gray for usernames */
     word-wrap: break-word;
-    font-size: 0.8rem;
+    font-size: 0.9rem; /* Slightly increase font size */
 }
 
 .loading {
@@ -110,13 +140,36 @@
     margin: 20px 0; /* Add margin for spacing */
 }
 
-@keyframes slideIn {
+/* Additional styles for better responsiveness */
+@media (max-width: 600px) {
+
+     
+    .modal{
+        height: 100%;
+
+    }
+
+    .userItem {
+        padding: 10px 12px; /* Adjust padding for smaller screens */
+    }
+    
+    .userInfo h3 {
+        font-size: 0.9rem; /* Decrease font size for smaller screens */
+    }
+    
+
+    .userInfo p {
+        font-size: 0.8rem; /* Decrease font size for smaller screens */
+    }
+}
+
+@keyframes slideInFromBottom {
     from {
-        transform: translateX(-100%); /* Start off-screen to the left */
+        transform: translateY(100%); /* Start off-screen below */
         opacity: 0; /* Start transparent */
     }
     to {
-        transform: translateX(0); /* End at original position */
+        transform: translateY(0); /* End at original position */
         opacity: 1; /* End fully visible */
     }
 }

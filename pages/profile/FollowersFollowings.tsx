@@ -89,9 +89,13 @@ const FollowersFollowings: React.FC<FollowersFollowingsProps> = ({ username, typ
   }
 
   return (
+    <div className={styles.modalwrapper}>
     <div className={styles.modal}>
-      <button className={styles.closeButton} onClick={onClose}> <CloseIcon /></button>
-      <h2>{type === 'followers' ? 'Followers' : 'Following'}</h2>
+      <div className={styles.modalHead}>
+      <h2>{type === 'followers' ? 'Followers' : 'Following'} 
+      </h2>
+      <span className={styles.closeButton} onClick={onClose}> <CloseIcon /></span>
+      </div>
       <ul className={styles.userList} onScroll={handleScroll}>
         {users.map(user => (
           <li key={user.username} className={styles.userItem} onClick={() => {
@@ -107,6 +111,7 @@ const FollowersFollowings: React.FC<FollowersFollowingsProps> = ({ username, typ
         ))}
         {isLoading && <div className={styles.loading}>Loading more...</div>}
       </ul>
+    </div>
     </div>
   );
 };

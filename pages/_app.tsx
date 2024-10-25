@@ -180,7 +180,7 @@ const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageP
 )}
 
 
-        {isLoading && !isPostPage  && !isLoginPage && !isSearchPage && (
+        {isLoading && !isPostPage  && !isLoginPage && !isSearchPage && !isModalOpen && (
           <div style={{
             position: 'absolute',
             top: '70px',
@@ -224,7 +224,7 @@ const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageP
             <Component {...pageProps} />
           </motion.div>
         ) : (
-          <div style={!isPostPage && !isSearchPage && !isLoginPage ? {
+          <div style={!isPostPage && !isSearchPage && !isLoginPage && !isModalOpen ? {
             transform: `translateY(${pullDistance}px)`,
             transition: 'transform 0.3s ease-in-out',
             willChange: 'transform',
