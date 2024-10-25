@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './Profile.module.css';
 import FollowersFollowings from './FollowersFollowings';
-import { useModal } from './context/ModalContext'; // Use named import
+import { useModal } from '../../context/ModalContext'; // Use named import
 
 
 interface User {

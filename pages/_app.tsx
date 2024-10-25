@@ -7,7 +7,7 @@ import CategoryTags from '../components/CategoryTags'; // Import the new compone
 import NotificationHeader  from '../components/notifications-header';
 import LoginHeader from '../components/login-header';
 import ProfileHeader from '../components/profile-header';
-import { ModalProvider, useModal } from './profile/context/ModalContext';
+import { ModalProvider, useModal } from '../context/ModalContext';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
