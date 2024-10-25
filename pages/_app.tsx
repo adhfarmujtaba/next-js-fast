@@ -7,6 +7,7 @@ import CategoryTags from '../components/CategoryTags'; // Import the new compone
 import NotificationHeader  from '../components/notifications-header';
 import LoginHeader from '../components/login-header';
 import ProfileHeader from '../components/profile-header';
+import { ModalProvider, useModal } from './profile/context/ModalContext';
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -20,13 +21,31 @@ const pageTransition = {
   exit: { opacity: 0, y: -40 },
 };
 
+const ModalStatusLogger: React.FC = () => {
+  const { isModalOpen } = useModal();
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+  useEffect(() => {
+    console.log('Is Modal Open:', isModalOpen);
+  }, [isModalOpen]);
+
+  return null; 
+};
+
+const ModelMyApp = ({ Component, pageProps }: AppProps) => {
+  return (
+    <ModalProvider>
+      <MyApp Component={Component} pageProps={pageProps} />
+    </ModalProvider>
+  );
+};
+
+const MyApp =   ({ Component, pageProps }: { Component: any; pageProps: any }) => {
   const [pullDistance, setPullDistance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isOffline, setIsOffline] = useState(false); // Start as false
-  
+  const { isModalOpen } = useModal(); // Move useModal here
+
   const router = useRouter();
 
   const fetchNewData = async () => {
@@ -49,6 +68,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
     isPostPage,
     isLoginPage,
     isSearchPage,
+    isModalOpen
   );
 
   const toggleMenu = () => {
@@ -221,4 +241,4 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-export default MyApp;
+export default ModelMyApp;

@@ -7,7 +7,8 @@ const usePullToRefresh = (
   menuOpen: boolean,
   isPostPage: boolean,
   isLoginPage: boolean,
-  isSearchPage: boolean
+  isSearchPage: boolean,
+  isModalOpen: boolean
 ) => {
   const [isPulling, setIsPulling] = useState(false);
   const [startY, setStartY] = useState(0);
@@ -18,14 +19,14 @@ const usePullToRefresh = (
   const maxPullDistance = 70; // Increased for a more pronounced effect
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
-    if (window.scrollY === 0 && !menuOpen) {
+    if (window.scrollY === 0 && !menuOpen && !isModalOpen) {
       setStartY(e.touches[0].clientY);
       setStartX(e.touches[0].clientX);
     }
-  }, [menuOpen]);
+  }, [menuOpen, isModalOpen]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
-    if (startY !== 0 && !menuOpen && window.scrollY === 0) {
+    if (startY !== 0 && !menuOpen && window.scrollY === 0 && !isModalOpen) {
       const currentY = e.touches[0].clientY;
       const currentX = e.touches[0].clientX;
 
@@ -43,13 +44,13 @@ const usePullToRefresh = (
         }
       }
     }
-  }, [startY, startX, pullScale, setPullDistance, menuOpen]);
+  }, [startY, startX, pullScale, setPullDistance, menuOpen, isModalOpen]);
 
   const handleTouchEnd = useCallback(async () => {
     if (isPulling && currentPullDistance > threshold) {
       setIsLoading(true);
 
-      if (!isPostPage && !isLoginPage && !isSearchPage) {
+      if (!isPostPage && !isLoginPage && !isSearchPage && !isModalOpen) {
         await new Promise(resolve => setTimeout(resolve, 1500));
         window.location.reload();
       } else {
@@ -62,7 +63,7 @@ const usePullToRefresh = (
     setIsPulling(false);
     setCurrentPullDistance(0);
     setIsLoading(false);
-  }, [isPulling, fetchData, setPullDistance, currentPullDistance, threshold, setIsLoading, isPostPage, isLoginPage, isSearchPage]);
+  }, [isPulling, fetchData, setPullDistance, currentPullDistance, threshold, setIsLoading, isPostPage, isLoginPage, isSearchPage, isModalOpen]);
 
   useEffect(() => {
     const preventDefaultScroll = (e: TouchEvent) => {
