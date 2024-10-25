@@ -39,7 +39,8 @@ const ModelMyApp = ({ Component, pageProps }: AppProps) => {
   );
 };
 
-const MyApp =   ({ Component, pageProps }: { Component: any; pageProps: any }) => {
+const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageProps: Record<string, unknown> }) => {
+
   const [pullDistance, setPullDistance] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
