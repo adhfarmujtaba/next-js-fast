@@ -21,15 +21,15 @@ const pageTransition = {
   exit: { opacity: 0, y: -40 },
 };
 
-const ModalStatusLogger: React.FC = () => {
-  const { isModalOpen } = useModal();
+// const ModalStatusLogger: React.FC = () => {
+//   const { isModalOpen } = useModal();
 
-  useEffect(() => {
-    console.log('Is Modal Open:', isModalOpen);
-  }, [isModalOpen]);
+//   useEffect(() => {
+//     console.log('Is Modal Open:', isModalOpen);
+//   }, [isModalOpen]);
 
-  return null; 
-};
+//   return null; 
+// };
 
 const ModelMyApp = ({ Component, pageProps }: AppProps) => {
   return (
