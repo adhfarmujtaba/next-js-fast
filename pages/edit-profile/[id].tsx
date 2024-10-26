@@ -17,9 +17,8 @@ const Profile = () => {
   const [message, setMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  
+
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
@@ -57,7 +56,6 @@ const Profile = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
-      setFile(selectedFile);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
@@ -121,7 +119,6 @@ const Profile = () => {
 
       if (response.data.status === 'success') {
         setMessage('Profile updated successfully!');
-        // Do not clear session on profile update
       } else {
         setMessage(response.data.message);
       }
@@ -155,21 +152,20 @@ const Profile = () => {
         </div>
       )}
 
-<div className={styles.avatarContainer}>
-  <img className={styles.imgPreview} src={preview || `https://blog.tourismofkashmir.com/${avatar}`} alt="Avatar" />
-  <div className={styles.editIconContainer}>
-    <FaEdit className={styles.editIcon} onClick={() => document.getElementById('avatar-input')?.click()} />
-  </div>
-  <input
-    id="avatar-input"
-    className={styles.inputFile}
-    type="file"
-    accept="image/*"
-    onChange={handleFileChange}
-    style={{ display: 'none' }}
-  />
-</div>
-
+      <div className={styles.avatarContainer}>
+        <img className={styles.imgPreview} src={preview || `https://blog.tourismofkashmir.com/${avatar}`} alt="Avatar" />
+        <div className={styles.editIconContainer}>
+          <FaEdit className={styles.editIcon} onClick={() => document.getElementById('avatar-input')?.click()} />
+        </div>
+        <input
+          id="avatar-input"
+          className={styles.inputFile}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          style={{ display: 'none' }}
+        />
+      </div>
 
       <div className={styles.form}>
         <div className={styles.formGroup}>
@@ -193,6 +189,7 @@ const Profile = () => {
             </>
           )}
         </div>
+
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="name">Name:</label>
           {isEditingName ? (
@@ -214,6 +211,7 @@ const Profile = () => {
             </>
           )}
         </div>
+
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="email">Email:</label>
           {isEditingEmail ? (
@@ -235,6 +233,7 @@ const Profile = () => {
             </>
           )}
         </div>
+
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="password">New Password:</label>
           {isEditingPassword ? (
