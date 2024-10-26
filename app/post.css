@@ -576,6 +576,25 @@ body{
       border: 2px solid #fff; /* Light border color for user icon */
   }
 
+
+  .share-icons-container {
+    background-color: #444; /* Dark background for visibility */
+    box-shadow: 0 -2px 5px rgba(255, 255, 255, 0.2); /* Optional light shadow for contrast */
+  }
+
+  .icon-ir {
+    color: #ccc; /* Light icon color */
+  }
+
+  .icon-ir:hover {
+    color: #fff; /* Brighten icon color on hover */
+  }
+
+  #like-count,
+  #comment-count {
+    color: #aaa; /* Softer color for counts */
+  }
+  
   /* Additional adjustments as needed for dark mode */
   /* ... */
 }
