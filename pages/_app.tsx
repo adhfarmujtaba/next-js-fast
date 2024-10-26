@@ -59,6 +59,7 @@ const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageP
   const isSearchPage = router.pathname === '/search';
   const isNotifications = router.pathname === '/notifications';
   const isProfilePage = router.pathname.startsWith('/profile'); // Use startsWith for dynamic routes
+  const isEditProfilePage = router.pathname === '/edit-profile/[id]';
   
 
   const { isPulling, currentPullDistance } = usePullToRefresh(
@@ -106,6 +107,11 @@ const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageP
   }, []);
   console.log('Current Pull Distance:', currentPullDistance);
 
+  const handleToggleMenu = () => {
+    setMenuOpen((prev) => !prev);
+    // Optionally show/hide overlay here if needed
+  };
+
   return (
     <AnimatePresence mode="wait">
       <SideMenu isMenuOpen={menuOpen} handleToggleMenu={toggleMenu} />
@@ -148,11 +154,11 @@ const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageP
 
       <div className={`main ${menuOpen ? 'menu-open' : ''}`} style={{ height: '100vh' }} id='main'>
         <ToastContainer />
-        <div className={`overlay`}></div>
-        { isProfilePage && <ProfileHeader /> }
-       { isNotifications && <NotificationHeader /> }
+        <div className={`overlay`} onClick={handleToggleMenu}></div>
+        { (isProfilePage || isEditProfilePage) && <ProfileHeader /> }
+        { isNotifications && <NotificationHeader /> }
        { isLoginPage && <LoginHeader  /> }
-        {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && !isProfilePage && <Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
+        {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && !isProfilePage && !isEditProfilePage &&<Header toggleMenu={toggleMenu} isMenuOpen={menuOpen} />}
 
         {isPulling && !isLoading && !isPostPage && !isSearchPage && !isLoginPage && (
           
@@ -232,7 +238,7 @@ const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageP
           } : { position: 'relative' }}
           
           >
-              {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && !isProfilePage &&<CategoryTags />}
+              {!isLoginPage && !isPostPage && !isSearchPage &&!isNotifications && !isProfilePage && !isEditProfilePage &&<CategoryTags />}
             <Component {...pageProps} />
           </div>
         )}

@@ -1,0 +1,372 @@
+/* Profile.module.css */
+
+.profileContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 20px auto;
+   
+    margin-top: 50px;
+    overflow: hidden; /* Prevent overflow */
+  }
+  
+  .profileHeader {
+    display: flex;
+    align-items: center;
+    padding: 40px 20px; /* Increased padding for spaciousness */
+    width: 100%;
+    background: #f9f9f9; /* Light gray background for contrast */
+    border-bottom: 1px solid #e0e0e0; /* Soft separator line */
+  }
+  
+  .avatar {
+    width: 100px; /* Increased size for better visibility */
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover;
+    border: 4px solid #0095f6; /* Highlighted border around avatar */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for the avatar */
+  }
+  
+  .username {
+    font-size: 28px; /* Larger font for prominence */
+    font-weight: 700; /* Bold for emphasis */
+    color: #333; /* Dark text for readability */
+  }
+  
+  .followStats {
+    margin-top: 5px; /* Reduced margin */
+    font-size: 15px; /* Slightly larger font */
+    color: #777; /* Softer color for stats */
+  }
+  
+  .followCount{
+     margin-right: 10px;
+  }
+
+  .buttonContainer {
+    margin: 10px 0; /* Increased space around button container */
+    width: 100%;
+    text-align: center;
+  }
+  
+  .followButton {
+    background-color: #0095f6; /* Primary button color */
+    color: white;
+    border: none;
+    padding: 14px 30px; /* Increased padding for larger buttons */
+    border-radius: 30px; /* Modern pill shape */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600; /* Semi-bold text */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  }
+  
+  .followButton:hover {
+    background-color: #007bbf; /* Darker on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+  }
+  
+  .loginPrompt {
+    font-size: 14px; /* Consistent font size */
+    color: #999;
+    margin-top: 10px; /* Spacing for clarity */
+  }
+  
+  .postsTitle {
+    margin: 10px 0 10px; /* Increased margin for better spacing */
+    font-size: 20px; /* Emphasized title */
+    font-weight: 700; /* Bold */
+    color: #333;
+    font-family: "Pacifico", cursive;
+    font-style: normal;
+  }
+  
+  .postsGrid {
+    display: flex; /* Use flexbox to arrange posts vertically */
+    flex-direction: column; /* Stack posts vertically */
+    gap: 10px; /* Space between posts */
+    width: 100%;
+    padding: 0px; /* Padding for the grid */
+  }
+  
+  .post {
+    background-color: #ffffff; /* Clean white background for posts */
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%; /* Full width for each post */
+  }
+  
+  .post:hover {
+    transform: translateY(-3px); /* Lift effect on hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+  }
+  
+  .imageContainerPr{
+    position: relative;
+  }
+
+  .readTimePr{
+   position: absolute;
+   bottom: 10px;
+   right: 10px;
+   background-color: rgba(0, 0, 0, 0.5);
+   color: white;
+   padding: 5px;
+   border-radius: 5px;
+   font-size: 0.8rem;
+}
+  
+
+   .postImage {
+    width: 100%;
+    height: 180px;
+    border-bottom: 1px solid #e0e0e0; /* Divider line between image and title */
+  }
+  
+  .postTitle {
+    font-size: 0.9rem; /* Slightly larger font */
+    font-weight: 600; /* Semi-bold for emphasis */
+    color: #333;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+  
+  .postDescription {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    font-size: 0.8rem; /* Description font size */
+    color: #666; /* Softer color for description */
+  }
+  
+  .loading {
+    font-size: 20px; /* Larger loading text */
+    color: #666;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: 500; /* Medium weight */
+  }
+  
+ /* Profile.module.css */
+
+.profileContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 20px auto;
+   
+    margin-top: 50px;
+    overflow: hidden; /* Prevent overflow */
+  }
+  
+  .profileHeader {
+    display: flex;
+    align-items: center;
+    padding: 40px 20px; /* Increased padding for spaciousness */
+    width: 100%;
+    background: #f9f9f9; /* Light gray background for contrast */
+    border-bottom: 1px solid #e0e0e0; /* Soft separator line */
+  }
+  
+  .avatar {
+    width: 100px; /* Increased size for better visibility */
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 20px;
+    object-fit: cover;
+    border: 4px solid #0095f6; /* Highlighted border around avatar */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for the avatar */
+  }
+  
+  .username {
+    font-size: 28px; /* Larger font for prominence */
+    font-weight: 700; /* Bold for emphasis */
+    color: #333; /* Dark text for readability */
+  }
+  
+  .followStats {
+    margin-top: 5px; /* Reduced margin */
+    font-size: 15px; /* Slightly larger font */
+    color: #777; /* Softer color for stats */
+  }
+  
+  .followCount{
+     margin-right: 10px;
+  }
+
+  .buttonContainer {
+    margin: 10px 0; /* Increased space around button container */
+    width: 100%;
+    text-align: center;
+  }
+  
+  .followButton {
+    background-color: #0095f6; /* Primary button color */
+    color: white;
+    border: none;
+    padding: 14px 30px; /* Increased padding for larger buttons */
+    border-radius: 30px; /* Modern pill shape */
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600; /* Semi-bold text */
+    transition: background-color 0.3s, transform 0.3s; /* Smooth transitions */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  }
+  
+  .followButton:hover {
+    background-color: #007bbf; /* Darker on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+  }
+  
+  .loginPrompt {
+    font-size: 14px; /* Consistent font size */
+    color: #999;
+    margin-top: 10px; /* Spacing for clarity */
+  }
+  
+  .postsTitle {
+    margin: 10px 0 10px; /* Increased margin for better spacing */
+    font-size: 20px; /* Emphasized title */
+    font-weight: 700; /* Bold */
+    color: #333;
+    font-family: "Pacifico", cursive;
+    font-style: normal;
+  }
+  
+  .postsGrid {
+    display: flex; /* Use flexbox to arrange posts vertically */
+    flex-direction: column; /* Stack posts vertically */
+    gap: 10px; /* Space between posts */
+    width: 100%;
+    padding: 0px; /* Padding for the grid */
+  }
+  
+  .post {
+    background-color: #ffffff; /* Clean white background for posts */
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%; /* Full width for each post */
+  }
+  
+  .post:hover {
+    transform: translateY(-3px); /* Lift effect on hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+  }
+  
+  .imageContainerPr{
+    position: relative;
+  }
+
+  .readTimePr{
+   position: absolute;
+   bottom: 10px;
+   right: 10px;
+   background-color: rgba(0, 0, 0, 0.5);
+   color: white;
+   padding: 5px;
+   border-radius: 5px;
+   font-size: 0.8rem;
+}
+  
+
+   .postImage {
+    width: 100%;
+    height: 180px;
+    border-bottom: 1px solid #e0e0e0; /* Divider line between image and title */
+  }
+  
+  .postTitle {
+    font-size: 0.9rem; /* Slightly larger font */
+    font-weight: 600; /* Semi-bold for emphasis */
+    color: #333;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+  
+  .postDescription {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom: 5px;
+    font-size: 0.8rem; /* Description font size */
+    color: #666; /* Softer color for description */
+  }
+  
+  .loading {
+    font-size: 20px; /* Larger loading text */
+    color: #666;
+    text-align: center;
+    margin: 20px 0;
+    font-weight: 500; /* Medium weight */
+  }
+  
+/* SkeletonLoader.module.css */
+.skeletonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  .avatarSkeleton {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: rgba(200, 200, 200, 0.3);
+    margin-bottom: 20px;
+  }
+  
+  .usernameSkeleton {
+    width: 200px;
+    height: 30px;
+    background: rgba(200, 200, 200, 0.3);
+    margin-bottom: 10px;
+  }
+  
+  .followStatsSkeleton {
+    width: 150px;
+    height: 20px;
+    background: rgba(200, 200, 200, 0.3);
+    margin-bottom: 20px;
+  }
+  
+  .buttonSkeleton {
+    width: 120px;
+    height: 40px;
+    background: rgba(200, 200, 200, 0.3);
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .postsTitleSkeleton {
+    width: 150px;
+    height: 25px;
+    background: rgba(200, 200, 200, 0.3);
+    margin-bottom: 15px;
+  }
+  
+  .postsGridSkeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .postSkeleton {
+    width: 100%;
+    height: 180px;
+    background: rgba(200, 200, 200, 0.3);
+    border-radius: 5px;
+  }
+  

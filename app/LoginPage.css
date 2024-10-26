@@ -128,3 +128,56 @@ width: 100%;
 z-index: 10; /* Ensure the header stays above other content */
 transition: top 0.3s; /* Smooth transition for showing/hiding the header */
 }
+
+@media (prefers-color-scheme: dark) {
+  .login-page {
+    background-color: #343a40; /* Dark background for the page */
+    color: #f8f9fa; /* Light text color */
+  }
+
+  .login-form {
+    box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1); /* Softer shadow for contrast */
+  }
+
+  .logo-link-login {
+    background-color: #212529; /* Darker background for logo link */
+  }
+
+  .welcome-text h1 {
+    color: #f0f0f0; /* Light color for the header */
+  }
+
+  .login-page .input-i {
+    color: #adb5bd; /* Lighter gray for icons */
+  }
+
+  .login-page input {
+    background-color: #495057; /* Dark background for inputs */
+    border: 1px solid #6c757d; /* Lighter border for inputs */
+    color: #f8f9fa; /* Light text for inputs */
+  }
+
+  .login-page input:focus {
+    border-color: #007bff; /* Blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3); /* Glow effect on focus */
+  }
+
+  .login-page .btn {
+    background-color: #343a40; /* Dark button background */
+    color: #f8f9fa; /* Light text color for buttons */
+  }
+
+  .login-page .btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+
+  .login-page .forgot-password a {
+    color: #17a2b8; /* Lighter link color */
+  }
+
+  .login-header {
+    background-color: #343a40; /* Darker background for the header */
+    color: #f8f9fa; /* Light text color for the header */
+    box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1); /* Softer shadow for header */
+  }
+}

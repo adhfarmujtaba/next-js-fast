@@ -19,9 +19,11 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 600px; /* Set a max width for larger screens */
-    height: 550px;
+    height: calc(100vh - 100px);
     padding: 20px;
     animation: slideInFromBottom 0.3s ease-out; /* Animation */
+    display: flex;
+    flex-direction: column; /* Allow vertical stacking of elements */
 }
 
  .modalHead{
@@ -61,6 +63,16 @@
     margin: 20px 0 0; /* Add margin above the list */
 }
 
+
+
+ @media screen and (max-width: 600px){
+    .userList {
+        overflow-y: scroll; /* Still allows scrolling */
+        scrollbar-width: none; /* For Firefox */
+        -ms-overflow-style: none; /* For Internet Explorer and Edge */
+    }
+}
+
 /* Custom scrollbar styles */
 .userList::-webkit-scrollbar {
     width: 8px; /* Width of the scrollbar */
@@ -82,6 +94,7 @@
 
 .userItem {
     display: flex;
+    box-sizing: border-box;
     align-items: center;
     padding: 12px 16px; /* Slightly increase horizontal padding */
     border-bottom: 1px solid #e0e0e0;
@@ -128,7 +141,7 @@
 
 .loading {
     text-align: center;
-    font-size: 1.2em;
+    font-size: 0.7em;
     color: #555;
     margin: 20px 0; /* Add margin for spacing */
 }
@@ -173,3 +186,84 @@
         opacity: 1; /* End fully visible */
     }
 }
+
+.buttonContainer {
+    display: flex; /* Flex for buttons */
+    gap: 10px; /* Space between buttons if you have multiple */
+  }
+  
+  .followButton, .unfollowButton {
+    /* Add your button styles here */
+    padding: 5px 10px; /* Example padding */
+    cursor: pointer;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .modalwrapper {
+      background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+    }
+  
+    .modal {
+      background-color: #2c2c2c; /* Dark background for the modal */
+      box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1); /* Softer shadow */
+    }
+  
+    .modalHead h2 {
+      color: #f0f0f0; /* Light text color for modal header */
+    }
+  
+    .closeButton {
+      color: #ccc; /* Lighter color for close button */
+    }
+  
+    .closeButton:hover {
+      color: #ff6b6b; /* Change to a soft red on hover */
+    }
+  
+    .userList {
+      background-color: #2c2c2c; /* Dark background for user list */
+    }
+  
+    .userItem {
+      background-color: transparent; /* Transparent background */
+      border-bottom: 1px solid #444; /* Darker border for items */
+    }
+  
+    .userItem:hover {
+      background-color: rgba(255, 255, 255, 0.1); /* Light hover color */
+    }
+  
+    .userInfo h3 {
+      color: #f0f0f0; /* Light color for user names */
+    }
+  
+    .userInfo p {
+      color: #bbb; /* Softer gray for usernames */
+    }
+  
+    .loading {
+      color: #ccc; /* Light loading text */
+    }
+  
+    .error {
+      color: #ff6b6b; /* Softer red for error messages */
+    }
+  
+    .buttonContainer {
+      background-color: #333; /* Background for button container */
+      border-radius: 8px; /* Slight rounding */
+      padding: 10px; /* Padding around buttons */
+    }
+  
+    .followButton, .unfollowButton {
+      background-color: #0095f6; /* Primary button color */
+      color: white; /* White text for buttons */
+      border-radius: 5px; /* Slight rounding */
+      transition: background-color 0.3s; /* Smooth transitions */
+    }
+  
+    .followButton:hover, .unfollowButton:hover {
+      background-color: #007bb5; /* Darker on hover */
+    }
+  }
+  

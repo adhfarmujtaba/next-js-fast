@@ -116,3 +116,43 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   }
   
+  /* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: #2c2c2c;
+    --card-background-color: #333;
+    --text-color: #ccc;
+    --paragraph-color: #aaa;
+    --box-shadow-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .notifications-container {
+    background-color: var(--background-color); /* Dark background */
+  }
+
+  .notifications-title {
+    color: var(--text-color); /* Light text color */
+  }
+
+  .notification-item {
+    background-color: var(--card-background-color); /* Dark card background */
+  }
+
+  .notification-message {
+    color: var(--text-color); /* Light text color */
+  }
+
+  .no-more-notifications {
+    background-color: var(--card-background-color); /* Dark background */
+    color: var(--paragraph-color); /* Light gray text */
+    border: 1px solid #555; /* Darker border */
+  }
+
+  .notification-item:hover {
+    background-color: #444; /* Darker background on hover */
+  }
+
+  .notification-item.unread {
+    background-color: rgba(0, 149, 246, 0.2); /* Slightly darker blue for unread notifications */
+  }
+}

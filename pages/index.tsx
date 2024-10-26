@@ -174,8 +174,8 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
                   </div>
                 </div>
                 <div className='card-content'>
-                  <h2>{truncateText(post.title, 22)}</h2>
-                  <p>{truncateText(post.meta_description, 28)}</p>
+                  <h2 className='card-post-title'>{truncateText(post.title, 22)}</h2>
+                  <p className='card-post-description'>{truncateText(post.meta_description, 28)}</p>
                 </div>
               </Link>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>

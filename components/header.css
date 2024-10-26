@@ -272,6 +272,31 @@ header {
     background: #0070f3;
     color: #f8f9fa; /* Adjust color to match your design */
   }
+
+  /* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  /* Category tags */
+  .category-tags {
+      background-color: #333; /* Dark background color */
+      box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1); /* Lighter shadow for contrast */
+  }
+
+  .category-tag {
+      background: linear-gradient(145deg, #555, #444); /* Darker gradient for depth */
+      color: #fff; /* Light text color */
+      box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1); /* Lighter shadow for 3D effect */
+  }
+
+  .category-tag.active,
+  .category-tag:hover {
+      background: #0056b3; /* Dark blue for active/hover color in dark mode */
+      box-shadow: 0 7px 20px rgba(255, 255, 255, 0.2); /* Lighter shadow for emphasis */
+  }
+
+  /* Additional adjustments as needed for dark mode */
+  /* ... */
+}
+
   
   /* Hide scrollbar on mobile devices */
 @media (max-width: 768px) {

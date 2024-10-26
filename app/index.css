@@ -32,11 +32,11 @@ body {
     box-shadow: 0 4px 8px var(--box-shadow-color);
     }
     
-    .card-content h2, .card-content p {
+    .card-content h2, .card-content p, card-post-title {
     color: var(--text-color);
     }
     
-    .card-content p {
+    .card-content p, card-post-description {
     color: var(--paragraph-color);
     }
     }
