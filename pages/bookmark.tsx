@@ -19,7 +19,6 @@ const Bookmark = () => {
   const [currentUserID, setCurrentUserID] = useState<number | null>(null);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);  // Use the proper type here
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter(); // Initialize the router
 
   // Fetch logged-in user from localStorage
@@ -30,7 +29,7 @@ const Bookmark = () => {
       setCurrentUserID(foundUser.id); // Set current user ID from localStorage
     } else {
       router.push('/login');
-      setError('User is not logged in.');
+      toast.error('User is not logged in.');
       setLoading(false);
     }
   }, [router]);
@@ -46,8 +45,9 @@ const Bookmark = () => {
           setBookmarks(response.data);
           setLoading(false);
         } catch (err) {
-          setError('Failed to fetch bookmarks.');
+          toast.error('Failed to fetch bookmarks.'); // Handle error directly with toast
           setLoading(false);
+          console.error('Error fetching bookmarks:', err); // Log the error
         }
       };
 
@@ -64,7 +64,7 @@ const Bookmark = () => {
 
     try {
       // Perform the DELETE request to remove the bookmark
-      const response = await axios.delete(`https://blog.tourismofkashmir.com/bookmark_view_api.php`, {
+      const response = await axios.delete('https://blog.tourismofkashmir.com/bookmark_view_api.php', {
         params: {
           user_id: currentUserID,
           post_id: bookmarkID, // The ID of the bookmark to delete
@@ -79,13 +79,12 @@ const Bookmark = () => {
         toast.error('Failed to delete the bookmark.');
       }
     } catch (err) {
-      console.error('Error deleting bookmark:', err);  // You can log the error if necessary
+      console.error('Error deleting bookmark:', err);  // Log the error
       toast.error('Error deleting the bookmark.');
     }
   };
 
   if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">{error}</div>;
 
   const handleBookmarkClick = (categorySlug: string, slug: string) => {
     router.push(`/${categorySlug}/${slug}`); // Navigate to the bookmark's detail page
@@ -100,7 +99,11 @@ const Bookmark = () => {
         ) : (
           <div className="bookmark-list">
             {bookmarks.map((bookmark) => (
-              <div key={bookmark.id} className="bookmark-item" onClick={() => handleBookmarkClick(bookmark.category_slug, bookmark.slug)}>
+              <div 
+                key={bookmark.id} 
+                className="bookmark-item" 
+                onClick={() => handleBookmarkClick(bookmark.category_slug, bookmark.slug)} // Handle click to navigate
+              >
                 <img src={bookmark.full_image_url} alt={bookmark.title} className="bookmark-image" />
                 <div className="bookmark-info">
                   <h2 className="bookmark-title">{bookmark.title}</h2>
