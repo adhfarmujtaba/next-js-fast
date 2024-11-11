@@ -1,0 +1,214 @@
+/* General Reset */
+.bookmarkMain {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Container for the entire bookmark section */
+  .bookmark-container {
+    padding: 30px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    margin-top: 20px;
+  }
+  
+  /* Header Style */
+  .bookmark-container h1 {
+    font-size: 2.2rem;
+    text-align: center;
+    margin-bottom: 40px;
+    color: #2e3a59;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  /* Message when no bookmarks are available */
+  .no-bookmarks {
+    text-align: center;
+    font-size: 1.4rem;
+    color: #888;
+    font-style: italic;
+  }
+  
+  /* Loading and error message styling */
+  .loading, .error {
+    text-align: center;
+    font-size: 1.6rem;
+    color: #e74c3c;
+    font-weight: 500;
+  }
+  
+  /* Wrapper for the list of bookmarks */
+  .bookmark-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+  }
+  
+  /* Each bookmark item styling */
+  .bookmark-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    width: 100%;
+    border: 1px solid #e2e2e2;
+    word-wrap: break-word;
+    box-sizing: border-box;
+  }
+  
+  .bookmark-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Bookmark title */
+  .bookmark-title {
+    font-size: 16px;
+    color: #2e3a59;
+    font-weight: 500;
+    margin: 0;
+    max-width: calc(100% - 80px); /* Prevent text from overflowing */
+    text-overflow: ellipsis;
+    white-space: normal; /* Allow text to wrap to the next line */
+    overflow: hidden;
+    word-wrap: break-word; /* Break words if they don't fit */
+  }
+  
+  /* Image styling */
+  .bookmark-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+  }
+  
+  /* Bookmark text container */
+  .bookmark-info {
+    flex-grow: 1; /* Ensure the text area takes up remaining space */
+    padding-right: 10px;
+  }
+  
+  /* Styling for the delete icon */
+  .delete-icon {
+    cursor: pointer;
+    color: #e74c3c;
+    font-size: 20px;
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+  }
+  
+  .delete-icon:hover {
+    transform: scale(1.1);
+    color: #c0392b; /* Darker red on hover */
+  }
+  
+  /* Error and loading states */
+  .error, .loading {
+    color: #f44336;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 600;
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .bookmark-container {
+      padding: 5px;
+      width: 95%;
+    }
+  
+    .bookmark-item {
+      gap: 12px;
+    }
+  
+    .bookmark-image {
+      width: 50px;
+      height: 50px;
+    }
+  
+    .bookmark-title {
+      font-size: 14px;
+      max-width: calc(100% - 0px);
+      word-wrap: break-word; /* Ensure long titles wrap properly */
+    }
+  
+    .delete-icon {
+      font-size: 22px;
+    }
+  }
+  
+  /* Hover state for links, if any */
+  .bookmark-container a:hover {
+    color: #3498db;
+    text-decoration: underline;
+  }
+  
+  /* Dark Mode Styles */
+  @media (prefers-color-scheme: dark) {
+    /* Update container background and text color */
+    .bookmark-container {
+      background-color: #333;
+      color: #f9f9f9;
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+  
+    /* Header styling for dark mode */
+    .bookmark-container h1 {
+      color: #f9f9f9;
+    }
+  
+    /* Update text for empty state, loading, and error messages */
+    .no-bookmarks {
+      color: #bbb;
+    }
+  
+    .loading, .error {
+      color: #e74c3c;
+    }
+  
+    /* Bookmark item background and border for dark mode */
+    .bookmark-item {
+      background-color: #444;
+      border: 1px solid #555;
+    }
+  
+    .bookmark-item:hover {
+      box-shadow: 0 6px 25px rgba(255, 255, 255, 0.1);
+    }
+  
+    /* Title styling in dark mode */
+    .bookmark-title {
+      color: #f9f9f9;
+    }
+  
+    /* Image styling */
+    .bookmark-image {
+      border-radius: 8px;
+      border: 1px solid #555; /* Add border around images for contrast */
+    }
+  
+    /* Delete icon for dark mode */
+    .delete-icon {
+      color: #e74c3c;
+    }
+  
+    .delete-icon:hover {
+      color: #c0392b;
+    }
+  }
+  

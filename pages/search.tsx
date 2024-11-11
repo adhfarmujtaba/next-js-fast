@@ -64,7 +64,7 @@ const SearchPage: React.FC = () => {
       <Head>
         <title>Search Results for &quot;{query}&quot;</title>
       </Head>
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="default" className='appBar'>
         <Toolbar style={{ justifyContent: 'space-between' }}>
           <div className="seach-hed">
           <InputBase 
@@ -75,7 +75,7 @@ const SearchPage: React.FC = () => {
           />
           </div>
           <IconButton color="inherit" onClick={() => window.history.back()} style={{ marginLeft: 'auto' }}>
-            <CloseIcon />
+            <CloseIcon className='closeSearchIcon' />
           </IconButton>
         </Toolbar>
       </AppBar>

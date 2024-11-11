@@ -40,6 +40,8 @@ body {
     color: var(--paragraph-color);
     }
     }
+
+    
     
     .container {
     display: flex;
@@ -268,7 +270,6 @@ body {
             width: calc(25% - 20px); /* Set card width for desktop (4 cards per row) */
             box-sizing: border-box;
             margin-bottom: 20px; /* Add margin between cards */
-            background-color: #fff; /* Card background color */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle box shadow for depth */
             transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
             display: inline-block; /* Display cards inline */
@@ -292,4 +293,22 @@ body {
     height: 30px; /* Set the height of the loader to match its width for a square aspect ratio */
   }
   
+  /* Dark Mode Styles */
+@media (prefers-color-scheme: dark) {
+    .skeleton-card {
+      background-color: #333; /* Dark background for the card */
+    }
   
+    .skeleton-image {
+      background-color: #444; /* Darker grey for the image */
+    }
+  
+    .skeleton-title,
+    .skeleton-content,
+    .skeleton-category,
+    .skeleton-avatar,
+    .skeleton-username,
+    .skeleton-date {
+      background-color: #555; /* Dark grey for other skeleton elements */
+    }
+  }  
