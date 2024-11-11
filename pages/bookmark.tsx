@@ -6,9 +6,18 @@ import { toast } from 'react-toastify'; // Import toast for success/error notifi
 import 'react-toastify/dist/ReactToastify.css'; // Import toast styling
 import '../app/Bookmark.css'; // Link to the custom CSS file
 
+// Define a type for the Bookmark object
+interface Bookmark {
+  id: string;
+  title: string;
+  category_slug: string;
+  slug: string;
+  full_image_url: string;
+}
+
 const Bookmark = () => {
   const [currentUserID, setCurrentUserID] = useState<number | null>(null);
-  const [bookmarks, setBookmarks] = useState<any[]>([]);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);  // Use the proper type here
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter(); // Initialize the router
@@ -20,11 +29,11 @@ const Bookmark = () => {
       const foundUser = JSON.parse(loggedInUser);
       setCurrentUserID(foundUser.id); // Set current user ID from localStorage
     } else {
-       router.push('/login');
+      router.push('/login');
       setError('User is not logged in.');
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   // Fetch bookmarks when currentUserID is available
   useEffect(() => {
@@ -70,7 +79,7 @@ const Bookmark = () => {
         toast.error('Failed to delete the bookmark.');
       }
     } catch (err) {
-      console.error('Error deleting bookmark:', err);
+      console.error('Error deleting bookmark:', err);  // You can log the error if necessary
       toast.error('Error deleting the bookmark.');
     }
   };
@@ -81,7 +90,6 @@ const Bookmark = () => {
   const handleBookmarkClick = (categorySlug: string, slug: string) => {
     router.push(`/${categorySlug}/${slug}`); // Navigate to the bookmark's detail page
   };
-  
 
   return (
     <div className="bookmarkMain">
@@ -92,10 +100,7 @@ const Bookmark = () => {
         ) : (
           <div className="bookmark-list">
             {bookmarks.map((bookmark) => (
-              <div key={bookmark.id} className="bookmark-item" 
-              onClick={() => handleBookmarkClick(bookmark.category_slug, bookmark.slug)} // Handle click to navigate
-
-                 >
+              <div key={bookmark.id} className="bookmark-item" onClick={() => handleBookmarkClick(bookmark.category_slug, bookmark.slug)}>
                 <img src={bookmark.full_image_url} alt={bookmark.title} className="bookmark-image" />
                 <div className="bookmark-info">
                   <h2 className="bookmark-title">{bookmark.title}</h2>
