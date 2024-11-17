@@ -80,25 +80,25 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
           setLoading(false);
           return; // Exit early if post is found in cache
         }
-  
+
         // If post is not cached, fetch it
         if (category_slug && slug) {
           setLoading(true);
-          
+
           // Fetch the post
           const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
           const fetchedPost = response.data;
           setPost(fetchedPost);
-  
+
           // Save to localStorage for cache
           localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
-  
+
           // Fetch related posts
           const relatedResponse = await axios.get(
             `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
           );
           setRelatedPosts(relatedResponse.data);
-  
+
           setLoading(false);
         }
       } catch (error) {
@@ -107,9 +107,10 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  }, [category_slug, slug]);
+  }, [category_slug, slug]); // Only re-run the effect when category_slug or slug changes
+
 
 
   // Top viewed post 
