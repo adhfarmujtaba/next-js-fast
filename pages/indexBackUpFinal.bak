@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { ClipLoader } from 'react-spinners';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import CONFIG from '../utils/config'; // Adjust path as needed
+import CONFIG from '../utils/config'; // Adjust the path as needed
 import '../app/index.css';
 
 interface Post {
@@ -60,22 +60,32 @@ const formatDate = (date: string): string => {
 
 const SkeletonLoader = () => {
   return (
-    <div className="skeleton-container">
-      {Array.from({ length: 10 }).map((_, index) => (
-        <div key={index} className="card skeleton-card">
-          <div className="skeleton-image"></div>
-          <div className="card-content">
-            <div className="skeleton-title"></div>
-            <div className="skeleton-content"></div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <div className="skeleton-avatar"></div>
-              <div className="skeleton-username"></div>
-              <div className="skeleton-date"></div>
-            </div>
+    // <div className="skeleton-card" style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
+    //   <div style={{ width: '100%', height: '180px', backgroundColor: '#e0e0e0' }} />
+    //   <h2 style={{ height: '20px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
+    //   <p style={{ height: '16px', backgroundColor: '#e0e0e0', margin: '10px 0' }} />
+    //   <div style={{ display: 'flex', alignItems: 'center', padding: '0 10px 10px' }}>
+    //     <div style={{ width: '30px', height: '30px', borderRadius: '50%', backgroundColor: '#e0e0e0', marginRight: '5px' }} />
+    //     <span style={{ height: '16px', backgroundColor: '#e0e0e0' }} />
+    //   </div>
+    // </div>
+
+    <div className='skeleton-container'>
+    {Array.from({ length: 10 }).map((_, index) => (
+      <div key={index} className='card skeleton-card'>
+        <div className='skeleton-image'></div>
+        <div className='card-content'>
+          <div className='skeleton-title'></div>
+          <div className='skeleton-content'></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className='skeleton-avatar'></div>
+            <div className='skeleton-username'></div>
+            <div className='skeleton-date'></div>
           </div>
         </div>
-      ))}
-    </div>
+      </div>
+    ))}
+  </div>
   );
 };
 
@@ -88,56 +98,37 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
   const [loading, setLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
-  // Helper function to check if post already exists in the list
-  const isPostAlreadyFetched = (newPost: Post) => {
-    return posts.some(post => post.id === newPost.id);
-  };
-
-  // Load cached posts from localStorage or fetch from API
+  
   useEffect(() => {
-    const cachedPosts = localStorage.getItem('cachedPosts');
-    if (cachedPosts) {
-      setPosts(JSON.parse(cachedPosts));
-      setLoading(false); // Skip API request if data is cached
-    } else {
-      fetchPosts(pageNumber); // Initial fetch if no cached data
-    }
-  }, []); // Empty dependency array to load once on component mount
-
-  const fetchPosts = async (page: number) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${CONFIG.BASE_URL}/apis?posts&page=${page}`);
-      if (!response.ok) throw new Error('Network response was not ok');
-      const data = await response.json();
-
-      if (Array.isArray(data)) {
-        if (data.length === 0) {
-          setHasMore(false); // No more posts to load
+    const fetchPosts = async (page: number) => {
+      setLoading(true);
+      try {
+        const response = await fetch(`${CONFIG.BASE_URL}/apis?posts&page=${page}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        
+        if (Array.isArray(data)) {
+          if (data.length === 0) {
+            setHasMore(false);
+          } else {
+            setPosts(prevPosts => [...prevPosts, ...data]);
+          }
         } else {
-          setPosts(prevPosts => {
-            // Filter out any posts that are already in the list (to prevent duplicates)
-            const uniquePosts = data.filter((newPost: Post) => !prevPosts.some(post => post.id === newPost.id));
-            const updatedPosts = [...prevPosts, ...uniquePosts];
-            localStorage.setItem('cachedPosts', JSON.stringify(updatedPosts)); // Cache posts in localStorage
-            return updatedPosts;
-          });
+          setHasMore(false);
         }
-      } else {
-        setHasMore(false); // Handle case where API returns unexpected data
+      } catch (error) {
+        console.error('Fetching posts failed:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Fetching posts failed:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchPosts(pageNumber);
+  }, [pageNumber]);
 
   const fetchMorePosts = () => {
     if (!loading && hasMore) {
-      setPageNumber(prev => prev + 1); // Increment page number for next API request
-      fetchPosts(pageNumber + 1); // Fetch posts for the next page
+      setPageNumber(prev => prev + 1);
     }
   };
 
@@ -158,7 +149,9 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
         dataLength={posts.length}
         next={fetchMorePosts}
         hasMore={hasMore}
-        loader={<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}><ClipLoader color="#000" loading={loading} size={30} /></div>}
+        loader={<div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
+        <ClipLoader color="#000" loading={loading} size={30} />
+    </div>}
         endMessage={<p style={{ textAlign: 'center' }}>No more posts to load.</p>}
       >
         {loading && posts.length === 0 ? (
@@ -180,18 +173,18 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
                     {post.read_time} min read
                   </div>
                 </div>
-                <div className="card-content">
-                  <h2 className="card-post-title">{truncateText(post.title, 22)}</h2>
-                  <p className="card-post-description">{truncateText(post.meta_description, 28)}</p>
+                <div className='card-content'>
+                  <h2 className='card-post-title'>{truncateText(post.title, 22)}</h2>
+                  <p className='card-post-description'>{truncateText(post.meta_description, 28)}</p>
                 </div>
               </Link>
               <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
                 <Link href={`/profile/${post.username}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                  <img src={`${CONFIG.BASE_URL}/${post.avatar}`} alt="Avatar" className="avatar" style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
-                  <span className="username">{post.username}</span>
+                  <img src={`${CONFIG.BASE_URL}/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
+                  <span className='username'>{post.username}</span>
                 </Link>
-                <span className="views"> • {formatViews(post.views)} views</span>
-                <span className="date"> • {formatDate(post.created_at)}</span>
+                <span className='views'> • {formatViews(post.views)} views</span>
+                <span className='date'> • {formatDate(post.created_at)}</span>
               </div>
             </div>
           ))
@@ -201,9 +194,9 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
   );
 };
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   try {
-    const response = await fetch(`${CONFIG.BASE_URL}/site_info_api.php`);
+    const response = await fetch('${CONFIG.BASE_URL}/site_info_api.php');
     if (!response.ok) throw new Error('Network response was not ok');
     const siteInfo = await response.json();
 
@@ -211,7 +204,6 @@ export const getStaticProps = async () => {
       props: {
         siteInfo,
       },
-      revalidate: 60, // Regenerate the page every 60 seconds
     };
   } catch (error) {
     console.error('Fetching site info failed:', error);

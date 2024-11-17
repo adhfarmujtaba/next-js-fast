@@ -70,41 +70,32 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [showShareOptions, setShowShareOptions] = useState(false);
 
 
+
+
+
   useEffect(() => {
-    // Check if post is already cached in localStorage when navigating back
-    const cachedPost = localStorage.getItem(`post-${slug}`);
-    if (cachedPost) {
-      setPost(JSON.parse(cachedPost));
-      setLoading(false);
-    } else {
-      // If post is not cached, fetch it
+    const fetchPost = async () => {
       if (category_slug && slug) {
         setLoading(true);
-        axios
-          .get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`)
-          .then((response) => {
-            const fetchedPost = response.data;
-            setPost(fetchedPost);
+        try {
+          const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
+          const fetchedPost = response.data;
+          setPost(fetchedPost);
 
-            // Save to localStorage for cache
-            localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
-
-            // Fetch related posts
-            axios
-              .get(
-                `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
-              )
-              .then((relatedResponse) => setRelatedPosts(relatedResponse.data))
-              .catch((error) => console.error('Error fetching related posts:', error));
-
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error('Error fetching post:', error);
-            setPost(null);
-            setLoading(false);
-          });
+          // Fetch related posts
+          const relatedResponse = await axios.get(`${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
+          setRelatedPosts(relatedResponse.data);
+        } catch (error) {
+          console.error('Error fetching post:', error);
+          setPost(null);
+        } finally {
+          setLoading(false);
+        }
       }
+    };
+
+    if (slug) {
+      fetchPost();
     }
   }, [category_slug, slug]);
 
@@ -536,34 +527,26 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   );
 };
 
-// Static generation with revalidation every 10 seconds
-export async function getStaticProps({ params }: any) {
-  const { slug } = params;
+export const getServerSideProps = async (context: { params: { slug: string; category_slug: string; } }) => {
+  const { slug } = context.params;
+
   try {
     const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
-    const postData = response.data;
+    const post = response.data;
 
     return {
       props: {
-        initialPost: postData || null,
+        initialPost: post || null,
       },
-      revalidate: 60, // Regenerate the page at most every 60 seconds
     };
   } catch (error) {
+    console.error('Error fetching post on server:', error);
     return {
       props: {
         initialPost: null,
       },
     };
   }
-}
-
-export async function getStaticPaths() {
-  // Here you would fetch and return all post slugs, if possible
-  return {
-    paths: [],
-    fallback: true,
-  };
-}
+};
 
 export default PostPage;

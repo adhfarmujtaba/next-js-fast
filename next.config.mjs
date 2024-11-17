@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const nextConfig = {
+    experimental: {
+      scrollRestoration: true, // Enable scroll restoration
+    },
+  };
+  
+  export default nextConfig;
+  
