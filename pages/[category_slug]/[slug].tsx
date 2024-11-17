@@ -70,46 +70,40 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [showShareOptions, setShowShareOptions] = useState(false);
 
 
+  // Fetch post on mount or when category_slug or slug changes
   useEffect(() => {
-    const fetchData = async () => {
+    if (!slug || !category_slug) return;
+
+    const fetchPost = async () => {
+      // Check if post is already cached in localStorage
+      const cachedPost = localStorage.getItem(`post-${slug}`);
+      if (cachedPost) {
+        setPost(JSON.parse(cachedPost));
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
       try {
-        // Check if post is already cached in localStorage when navigating back
-        const cachedPost = localStorage.getItem(`post-${slug}`);
-        if (cachedPost) {
-          setPost(JSON.parse(cachedPost));
-          setLoading(false);
-          return; // Exit early if post is found in cache
-        }
+        // Fetch post
+        const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
+        const fetchedPost = response.data;
+        setPost(fetchedPost);
+        localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
 
-        // If post is not cached, fetch it
-        if (category_slug && slug) {
-          setLoading(true);
-
-          // Fetch the post
-          const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
-          const fetchedPost = response.data;
-          setPost(fetchedPost);
-
-          // Save to localStorage for cache
-          localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
-
-          // Fetch related posts
-          const relatedResponse = await axios.get(
-            `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
-          );
-          setRelatedPosts(relatedResponse.data);
-
-          setLoading(false);
-        }
+        // Fetch related posts
+        const relatedResponse = await axios.get(`${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
+        setRelatedPosts(relatedResponse.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching post:', error);
         setPost(null);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [category_slug, slug]); // Only re-run the effect when category_slug or slug changes
+    fetchPost();
+  }, [category_slug, slug]);
 
 
 
