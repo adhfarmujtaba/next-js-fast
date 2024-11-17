@@ -182,6 +182,7 @@ const Header: React.FC<HeaderProps> = ({ toggleMenu, isMenuOpen }) => {
             <span className="material-icons icon user-icon" onClick={toggleUserDropdown} style={{ cursor: 'pointer' }}>account_circle</span>
           )}
         </div>
+        <p style={{ display: 'none' }}>{username}</p>
         {isUserDropdownOpen && <UserDropdown onClose={() => setIsUserDropdownOpen(false)} />}
       </div>
     </header>
