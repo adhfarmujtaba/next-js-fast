@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import Cookie from 'js-cookie'; // Import js-cookie
 import styles from './Profile.module.css';
 import { FaEdit } from 'react-icons/fa';
+import { toast, ToastContainer } from 'react-toastify'; // Import Toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 
 const Profile = () => {
   const router = useRouter();
@@ -15,19 +18,13 @@ const Profile = () => {
   const [avatar, setAvatar] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
 
-  const [isEditingUsername, setIsEditingUsername] = useState(false);
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
-  const [isEditingPassword, setIsEditingPassword] = useState(false);
-
   useEffect(() => {
-    // Check if user is logged in
-    const userSession = localStorage.getItem('user');
+    const userSession = Cookie.get('user');
+    
     if (!userSession) {
+      // If no user cookie is found, redirect to login page
       router.push('/login');
       return;
     }
@@ -87,8 +84,11 @@ const Profile = () => {
         setMessage('Avatar updated successfully!');
         if (response.data.data && response.data.data.avatar) {
           setAvatar(response.data.data.avatar);
+          // Update the cookie with the new avatar URL
+          const updatedUser = Cookie.get('user') ? JSON.parse(Cookie.get('user') as string) : {};
+          updatedUser.avatar = response.data.data.avatar;
+          Cookie.set('user', JSON.stringify(updatedUser), { expires: 7, secure: process.env.NODE_ENV === 'production' });
         }
-        handleSessionClear(); // Clear session when avatar is updated
       } else {
         setMessage(response.data.message);
       }
@@ -118,44 +118,34 @@ const Profile = () => {
       });
 
       if (response.data.status === 'success') {
-        setMessage('Profile updated successfully!');
+        toast.success('Profile updated successfully!'); // Show success toast
+
+        // Update the cookie with the new profile data (username, name, email, etc.)
+        const updatedUser = Cookie.get('user') ? JSON.parse(Cookie.get('user') as string) : {};
+        if (username) updatedUser.username = username;
+        if (name) updatedUser.name = name;
+        if (email) updatedUser.email = email;
+        Cookie.set('user', JSON.stringify(updatedUser), { expires: 7, secure: process.env.NODE_ENV === 'production' });
+        
       } else {
-        setMessage(response.data.message);
+        toast.error(response.data.message); // Show error toast
       }
     } catch (err: unknown) {
-      setMessage('Error updating profile: ' + (axios.isAxiosError(err) ? err.message : 'Unknown error'));
+      toast.error('Error updating profile: ' + (axios.isAxiosError(err) ? err.message : 'Unknown error')); // Show error toast
     }
-  };
-
-  const handleSessionClear = () => {
-    setToastMessage("Session expired. Please log in again.");
-    setShowToast(true);
-    setTimeout(() => {
-      localStorage.removeItem('user');
-      router.push('/login');
-    }, 2000); // Redirect after showing the toast
-  };
-
-  const closeToast = () => {
-    setShowToast(false);
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Edit Profile</h1>
       {message && <p className={styles.message}>{message}</p>}
-      
-      {showToast && (
-        <div className={styles.toast}>
-          <p>{toastMessage}</p>
-          <button onClick={closeToast}>Close</button>
-        </div>
-      )}
 
       <div className={styles.avatarContainer}>
+        <div className={styles.AvatarImageContainer}>
         <img className={styles.imgPreview} src={preview || `https://blog.tourismofkashmir.com/${avatar}`} alt="Avatar" />
         <div className={styles.editIconContainer}>
           <FaEdit className={styles.editIcon} onClick={() => document.getElementById('avatar-input')?.click()} />
+        </div>
         </div>
         <input
           id="avatar-input"
@@ -168,94 +158,77 @@ const Profile = () => {
       </div>
 
       <div className={styles.form}>
+        {/* Username */}
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="username">Username:</label>
-          {isEditingUsername ? (
-            <>
-              <input
-                className={styles.inputText}
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <button className={styles.editButton} onClick={() => { handleUpdate(); setIsEditingUsername(false); }}>Save</button>
-            </>
-          ) : (
-            <>
-              <span>{username}</span>
-              <button className={styles.editButton} onClick={() => setIsEditingUsername(true)}>Edit</button>
-            </>
-          )}
+          <input
+            className={styles.inputText}
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onBlur={handleUpdate}  // Trigger auto-save on blur
+            required
+          />
         </div>
 
+        {/* Name */}
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="name">Name:</label>
-          {isEditingName ? (
-            <>
-              <input
-                className={styles.inputText}
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-              <button className={styles.editButton} onClick={() => { handleUpdate(); setIsEditingName(false); }}>Save</button>
-            </>
-          ) : (
-            <>
-              <span>{name}</span>
-              <button className={styles.editButton} onClick={() => setIsEditingName(true)}>Edit</button>
-            </>
-          )}
+          <input
+            className={styles.inputText}
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onBlur={handleUpdate}  // Trigger auto-save on blur
+            required
+          />
         </div>
 
+        {/* Email */}
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="email">Email:</label>
-          {isEditingEmail ? (
-            <>
-              <input
-                className={styles.inputText}
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <button className={styles.editButton} onClick={() => { handleUpdate(); setIsEditingEmail(false); }}>Save</button>
-            </>
-          ) : (
-            <>
-              <span>{email}</span>
-              <button className={styles.editButton} onClick={() => setIsEditingEmail(true)}>Edit</button>
-            </>
-          )}
+          <input
+            className={styles.inputText}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onBlur={handleUpdate}  // Trigger auto-save on blur
+            required
+          />
         </div>
 
+        {/* Password */}
         <div className={styles.formGroup}>
           <label className={styles.label} htmlFor="password">New Password:</label>
-          {isEditingPassword ? (
-            <>
-              <input
-                className={styles.inputText}
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Leave blank to keep current password"
-              />
-              <button className={styles.editButton} onClick={() => { handleUpdate(); setIsEditingPassword(false); }}>Save</button>
-            </>
-          ) : (
-            <>
-              <span>******</span>
-              <button className={styles.editButton} onClick={() => setIsEditingPassword(true)}>Edit</button>
-            </>
-          )}
+          <input
+            className={styles.inputText}
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Leave blank to keep current password"
+            onBlur={handleUpdate}  // Trigger auto-save on blur
+          />
         </div>
       </div>
+
+      {/* Toastify Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}  // Toast will close after 5 seconds
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        style={{ zIndex: 9999 }} // Set z-index of toast container
+      />
     </div>
   );
 };

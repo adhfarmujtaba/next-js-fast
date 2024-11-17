@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import CONFIG from '../utils/config'; // Adjust the path as needed
 import { useRouter } from 'next/router'; // Import useRouter
+import Cookie from 'js-cookie'; // Import js-cookie
 import '../app/notifications.css';
 
 interface Notification {
@@ -24,14 +25,17 @@ const Notifications: React.FC = () => {
   const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
-    const loggedInUser = localStorage.getItem('user');
+    // Check if the 'user' cookie exists
+    const loggedInUser = Cookie.get('user'); // Get the 'user' cookie
+
     if (loggedInUser) {
       const foundUser = JSON.parse(loggedInUser);
-      setUserId(foundUser.id);
-    }else {
+      setUserId(foundUser.id); // Set user ID from the cookie
+    } else {
+      // If no user cookie is found, redirect to login page
       router.push('/login');
     }
-  }, [router]);
+  }, [router]); // Re-run when the router changes
 
   useEffect(() => {
     if (userId !== null) {

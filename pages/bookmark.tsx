@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router'; // Import useRouter
 import DeleteIcon from '@mui/icons-material/Delete'; // Import Material-UI delete icon
 import { toast } from 'react-toastify'; // Import toast for success/error notifications
+import Cookie from 'js-cookie'; // Import js-cookie
 import 'react-toastify/dist/ReactToastify.css'; // Import toast styling
 import '../app/Bookmark.css'; // Link to the custom CSS file
 
@@ -23,16 +24,21 @@ const Bookmark = () => {
 
   // Fetch logged-in user from localStorage
   useEffect(() => {
-    const loggedInUser = localStorage.getItem('user');
-    if (loggedInUser) {
-      const foundUser = JSON.parse(loggedInUser);
-      setCurrentUserID(foundUser.id); // Set current user ID from localStorage
+    // Check if the user cookie exists
+    const userSession = Cookie.get('user');
+
+    if (userSession) {
+      const foundUser = JSON.parse(userSession);
+      setCurrentUserID(foundUser.id); // Set current user ID from cookie
     } else {
+      // If no user cookie is found, redirect to login and show error message
       router.push('/login');
       toast.error('User is not logged in.');
-      setLoading(false);
     }
-  }, [router]);
+
+    setLoading(false); // Stop loading after the check
+  }, [router]); // Re-run when the router changes
+
 
   // Fetch bookmarks when currentUserID is available
   useEffect(() => {

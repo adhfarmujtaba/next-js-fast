@@ -1,5 +1,3 @@
-// pages/login.tsx
-
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,6 +6,7 @@ import CONFIG from '../utils/config'; // Adjust the path as needed
 import { FaUser, FaLock, FaSignInAlt, FaArrowLeft } from 'react-icons/fa';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Cookie from 'js-cookie'; // Import js-cookie for cookie management
 import '../app/LoginPage.css'; // Import the CSS file directly
 
 const LoginPage = () => {
@@ -22,9 +21,12 @@ const LoginPage = () => {
 
         try {
             const response = await axios.post(`${CONFIG.BASE_URL}/apilogin.php`, { username, password });
-            
+
             if (response.data && response.data.user) {
-                localStorage.setItem('user', JSON.stringify(response.data.user));
+                // Store user data in cookies
+                Cookie.set('user', JSON.stringify(response.data.user), { expires: 7, secure: process.env.NODE_ENV === 'production' }); // Expires in 7 days
+
+                // Show success message
                 toast.success(`Login successful! Welcome ${response.data.user.name}!`, {
                     position: "top-center",
                     autoClose: 2000,
@@ -32,10 +34,10 @@ const LoginPage = () => {
                     closeOnClick: true,
                     pauseOnHover: true,
                     draggable: true,
-                    className: 'custom-toast-success' // Custom class for styling
+                    className: 'custom-toast-success', // Custom class for styling
                 });
-                
-                setTimeout(() => router.push('/'), 2000);
+
+                setTimeout(() => router.push('/'), 2000); // Redirect after success
             } else {
                 toast.error('Login failed. Please check your credentials.');
             }
@@ -52,14 +54,14 @@ const LoginPage = () => {
         <div className="login-page">
             <div className="login-form">
                 <div className="logo">
-                <Link href="/"  className='logo-link-login'>Leak News</Link>
+                <Link href="/" className='logo-link-login'>Leak News</Link>
                 </div>
                 <div className="welcome-text"><h1>Welcome Back!</h1></div>
             
                 <form onSubmit={handleLogin}>
                     <div className="items">
                         <div className="input">
-                            <FaUser  className='input-i' />
+                            <FaUser className='input-i' />
                             <input
                                 id="username"
                                 type="text"

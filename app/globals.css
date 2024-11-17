@@ -78,6 +78,7 @@ body{
   left: 0;
   right: 0;
   bottom: 0;
+  height: 900000vh !important;
   background-color: rgba(0, 0, 0, 0.5); /* Black with 20% transparency */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   display: none; /* Initially hide the overlay */
@@ -170,4 +171,14 @@ transition: top 0.3s; /* Smooth transition for showing/hiding the header */
   }
 
 
+}
+
+body, html {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  height: 100%; /* Make the body and html elements take up the full height of the viewport */
+}
+
+.main {
+  height: 100vh; /* 100% of the viewport height */
 }

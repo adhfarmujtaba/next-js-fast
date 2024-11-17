@@ -16,6 +16,7 @@ import { SiFacebook, SiWhatsapp } from 'react-icons/si';
 import { FaClipboard, FaTwitter  } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import CommentsModal from './CommentsModel';
+import Cookie from 'js-cookie'; // Import js-cookie
 import 'react-toastify/dist/ReactToastify.css';
 
 interface Post {
@@ -145,8 +146,9 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
           const response = await axios.get(`${CONFIG.BASE_URL}/api_likes?action=getLikeCount&post_id=${post.id}`);
           setLikeCount(response.data.like_count);
   
-          const loggedInUser = localStorage.getItem('user');
-          if (loggedInUser) {
+ // Check if the user is logged in by reading the 'user' cookie
+ const loggedInUser = Cookie.get('user'); // Get the 'user' cookie
+ if (loggedInUser) {
             const foundUser = JSON.parse(loggedInUser);
             const userId = foundUser.id;
   
@@ -173,7 +175,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
     if (!post) return; // Early return if post is null
   
     try {
-      const loggedInUser = localStorage.getItem('user');
+      const loggedInUser = Cookie.get('user'); // Get the 'user' cookie
       if (!loggedInUser) {
         toast.error("Please log in to like the post");
         return;
@@ -185,7 +187,8 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
       const response = await axios.post(`${CONFIG.BASE_URL}/api_likes?action=toggle-like`, { post_id: post.id, user_id: userId });
   
       if (response.data && response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        Cookie.set('user', JSON.stringify(response.data.user), { expires: 7, secure: process.env.NODE_ENV === 'production' }); // Expires in 7 days
+
         toast.success(`Login successful! Welcome ${response.data.user.name}!`);
       }
   
@@ -233,7 +236,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
     const checkBookmarkStatus = async () => {
       if (post) {
         try {
-          const loggedInUser = localStorage.getItem('user');
+          const loggedInUser = Cookie.get('user'); // Get the 'user' cookie
           if (!loggedInUser) {
             console.warn("User not logged in");
             setIsBookmarked(false);
@@ -262,7 +265,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const handleBookmarkClick = async () => {
     if (!post) return; // Add null check for post
   
-    const loggedInUser = localStorage.getItem('user');
+    const loggedInUser = Cookie.get('user'); // Get the 'user' cookie
     if (!loggedInUser) {
       toast.error("Please log in to manage bookmarks");
       return;

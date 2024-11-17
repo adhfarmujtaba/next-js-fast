@@ -152,7 +152,7 @@ const MyApp = ({ Component, pageProps }: { Component: React.ComponentType; pageP
         </div>
       ) : (
 
-      <div className={`main ${menuOpen ? 'menu-open' : ''}`} style={{ height: '100vh' }} id='main'>
+      <div className={`main ${menuOpen ? 'menu-open' : ''}`} id='main'>
         <ToastContainer />
         <div className={`overlay`} onClick={handleToggleMenu}></div>
         { (isProfilePage || isEditProfilePage) && <ProfileHeader /> }

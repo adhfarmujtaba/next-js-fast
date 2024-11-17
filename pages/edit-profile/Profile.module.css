@@ -1,161 +1,215 @@
-/* Container for the entire profile section */
+/* General Container Styling */
 .container {
-  max-width: 600px;
+  width: 100%;
+  max-width: 480px;
   margin: 0 auto;
+  margin-top: 70px;
   padding: 30px;
-  margin-top: 50px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  font-family: 'Roboto', sans-serif;
-  transition: box-shadow 0.3s ease;
+  /* border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); */
+  background-color: #f9f9f9;
+  overflow: hidden;
 }
 
-.container:hover {
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
-
-/* Title styling */
+/* Heading */
 .title {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 30px;
   text-align: center;
-  color: #333333;
+  letter-spacing: 1px;
+  line-height: 1.4;
 }
 
-/* Message styling for alerts */
-.message {
-  color: #ff0000;
-  text-align: center;
-  margin-bottom: 15px;
-  font-weight: 500;
-}
-
-/* Toast notification style */
-.toast {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #28a745;
-  color: #ffffff;
-  padding: 12px 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  font-weight: 500;
-}
-
-/* Avatar container styling */
+/* Avatar Container */
 .avatarContainer {
+  position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin-bottom: 25px;
-  position: relative; /* Enables absolute positioning for child elements */
+  margin-bottom: 35px;
 }
 
-/* Preview image for the avatar */
 .imgPreview {
   width: 120px;
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #007bff;
-  transition: transform 0.3s ease;
+  border: 4px solid #fff;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
 .imgPreview:hover {
   transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Edit icon positioning */
+.AvatarImageContainer{
+  position: relative;
+}
+
 .editIconContainer {
-  position: absolute; /* Position it absolutely within the avatar container */
-  top: 5px; /* Adjust to position the icon */
-  right: 5px; /* Adjust to position the icon */
-  background-color: rgba(255, 255, 255, 0.8); /* Background for visibility */
-  border-radius: 50%; /* Round background */
-  padding: 5px; /* Padding for the icon */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  background-color: #ffffff;
+  padding: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 
-/* Edit icon styling */
+.editIconContainer:hover {
+  background-color: #007bff;
+}
+
 .editIcon {
-  font-size: 24px; /* Adjust icon size */
+  font-size: 15px;
   color: #007bff;
-  cursor: pointer;
   transition: color 0.3s ease;
 }
 
-.editIcon:hover {
-  color: #0056b3;
+.editIconContainer:hover .editIcon {
+  color: #ffffff;
 }
 
-/* File input is hidden */
+/* Form Styling */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  box-sizing: border-box;
+
+}
+
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.inputText {
+  padding: 14px 18px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.inputText:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+.inputText::placeholder {
+  color: #aaa;
+}
+
 .inputFile {
   display: none;
 }
 
-/* Form container styling */
-.form {
-  background: #f8f9fa;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-/* Form group for each input */
-.formGroup {
+/* Success/Error Message */
+.message {
+  font-size: 14px;
+  color: #e74c3c;
+  text-align: center;
   margin-bottom: 20px;
 }
 
-/* Label styling */
-.label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 5px;
-  color: #555;
-}
 
-/* Input field styling */
-.inputText {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ced4da;
-  border-radius: 8px;
-  transition: border-color 0.3s;
-  font-size: 16px;
-}
-
-/* Input focus effect */
-.inputText:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-/* Button styling */
-.editButton {
-  margin-top: 10px;
+/* Button */
+.updateButton {
+  padding: 16px;
   background-color: #007bff;
   color: #ffffff;
-  border: none;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
   border-radius: 8px;
-  padding: 10px 16px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s, transform 0.2s;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
-.editButton:hover {
+.updateButton:hover {
   background-color: #0056b3;
-  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Media queries for responsive design */
+.updateButton:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* Toast Notification Styling */
+.Toastify__toast--success {
+  background-color: #28a745;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.Toastify__toast--error {
+  background-color: #e74c3c;
+  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1024px) {
+  .container {
+    padding: 25px;
+    margin-top: 70px;
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+
+  .imgPreview {
+    width: 110px;
+    height: 110px;
+  }
+
+  .form {
+    gap: 20px;
+  }
+
+  .updateButton {
+    padding: 14px;
+    font-size: 16px;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 20px;
+    margin-top: 70px;
+    width: 90%;
+  }
+
+  .title {
+    font-size: 22px;
+    margin-bottom: 20px;
   }
 
   .imgPreview {
@@ -163,11 +217,79 @@
     height: 100px;
   }
 
-  .editIcon {
-    font-size: 20px;
+  .form {
+    gap: 18px;
   }
 
-  .editButton {
-    padding: 8px 14px;
+  .inputText {
+    font-size: 14px;
+    padding: 12px 15px;
+  }
+
+  .updateButton {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+    margin-top: 70px;
+  }
+
+  .title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .imgPreview {
+    width: 90px;
+    height: 90px;
+  }
+
+  .form {
+    gap: 15px;
+  }
+
+  .inputText {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  .updateButton {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .container {
+    padding: 10px;
+    margin-top: 70px;
+  }
+
+  .title {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+
+  .imgPreview {
+    width: 80px;
+    height: 80px;
+  }
+
+  .form {
+    gap: 12px;
+  }
+
+  .inputText {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .updateButton {
+    padding: 12px;
+    font-size: 14px;
   }
 }

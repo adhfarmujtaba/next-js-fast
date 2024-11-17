@@ -4,6 +4,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import CONFIG from '../../utils/config';
+import Cookie from 'js-cookie'; // Import js-cookie
 import '../../app/commentsModal.css';
 
 interface CommentsModalProps {
@@ -22,7 +23,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
     const [hasMoreComments, setHasMoreComments] = useState(true); // Track if there are more comments
 
     useEffect(() => {
-        const loggedInUser = localStorage.getItem('user');
+        const loggedInUser = Cookie.get('user'); // Get the 'user' cookie
         if (loggedInUser) {
             const foundUser = JSON.parse(loggedInUser);
             setUser(foundUser);
