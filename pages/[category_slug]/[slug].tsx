@@ -70,43 +70,45 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [showShareOptions, setShowShareOptions] = useState(false);
 
 
-
- useEffect(() => {
-    // Check if post is already cached in localStorage when navigating back
-    const cachedPost = localStorage.getItem(`post-${slug}`);
-    if (cachedPost) {
-      setPost(JSON.parse(cachedPost));
-      setLoading(false);
-    } else {
-      // If post is not cached, fetch it
-      if (category_slug && slug) {
-        setLoading(true);
-        axios
-          .get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`)
-          .then((response) => {
-            const fetchedPost = response.data;
-            setPost(fetchedPost);
-
-            // Save to localStorage for cache
-            localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
-
-            // Fetch related posts
-            axios
-              .get(
-                `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
-              )
-              .then((relatedResponse) => setRelatedPosts(relatedResponse.data))
-              .catch((error) => console.error('Error fetching related posts:', error));
-
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error('Error fetching post:', error);
-            setPost(null);
-            setLoading(false);
-          });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Check if post is already cached in localStorage when navigating back
+        const cachedPost = localStorage.getItem(`post-${slug}`);
+        if (cachedPost) {
+          setPost(JSON.parse(cachedPost));
+          setLoading(false);
+          return; // Exit early if post is found in cache
+        }
+  
+        // If post is not cached, fetch it
+        if (category_slug && slug) {
+          setLoading(true);
+          
+          // Fetch the post
+          const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
+          const fetchedPost = response.data;
+          setPost(fetchedPost);
+  
+          // Save to localStorage for cache
+          localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
+  
+          // Fetch related posts
+          const relatedResponse = await axios.get(
+            `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
+          );
+          setRelatedPosts(relatedResponse.data);
+  
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setPost(null);
+        setLoading(false);
       }
-    }
+    };
+  
+    fetchData();
   }, [category_slug, slug]);
 
 
