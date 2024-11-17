@@ -69,30 +69,28 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
 
+ // Fetch the post and related posts
+ useEffect(() => {
+  const fetchPost = async () => {
+    const cachedPost = localStorage.getItem(`post-${slug}`);
+    if (cachedPost) {
+      setPost(JSON.parse(cachedPost));
+      setLoading(false);
+      return;
+    }
 
-  // Fetch post on mount or when category_slug or slug changes
-  useEffect(() => {
-    if (!slug || !category_slug) return;
-
-    const fetchPost = async () => {
-      // Check if post is already cached in localStorage
-      const cachedPost = localStorage.getItem(`post-${slug}`);
-      if (cachedPost) {
-        setPost(JSON.parse(cachedPost));
-        setLoading(false);
-        return;
-      }
-
+    if (category_slug && slug) {
       setLoading(true);
       try {
-        // Fetch post
         const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
         const fetchedPost = response.data;
         setPost(fetchedPost);
+
         localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
 
-        // Fetch related posts
-        const relatedResponse = await axios.get(`${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
+        const relatedResponse = await axios.get(
+          `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
+        );
         setRelatedPosts(relatedResponse.data);
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -100,11 +98,13 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
       } finally {
         setLoading(false);
       }
-    };
+    }
+  };
 
+  if (slug) {
     fetchPost();
-  }, [category_slug, slug]);
-
+  }
+}, [category_slug, slug]);
 
 
   // Top viewed post 
