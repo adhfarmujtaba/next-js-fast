@@ -239,7 +239,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
           } else {
             setIsBookmarked(false);
           }
-        } catch (error: unknown) { // Specify the type of error
+        } catch (error) { // Specify the type of error
           console.error("Error checking bookmark status:", error);
           setIsBookmarked(false);
         }
@@ -271,7 +271,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
       } else {
         toast.success("Bookmark removed successfully");
       }
-    } catch (error: unknown) { // Specify the type of error
+    } catch (error) { // Specify the type of error
       console.error(`Error ${action}ing bookmark:`, error);
       toast.error(`Error ${action}ing bookmark: ${error instanceof Error ? error.message : "unknown error"}`);
     }
