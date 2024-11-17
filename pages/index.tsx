@@ -89,11 +89,6 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  // Helper function to check if post already exists in the list
-  const isPostAlreadyFetched = (newPost: Post) => {
-    return posts.some(post => post.id === newPost.id);
-  };
-
   // Load cached posts from localStorage or fetch from API
   useEffect(() => {
     const cachedPosts = localStorage.getItem('cachedPosts');
@@ -103,7 +98,7 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
     } else {
       fetchPosts(pageNumber); // Initial fetch if no cached data
     }
-  }, []); // Empty dependency array to load once on component mount
+  }, []); // Keep this empty to run only on mount
 
   const fetchPosts = async (page: number) => {
     setLoading(true);
@@ -175,6 +170,7 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
                     alt={post.title}
                     className="news-item-image"
                     style={{ width: '100%', height: '180px', objectFit: 'cover' }}
+                    loading="lazy" // Lazy loading
                   />
                   <div style={{ position: 'absolute', bottom: '10px', right: '10px', backgroundColor: 'rgba(0, 0, 0, 0.5)', color: 'white', padding: '5px', borderRadius: '5px', fontSize: '0.8rem' }}>
                     {post.read_time} min read
