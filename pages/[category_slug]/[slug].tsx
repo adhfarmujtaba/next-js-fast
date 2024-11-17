@@ -6,7 +6,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import CONFIG from '../../utils/config'; // Adjust the path as needed
 import '../../app/post.css';
-// Import Material Icons
 import FavoriteIcon from '@mui/icons-material/Favorite'; // Heart icon for like
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline'; // Comment icon
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -61,7 +60,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [post, setPost] = useState<Post | null>(initialPost);
   const [loading, setLoading] = useState<boolean>(!initialPost);
   const [relatedPosts, setRelatedPosts] = useState<RelatedPost[]>([]);
-  const [topViewedPosts, setTopViewedPosts] = useState<TopViewedPost[]>([]); // Define the state here
+  const [topViewedPosts, setTopViewedPosts] = useState<TopViewedPost[]>([]); 
   const [likeCount, setLikeCount] = useState(0);
   const [isLikedByUser, setIsLikedByUser] = useState(false);
   const [showComments, setShowComments] = useState<boolean>(false);
@@ -69,38 +68,30 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
 
-
-
-
-
   useEffect(() => {
     const fetchPost = async () => {
       if (category_slug && slug) {
-        // Check if data is available in localStorage (or you could use sessionStorage or a state-based cache)
         const cachedPost = localStorage.getItem(`post_${slug}`);
         const cachedRelatedPosts = localStorage.getItem(`related_posts_${slug}`);
 
         if (cachedPost && cachedRelatedPosts) {
-          // If data is cached, use it directly
           setPost(JSON.parse(cachedPost));
           setRelatedPosts(JSON.parse(cachedRelatedPosts));
           setLoading(false);
-          return; // Skip the API call
+          return; // Skip API call if data is cached
         }
 
-        setLoading(true); // Start loading if there's no cached data
+        setLoading(true);
 
         try {
-          // Fetch the post data
           const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
           const fetchedPost = response.data;
           setPost(fetchedPost);
 
-          // Fetch related posts
           const relatedResponse = await axios.get(`${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
           setRelatedPosts(relatedResponse.data);
 
-          // Cache the fetched data in localStorage for future use
+          // Cache the fetched data for future use
           localStorage.setItem(`post_${slug}`, JSON.stringify(fetchedPost));
           localStorage.setItem(`related_posts_${slug}`, JSON.stringify(relatedResponse.data));
         } catch (error) {
@@ -115,28 +106,21 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
     if (slug) {
       fetchPost();
     }
-
-  }, [category_slug, slug]); // Dependencies to trigger useEffect when category_slug or slug changes
-
-
-  // Top viewed post 
+  }, [category_slug, slug]);
 
   useEffect(() => {
     const fetchTopViewedPosts = async () => {
-      try {
-        if (post) {
+      if (post) {
+        try {
           const response = await axios.get(`${CONFIG.BASE_URL}/related_api.php?topviewpost=true&exclude_post_id=${post.id}`);
           setTopViewedPosts(response.data);
+        } catch (error) {
+          console.error("Error fetching top viewed posts:", error);
         }
-      } catch (error) {
-        console.error("Error fetching top viewed posts:", error);
       }
     };
-
     fetchTopViewedPosts();
   }, [post]);
-
-
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -144,12 +128,12 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
         try {
           const response = await axios.get(`${CONFIG.BASE_URL}/api_likes?action=getLikeCount&post_id=${post.id}`);
           setLikeCount(response.data.like_count);
-  
+
           const loggedInUser = localStorage.getItem('user');
           if (loggedInUser) {
             const foundUser = JSON.parse(loggedInUser);
             const userId = foundUser.id;
-  
+
             const likeStatusResponse = await axios.get(`${CONFIG.BASE_URL}/api_likes?action=checkUserLike&post_id=${post.id}&user_id=${userId}`);
             setIsLikedByUser(likeStatusResponse.data.user_liked);
           }
@@ -158,44 +142,33 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
         }
       }
     };
-  
-    fetchLikes(); // Initial fetch
-  
-    const intervalId = setInterval(fetchLikes, 1000); // Refresh every second
-  
-    return () => {
-      clearInterval(intervalId); // Clear the interval on component unmount
-    };
+    fetchLikes();
+    const intervalId = setInterval(fetchLikes, 1000);
+    return () => clearInterval(intervalId);
   }, [post]);
-  
-  
+
   const toggleLike = async () => {
-    if (!post) return; // Early return if post is null
-  
+    if (!post) return;
+
     try {
       const loggedInUser = localStorage.getItem('user');
       if (!loggedInUser) {
         toast.error("Please log in to like the post");
         return;
       }
-  
+
       const foundUser = JSON.parse(loggedInUser);
       const userId = foundUser.id;
-  
+
       const response = await axios.post(`${CONFIG.BASE_URL}/api_likes?action=toggle-like`, { post_id: post.id, user_id: userId });
-  
+
       if (response.data && response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
         toast.success(`Login successful! Welcome ${response.data.user.name}!`);
       }
-  
-      setIsLikedByUser(prev => !prev);
-      setLikeCount(prevCount => isLikedByUser ? prevCount - 1 : prevCount + 1);
-      document.getElementById('like-btn')?.classList.add('heartBeatAnimation');
-  
-      setTimeout(() => {
-        document.getElementById('like-btn')?.classList.remove('heartBeatAnimation');
-      }, 500);
+
+      setIsLikedByUser((prev) => !prev);
+      setLikeCount((prevCount) => (isLikedByUser ? prevCount - 1 : prevCount + 1));
     } catch (error) {
       console.error("Error toggling like:", error);
     }
@@ -212,22 +185,15 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
         console.error("Error fetching comment count:", error);
       }
     };
-  
-    fetchCommentCount(); // Initial fetch
-  
-    const intervalId = setInterval(fetchCommentCount, 1000); // Refresh every second
-  
-    return () => {
-      clearInterval(intervalId); // Clear the interval on component unmount
-    };
+
+    fetchCommentCount();
+    const intervalId = setInterval(fetchCommentCount, 1000);
+    return () => clearInterval(intervalId);
   }, [post]);
-  
-  
+
   const toggleCommentsModal = () => {
-    setShowComments(prevState => !prevState);
+    setShowComments((prevState) => !prevState);
   };
-
-
 
   useEffect(() => {
     const checkBookmarkStatus = async () => {
@@ -235,55 +201,45 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
         try {
           const loggedInUser = localStorage.getItem('user');
           if (!loggedInUser) {
-            console.warn("User not logged in");
             setIsBookmarked(false);
             return;
           }
-  
+
           const foundUser = JSON.parse(loggedInUser);
           const userId = foundUser.id;
-  
+
           const response = await axios.get(`${CONFIG.BASE_URL}/api_bookmark.php?action=check&user_id=${userId}&post_id=${post.id}`);
-          if (response.data && typeof response.data === 'string') {
-            setIsBookmarked(response.data.includes("Post is bookmarked"));
-          } else {
-            setIsBookmarked(false);
-          }
-        } catch (error: unknown) { // Specify the type of error
+          setIsBookmarked(response.data && typeof response.data === 'string' && response.data.includes("Post is bookmarked"));
+        } catch (error) {
           console.error("Error checking bookmark status:", error);
           setIsBookmarked(false);
         }
       }
     };
-  
     checkBookmarkStatus();
   }, [post]);
-  
+
   const handleBookmarkClick = async () => {
-    if (!post) return; // Add null check for post
-  
+    if (!post) return;
+
     const loggedInUser = localStorage.getItem('user');
     if (!loggedInUser) {
       toast.error("Please log in to manage bookmarks");
       return;
     }
-  
+
     const foundUser = JSON.parse(loggedInUser);
     const userId = foundUser.id;
-  
+
     const action = isBookmarked ? 'delete' : 'add';
-  
+
     try {
       await axios.get(`${CONFIG.BASE_URL}/api_bookmark.php?action=${action}&user_id=${userId}&post_id=${post.id}`);
       setIsBookmarked(!isBookmarked);
-      if (action === 'add') {
-        toast.success("Bookmark added successfully");
-      } else {
-        toast.success("Bookmark removed successfully");
-      }
-    } catch (error: unknown) { // Specify the type of error
-      console.error(`Error ${action}ing bookmark:`, error);
-      toast.error(`Error ${action}ing bookmark: ${error instanceof Error ? error.message : "unknown error"}`);
+      toast.success(isBookmarked ? "Removed from bookmarks" : "Added to bookmarks");
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+      toast.error("Something went wrong with bookmarks.");
     }
   };
   
