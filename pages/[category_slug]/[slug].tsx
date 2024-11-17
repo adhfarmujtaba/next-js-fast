@@ -69,42 +69,51 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
 
- // Fetch the post and related posts
- useEffect(() => {
-  const fetchPost = async () => {
-    const cachedPost = localStorage.getItem(`post-${slug}`);
-    if (cachedPost) {
-      setPost(JSON.parse(cachedPost));
-      setLoading(false);
-      return;
-    }
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (category_slug && slug) {
+        // Check if data is available in localStorage (or you could use sessionStorage or a state-based cache)
+        const cachedPost = localStorage.getItem(`post_${slug}`);
+        const cachedRelatedPosts = localStorage.getItem(`related_posts_${slug}`);
 
-    if (category_slug && slug) {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
-        const fetchedPost = response.data;
-        setPost(fetchedPost);
+        if (cachedPost && cachedRelatedPosts) {
+          // If data is cached, use it directly
+          setPost(JSON.parse(cachedPost));
+          setRelatedPosts(JSON.parse(cachedRelatedPosts));
+          setLoading(false);
+          return; // Skip the API call
+        }
 
-        localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
+        setLoading(true); // Start loading if there's no cached data
 
-        const relatedResponse = await axios.get(
-          `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
-        );
-        setRelatedPosts(relatedResponse.data);
-      } catch (error) {
-        console.error('Error fetching post:', error);
-        setPost(null);
-      } finally {
-        setLoading(false);
+        try {
+          // Fetch the post data
+          const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
+          const fetchedPost = response.data;
+          setPost(fetchedPost);
+
+          // Fetch related posts
+          const relatedResponse = await axios.get(`${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
+          setRelatedPosts(relatedResponse.data);
+
+          // Cache the fetched data in localStorage for future use
+          localStorage.setItem(`post_${slug}`, JSON.stringify(fetchedPost));
+          localStorage.setItem(`related_posts_${slug}`, JSON.stringify(relatedResponse.data));
+        } catch (error) {
+          console.error('Error fetching post:', error);
+          setPost(null);
+        } finally {
+          setLoading(false);
+        }
       }
-    }
-  };
+    };
 
-  if (slug) {
-    fetchPost();
-  }
-}, [category_slug, slug]);
+    if (slug) {
+      fetchPost();
+    }
+
+  }, [category_slug, slug]); // Dependencies to trigger useEffect when category_slug or slug changes
+
 
 
   // Top viewed post 
