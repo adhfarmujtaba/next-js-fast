@@ -69,56 +69,39 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
 
-  // Fetch Post and Cache in LocalStorage
+
+
+
+
   useEffect(() => {
-    // Check if post is already cached in localStorage when navigating back
-    const cachedPost = localStorage.getItem(`post-${slug}`);
-    if (cachedPost) {
-      setPost(JSON.parse(cachedPost));
-      setLoading(false);
-    } else {
-      // If post is not cached, fetch it
+    const fetchPost = async () => {
       if (category_slug && slug) {
         setLoading(true);
-        axios
-          .get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`)
-          .then((response) => {
-            const fetchedPost = response.data;
-            setPost(fetchedPost);
+        try {
+          const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
+          const fetchedPost = response.data;
+          setPost(fetchedPost);
 
-            // Save to localStorage for cache
-            localStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
-
-            // Fetch related posts
-            axios
-              .get(
-                `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
-              )
-              .then((relatedResponse) => setRelatedPosts(relatedResponse.data))
-              .catch((error: unknown) => {
-                if (error instanceof Error) {
-                  console.error('Error fetching related posts:', error.message);
-                } else {
-                  console.error('Error fetching related posts:', error);
-                }
-              });
-
-            setLoading(false);
-          })
-          .catch((error: unknown) => {
-            if (error instanceof Error) {
-              console.error('Error fetching post:', error.message);
-            } else {
-              console.error('Error fetching post:', error);
-            }
-            setPost(null);
-            setLoading(false);
-          });
+          // Fetch related posts
+          const relatedResponse = await axios.get(`${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
+          setRelatedPosts(relatedResponse.data);
+        } catch (error) {
+          console.error('Error fetching post:', error);
+          setPost(null);
+        } finally {
+          setLoading(false);
+        }
       }
+    };
+
+    if (slug) {
+      fetchPost();
     }
   }, [category_slug, slug]);
 
-  // Fetch Top Viewed Posts
+
+  // Top viewed post 
+
   useEffect(() => {
     const fetchTopViewedPosts = async () => {
       try {
@@ -126,93 +109,79 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
           const response = await axios.get(`${CONFIG.BASE_URL}/related_api.php?topviewpost=true&exclude_post_id=${post.id}`);
           setTopViewedPosts(response.data);
         }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Error fetching top viewed posts:', error.message);
-        } else {
-          console.error('Error fetching top viewed posts:', error);
-        }
+      } catch (error) {
+        console.error("Error fetching top viewed posts:", error);
       }
     };
 
     fetchTopViewedPosts();
   }, [post]);
 
-  // Fetch Like Count
+
+
   useEffect(() => {
     const fetchLikes = async () => {
       if (post) {
         try {
           const response = await axios.get(`${CONFIG.BASE_URL}/api_likes?action=getLikeCount&post_id=${post.id}`);
           setLikeCount(response.data.like_count);
-
+  
           const loggedInUser = localStorage.getItem('user');
           if (loggedInUser) {
             const foundUser = JSON.parse(loggedInUser);
             const userId = foundUser.id;
-
-            const likeStatusResponse = await axios.get(
-              `${CONFIG.BASE_URL}/api_likes?action=checkUserLike&post_id=${post.id}&user_id=${userId}`
-            );
+  
+            const likeStatusResponse = await axios.get(`${CONFIG.BASE_URL}/api_likes?action=checkUserLike&post_id=${post.id}&user_id=${userId}`);
             setIsLikedByUser(likeStatusResponse.data.user_liked);
           }
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            console.error('Error fetching like data:', error.message);
-          } else {
-            console.error('Error fetching like data:', error);
-          }
+        } catch (error) {
+          console.error("Error fetching like data:", error);
         }
       }
     };
-
+  
     fetchLikes(); // Initial fetch
-
+  
     const intervalId = setInterval(fetchLikes, 1000); // Refresh every second
-
+  
     return () => {
       clearInterval(intervalId); // Clear the interval on component unmount
     };
   }, [post]);
-
-  // Handle Like Toggle
+  
+  
   const toggleLike = async () => {
     if (!post) return; // Early return if post is null
-
+  
     try {
       const loggedInUser = localStorage.getItem('user');
       if (!loggedInUser) {
-        toast.error('Please log in to like the post');
+        toast.error("Please log in to like the post");
         return;
       }
-
+  
       const foundUser = JSON.parse(loggedInUser);
       const userId = foundUser.id;
-
+  
       const response = await axios.post(`${CONFIG.BASE_URL}/api_likes?action=toggle-like`, { post_id: post.id, user_id: userId });
-
+  
       if (response.data && response.data.user) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
         toast.success(`Login successful! Welcome ${response.data.user.name}!`);
       }
-
-      setIsLikedByUser((prev) => !prev);
-      setLikeCount((prevCount) => (isLikedByUser ? prevCount - 1 : prevCount + 1));
+  
+      setIsLikedByUser(prev => !prev);
+      setLikeCount(prevCount => isLikedByUser ? prevCount - 1 : prevCount + 1);
       document.getElementById('like-btn')?.classList.add('heartBeatAnimation');
-
+  
       setTimeout(() => {
         document.getElementById('like-btn')?.classList.remove('heartBeatAnimation');
       }, 500);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('Error toggling like:', error.message);
-      } else {
-        console.error('Error toggling like:', error);
-      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
     }
   };
 
-  // Fetch Comment Count
   useEffect(() => {
     const fetchCommentCount = async () => {
       try {
@@ -220,93 +189,82 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
           const response = await axios.get(`${CONFIG.BASE_URL}/api_comment_count.php?post_id=${post.id}`);
           setCommentCount(response.data.comment_count);
         }
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          console.error('Error fetching comment count:', error.message);
-        } else {
-          console.error('Error fetching comment count:', error);
-        }
+      } catch (error) {
+        console.error("Error fetching comment count:", error);
       }
     };
-
+  
     fetchCommentCount(); // Initial fetch
-
+  
     const intervalId = setInterval(fetchCommentCount, 1000); // Refresh every second
-
+  
     return () => {
       clearInterval(intervalId); // Clear the interval on component unmount
     };
   }, [post]);
-
-  // Toggle Comments Modal
+  
+  
   const toggleCommentsModal = () => {
-    setShowComments((prevState) => !prevState);
+    setShowComments(prevState => !prevState);
   };
 
-  // Check Bookmark Status
+
+
   useEffect(() => {
     const checkBookmarkStatus = async () => {
       if (post) {
         try {
           const loggedInUser = localStorage.getItem('user');
           if (!loggedInUser) {
-            console.warn('User not logged in');
+            console.warn("User not logged in");
             setIsBookmarked(false);
             return;
           }
-
+  
           const foundUser = JSON.parse(loggedInUser);
           const userId = foundUser.id;
-
-          const response = await axios.get(
-            `${CONFIG.BASE_URL}/api_bookmark.php?action=check&user_id=${userId}&post_id=${post.id}`
-          );
+  
+          const response = await axios.get(`${CONFIG.BASE_URL}/api_bookmark.php?action=check&user_id=${userId}&post_id=${post.id}`);
           if (response.data && typeof response.data === 'string') {
-            setIsBookmarked(response.data.includes('Post is bookmarked'));
+            setIsBookmarked(response.data.includes("Post is bookmarked"));
           } else {
             setIsBookmarked(false);
           }
-        } catch (error: unknown) {
-          console.error('Error checking bookmark status:', error);
+        } catch (error: unknown) { // Specify the type of error
+          console.error("Error checking bookmark status:", error);
           setIsBookmarked(false);
         }
       }
     };
-
+  
     checkBookmarkStatus();
   }, [post]);
-
-  // Handle Bookmark Toggle
+  
   const handleBookmarkClick = async () => {
     if (!post) return; // Add null check for post
-
+  
     const loggedInUser = localStorage.getItem('user');
     if (!loggedInUser) {
-      toast.error('Please log in to manage bookmarks');
+      toast.error("Please log in to manage bookmarks");
       return;
     }
-
+  
     const foundUser = JSON.parse(loggedInUser);
     const userId = foundUser.id;
-
+  
     const action = isBookmarked ? 'delete' : 'add';
-
+  
     try {
       await axios.get(`${CONFIG.BASE_URL}/api_bookmark.php?action=${action}&user_id=${userId}&post_id=${post.id}`);
       setIsBookmarked(!isBookmarked);
       if (action === 'add') {
-        toast.success('Bookmark added successfully');
+        toast.success("Bookmark added successfully");
       } else {
-        toast.success('Bookmark removed successfully');
+        toast.success("Bookmark removed successfully");
       }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(`Error ${action}ing bookmark:`, error.message);
-        toast.error(`Error ${action}ing bookmark: ${error.message}`);
-      } else {
-        console.error(`Error ${action}ing bookmark:`, error);
-        toast.error(`Error ${action}ing bookmark: Unknown error`);
-      }
+    } catch (error: unknown) { // Specify the type of error
+      console.error(`Error ${action}ing bookmark:`, error);
+      toast.error(`Error ${action}ing bookmark: ${error instanceof Error ? error.message : "unknown error"}`);
     }
   };
   
@@ -569,34 +527,26 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   );
 };
 
-// Static generation with revalidation every 10 seconds
-export async function getStaticProps({ params }: any) {
-  const { slug } = params;
+export const getServerSideProps = async (context: { params: { slug: string; category_slug: string; } }) => {
+  const { slug } = context.params;
+
   try {
     const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
-    const postData = response.data;
+    const post = response.data;
 
     return {
       props: {
-        initialPost: postData || null,
+        initialPost: post || null,
       },
-      revalidate: 60, // Regenerate the page at most every 60 seconds
     };
   } catch (error) {
+    console.error('Error fetching post on server:', error);
     return {
       props: {
         initialPost: null,
       },
     };
   }
-}
-
-export async function getStaticPaths() {
-  // Here you would fetch and return all post slugs, if possible
-  return {
-    paths: [],
-    fallback: true,
-  };
-}
+};
 
 export default PostPage;
