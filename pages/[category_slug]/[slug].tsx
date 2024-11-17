@@ -69,6 +69,10 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [showShareOptions, setShowShareOptions] = useState(false);
 
+
+
+
+
   useEffect(() => {
     const fetchPost = async () => {
       if (category_slug && slug) {
@@ -113,7 +117,6 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
     }
 
   }, [category_slug, slug]); // Dependencies to trigger useEffect when category_slug or slug changes
-
 
 
   // Top viewed post 
@@ -554,7 +557,7 @@ export async function getStaticProps({ params }: any) {
       props: {
         initialPost: postData || null,
       },
-      revalidate: 60, // Regenerate the page at most every 60 seconds
+      revalidate: 60, // Regenerate the page at most every 0 seconds
     };
   } catch (error) {
     return {
