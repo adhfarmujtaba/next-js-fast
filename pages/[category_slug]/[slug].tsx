@@ -77,49 +77,65 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   useEffect(() => {
     const fetchPost = async () => {
       if (category_slug && slug) {
-        // Check if data is available in localStorage (or you could use sessionStorage or a state-based cache)
-        const cachedPost = localStorage.getItem(`post_${slug}`);
-        const cachedRelatedPosts = localStorage.getItem(`related_posts_${slug}`);
+        setLoading(true);
+
+        // Check if the post and related posts are cached in sessionStorage
+        const cachedPost = sessionStorage.getItem(`post-${slug}`);
+        const cachedRelatedPosts = sessionStorage.getItem(`related-${slug}`);
 
         if (cachedPost && cachedRelatedPosts) {
-          // If data is cached, use it directly
+          // Use the cached data
           setPost(JSON.parse(cachedPost));
           setRelatedPosts(JSON.parse(cachedRelatedPosts));
           setLoading(false);
-          return; // Skip the API call
-        }
+        } else {
+          try {
+            // Fetch the post data
+            const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
+            const fetchedPost = response.data;
+            setPost(fetchedPost);
 
-        setLoading(true); // Start loading if there's no cached data
+            // Fetch related posts
+            const relatedResponse = await axios.get(
+              `${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`
+            );
+            setRelatedPosts(relatedResponse.data);
 
-        try {
-          // Fetch the post data
-          const response = await axios.get(`${CONFIG.BASE_URL}/apis?post_slug=${slug}`);
-          const fetchedPost = response.data;
-          setPost(fetchedPost);
-
-          // Fetch related posts
-          const relatedResponse = await axios.get(`${CONFIG.BASE_URL}/related_api.php?related_posts=${fetchedPost.category_name}&exclude_post_id=${fetchedPost.id}`);
-          setRelatedPosts(relatedResponse.data);
-
-          // Cache the fetched data in localStorage for future use
-          localStorage.setItem(`post_${slug}`, JSON.stringify(fetchedPost));
-          localStorage.setItem(`related_posts_${slug}`, JSON.stringify(relatedResponse.data));
-        } catch (error) {
-          console.error('Error fetching post:', error);
-          setPost(null);
-        } finally {
-          setLoading(false);
+            // Cache the post and related posts in sessionStorage
+            sessionStorage.setItem(`post-${slug}`, JSON.stringify(fetchedPost));
+            sessionStorage.setItem(`related-${slug}`, JSON.stringify(relatedResponse.data));
+          } catch (error) {
+            console.error('Error fetching post:', error);
+            setPost(null);
+          } finally {
+            setLoading(false);
+          }
         }
       }
     };
 
+    // Invalidate cache on page reload by removing sessionStorage cache
+    const handleBeforeUnload = () => {
+      sessionStorage.removeItem(`post-${slug}`);
+      sessionStorage.removeItem(`related-${slug}`);
+    };
+
+    // Listen for page reload or tab close
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Trigger the fetch function if slug exists
     if (slug) {
       fetchPost();
     }
 
-  }, [category_slug, slug]); // Dependencies to trigger useEffect when category_slug or slug changes
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [category_slug, slug]); // Trigger the effect whenever category_slug or slug changes
 
-
+  
+  
   // Top viewed post 
 
   useEffect(() => {
@@ -361,6 +377,35 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
 
   const domain = typeof window !== 'undefined' ? window.location.origin : '';
 
+  useEffect(() => {
+    const updateViews = async () => {
+      // Check if the views have already been updated for this post
+      const hasUpdatedViews = localStorage.getItem(`views_updated_${post?.id}`);
+      
+      if (hasUpdatedViews) {
+        console.log(`Views for post ${post?.id} have already been updated.`);
+        return; // Do not proceed if views are already updated
+      }
+
+      try {
+        console.log('Attempting to update views for post', post?.id); // Debug: log the post id being updated
+        await axios.get(`https://blog.tourismofkashmir.com/apis.php?update_views=true&post_id=${post?.id}`);
+        
+        console.log('Successfully updated views for post', post?.id); // Debug: confirm the post views were updated
+        
+        // Set a flag in localStorage to indicate that views have been updated
+        localStorage.setItem(`views_updated_${post?.id}`, 'true');
+      } catch (error) {
+        console.error("Error updating post views:", error);
+      }
+    };
+
+    if (post?.id) {
+      updateViews(); // Update views when post.id changes
+    }
+  }, [post?.id]); // Only run this effect when the post.id changes
+
+  
   return (
     <>
       <Head>

@@ -265,6 +265,10 @@ body {
     flex-wrap: wrap;
     justify-content: center;
         }
+
+        .news-list{
+          margin-top:25px;
+        }
         
         .card  {
             width: calc(25% - 20px); /* Set card width for desktop (4 cards per row) */

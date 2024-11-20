@@ -112,7 +112,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content={router.asPath} />
             </Head>
-            <div className="category-list">
+            <div className="category-list news-list">
                 {isInitialLoad ? (
                     <SkeletonLoader />
                 ) : isEmpty ? (
@@ -153,8 +153,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
                         }
                     >
                         {categoryPosts.map((post) => (
-                            <div key={post.id || post.slug} className="card" onContextMenu={(e) => e.preventDefault()}>
-                                <Link href={`/${post.category_slug}/${post.slug}`} className="news-item-link">
+                            <div key={post.id || post.slug} className="card" onContextMenu={(e) => e.preventDefault()} onClick={() => router.push(`/${post.category_slug}/${post.slug}`)}>
                                     <div className="image-container" style={{ position: "relative" }}>
                                         <img src={post.image} alt={post.title} className="news-item-image" style={{ width: "100%", height: "180px", objectFit: "cover" }} />
                                         <div style={{ position: "absolute", bottom: "10px", right: "10px", backgroundColor: "rgba(0, 0, 0, 0.5)", color: "white", padding: "5px", borderRadius: "5px", fontSize: "0.8rem" }}>
@@ -165,7 +164,6 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
                                     <h2>{truncateText(post.title, 20)}</h2>
                                     <p>{truncateText(post.meta_description, 22)}</p>
                                     </div>
-                                </Link>
                                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
                                     <Link href={`/profile/${post.username}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
                                         <img src={`https://blog.tourismofkashmir.com/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />

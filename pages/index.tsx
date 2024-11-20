@@ -89,24 +89,48 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  // Load cached posts from localStorage or fetch from API
   useEffect(() => {
+    const isReload = sessionStorage.getItem('reload'); // Check if the session indicates reload
     const cachedPosts = localStorage.getItem('cachedPosts');
+  
+    if (isReload) {
+      // If it's a reload, clear the cached posts and reset sessionStorage reload flag
+      localStorage.removeItem('cachedPosts');
+      sessionStorage.removeItem('reload');  // Clear reload flag after cache is cleared
+    } else {
+      // Set the 'reload' indicator in sessionStorage on first load or reload
+      sessionStorage.setItem('reload', 'true');
+    }
+  
     if (cachedPosts) {
       setPosts(JSON.parse(cachedPosts));
       setLoading(false); // Skip API request if data is cached
     } else {
       fetchPosts(pageNumber); // Initial fetch if no cached data
     }
-  }, []); // Keep this empty to run only on mount
-
+  
+    // Optional: Add an event listener to clear cache before the page unloads
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('cachedPosts'); // Clear cached posts on unload
+    };
+  
+    // Add event listener for unloading the page (e.g., refresh or closing the tab)
+    window.addEventListener('beforeunload', handleBeforeUnload);
+  
+    // Cleanup the event listener when the component unmounts or reloads
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  
+  }, []); // Empty array ensures this runs once on mount
+  
   const fetchPosts = async (page: number) => {
     setLoading(true);
     try {
       const response = await fetch(`${CONFIG.BASE_URL}/apis?posts&page=${page}`);
       if (!response.ok) throw new Error('Network response was not ok');
       const data = await response.json();
-
+  
       if (Array.isArray(data)) {
         if (data.length === 0) {
           setHasMore(false); // No more posts to load
@@ -128,6 +152,7 @@ const Home: React.FC<Props> = ({ siteInfo }) => {
       setLoading(false);
     }
   };
+  
 
   const fetchMorePosts = () => {
     if (!loading && hasMore) {

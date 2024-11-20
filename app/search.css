@@ -2,6 +2,7 @@
 .search-container {
     max-width: 900px;
     overflow-y: auto;
+    height: 100%;
     padding: 20px;
     border-radius: 10px;
     transition: transform 0.2s;
