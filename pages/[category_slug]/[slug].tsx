@@ -242,9 +242,35 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
   }, [post]);
   
   
+  // const toggleCommentsModal = () => {
+  //   setShowComments(prevState => !prevState);
+  // };
+
+    
+  // Check the URL hash on component mount to automatically open the modal
+  useEffect(() => {
+    if (window.location.hash === '#comments') {
+      setShowComments(true);
+    }
+  }, []);
+
   const toggleCommentsModal = () => {
-    setShowComments(prevState => !prevState);
+    setShowComments(prevState => {
+      const newState = !prevState;
+
+      // Toggle the modal state
+      if (newState) {
+        // Add the #comments hash to the URL when the modal is opened
+        window.location.hash = 'comments';
+      } else {
+        // Remove the hash when the modal is closed
+        window.location.hash = '';
+      }
+
+      return newState;
+    });
   };
+
 
 
 

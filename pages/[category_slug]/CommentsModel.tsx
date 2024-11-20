@@ -5,6 +5,8 @@ import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import CONFIG from '../../utils/config';
 import Cookie from 'js-cookie'; // Import js-cookie
+import { Close } from '@mui/icons-material'; // Import the Close icon
+import { useRouter } from 'next/router';
 import '../../app/commentsModal.css';
 
 interface CommentsModalProps {
@@ -21,6 +23,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
     const [showFullComment, setShowFullComment] = useState<Record<number, boolean>>({});
     const [isLoadingMore, setIsLoadingMore] = useState(false);
     const [hasMoreComments, setHasMoreComments] = useState(true); // Track if there are more comments
+    const router = useRouter();
 
     useEffect(() => {
         const loggedInUser = Cookie.get('user'); // Get the 'user' cookie
@@ -123,12 +126,32 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
         };
     }, [handleObserver, hasMoreComments]);
 
+    useEffect(() => {
+        const mainElement = document.querySelector('.main') as HTMLElement; // Cast to HTMLElement
+    
+        if (mainElement) {
+            if (isOpen) {
+                mainElement.style.overflow = 'hidden'; // Disable scroll on .main when modal is open
+            } else {
+                mainElement.style.overflow = ''; // Reset scroll behavior when modal is closed
+            }
+        }
+    
+        return () => {
+            // Cleanup and reset scroll style when the modal is closed
+            if (mainElement) {
+                mainElement.style.overflow = '';
+            }
+        };
+    }, [isOpen]);
+    
+
     return isOpen ? (
         <div className={`modal show ${isOpen ? 'modal-visible' : ''}`}>
             <div className="modal-content">
                 <div id="modelHeader" className="modal-header">
                     <h2>Comments</h2>
-                    <span className="close" onClick={onClose}>&times;</span>
+                    <span className="close" onClick={onClose}>< Close /></span>
                 </div>
                 <div className="modal-body">
                     {isLoading ? (
@@ -157,7 +180,7 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
                                             </div>
                                             <div className="comment-content">
                                                 <div className="comment-header">
-                                                    <a className="comment-author" style={{ color: '#777', textDecoration: 'none' }} href={`#${comment.username}`}>
+                                                    <a className="comment-author" style={{ color: '#777', textDecoration: 'none' }} onClick={() => router.push(`/profile/${comment.username}`)} >
                                                         {comment.username}
                                                     </a>
                                                     <span className="comment-date">

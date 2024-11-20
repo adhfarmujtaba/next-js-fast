@@ -37,6 +37,10 @@
             background-color: #444; /* Dark background color for the modal footer */
             color: #fff; /* Light text color for the modal footer */
           }
+
+          .comment-text{
+            color: #aaa;
+          }
     }
 }
 

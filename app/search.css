@@ -2,9 +2,8 @@
 .search-container {
     max-width: 900px;
     overflow-y: auto;
-    height: 100%;
     padding: 20px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     transition: transform 0.2s;
 }
 
@@ -162,18 +161,20 @@
 @media (prefers-color-scheme: dark) {
     /* Apply dark mode styles here */
     :root {
-        --background-color: #121212;
+        --backgrounds-color: #121212;
         --container-bg: #1e1e1e;
         --text-color: #e0e0e0;
         --card-bg-color: #333;
         --border-color: rgba(255, 255, 255, 0.1);
         --highlight-color: #ff4081;
         --shadow-color: rgba(0, 0, 0, 0.5);
+        --search-container: #333;
+
     }
 
 
     .appBar {
-   background-color: var(--background-color) !important ;
+   background-color: var(--backgrounds-color) !important ;
     }
 
     .closeSearchIcon{
@@ -182,8 +183,9 @@
     
     /* Search container */
     .search-container {
-        
-        color: var(--text-color); /* Light text */
+        background-color: var(--search-container);
+        color: var(--text-color); 
+        /* Light text */
     }
 
     /* Input field */
