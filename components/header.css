@@ -210,9 +210,9 @@ header {
         background-color: #555; /* Dark background color on hover */
     }
 
-    .user-icon {
-        border: 2px solid #fff; /* Light border color for user icon */
-    }
+    /* .user-icon {
+        border: 2px solid #fff; 
+    } */
 
     /* Additional adjustments as needed for dark mode */
     /* ... */
