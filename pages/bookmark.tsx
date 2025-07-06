@@ -45,7 +45,7 @@ const Bookmark = () => {
     if (currentUserID !== null) {
       const fetchBookmarks = async () => {
         try {
-          const response = await axios.get('https://blog.tourismofkashmir.com/bookmark_view_api.php', {
+          const response = await axios.get('https://nexnews.leaknews.net/blog/bookmark_view_api.php', {
             params: { user_id: currentUserID }, // Fetch bookmarks for the logged-in user
           });
           setBookmarks(response.data);
@@ -70,7 +70,7 @@ const Bookmark = () => {
 
     try {
       // Perform the DELETE request to remove the bookmark
-      const response = await axios.delete('https://blog.tourismofkashmir.com/bookmark_view_api.php', {
+      const response = await axios.delete('https://nexnews.leaknews.net/blog/bookmark_view_api.php', {
         params: {
           user_id: currentUserID,
           post_id: bookmarkID, // The ID of the bookmark to delete

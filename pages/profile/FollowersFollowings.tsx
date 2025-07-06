@@ -38,7 +38,7 @@ const FollowersFollowings: React.FC<FollowersFollowingsProps> = ({
 
     try {
       console.log(`Fetching ${type} for user: ${username}, page: ${page}`);
-      const response = await axios.get(`https://blog.tourismofkashmir.com/api_followers_followings.php?username=${username}&type=${type}&page=${page}&currentUserId=${currentUserId}`);
+      const response = await axios.get(`https://nexnews.leaknews.net/blog/api_followers_followings.php?username=${username}&type=${type}&page=${page}&currentUserId=${currentUserId}`);
 
       const usersData = response.data.users || [];
       console.log('API Response:', response.data); // Log the complete response
@@ -97,7 +97,7 @@ const FollowersFollowings: React.FC<FollowersFollowingsProps> = ({
     if (!currentUserId) return; // Ensure the user is logged in
     try {
       console.log(`Following user ID: ${userId}`);
-      const response = await axios.get(`https://blog.tourismofkashmir.com/api_followandunfollow.php?follow=true&follower_id=${currentUserId}&followee_id=${userId}`);
+      const response = await axios.get(`https://nexnews.leaknews.net/blog/api_followandunfollow.php?follow=true&follower_id=${currentUserId}&followee_id=${userId}`);
       console.log('Follow response:', response.data);
       setUsers(prev => prev.map(user => user.id === userId ? { ...user, isFollowing: true } : user)); // Update local state
     } catch (error) {
@@ -109,7 +109,7 @@ const FollowersFollowings: React.FC<FollowersFollowingsProps> = ({
     if (!currentUserId) return; // Ensure the user is logged in
     try {
       console.log(`Unfollowing user ID: ${userId}`);
-      const response = await axios.get(`https://blog.tourismofkashmir.com/api_followandunfollow.php?removefollower=true&follower_id=${currentUserId}&followee_id=${userId}`);
+      const response = await axios.get(`https://nexnews.leaknews.net/blog/api_followandunfollow.php?removefollower=true&follower_id=${currentUserId}&followee_id=${userId}`);
       console.log('Unfollow response:', response.data);
       setUsers(prev => prev.map(user => user.id === userId ? { ...user, isFollowing: false } : user)); // Update local state
     } catch (error) {

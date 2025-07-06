@@ -166,7 +166,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categoryName }) => {
                                     </div>
                                 <div style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
                                     <Link href={`/profile/${post.username}`} style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-                                        <img src={`https://blog.tourismofkashmir.com/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
+                                        <img src={`https://nexnews.leaknews.net/blog/${post.avatar}`} alt='Avatar' className='avatar' style={{ width: '30px', height: '30px', borderRadius: '50%', marginRight: '5px' }} />
                                         <span className='username'>{post.username}</span>
                                     </Link>
                                     <span className='views'>. {formatViews(post.views)} views</span>

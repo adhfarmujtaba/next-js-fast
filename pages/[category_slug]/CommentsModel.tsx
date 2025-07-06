@@ -39,6 +39,8 @@ const CommentsModal: React.FC<CommentsModalProps> = ({ isOpen, onClose, postId }
             try {
                 const response = await axios.get(`${CONFIG.BASE_URL}/api_comments.php?post_id=${postId}`);
                 setComments(response.data);
+                    console.log('Fetched comments:', response.data); // <-- Debug line
+
                 setHasMoreComments(response.data.length > 0); // Check if there are any comments
             } catch (error) {
                 console.error("There was an error fetching the comments:", error);

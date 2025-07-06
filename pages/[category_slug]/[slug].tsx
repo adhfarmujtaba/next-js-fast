@@ -415,7 +415,7 @@ const PostPage: React.FC<Props> = ({ initialPost }) => {
 
       try {
         console.log('Attempting to update views for post', post?.id); // Debug: log the post id being updated
-        await axios.get(`https://blog.tourismofkashmir.com/apis.php?update_views=true&post_id=${post?.id}`);
+        await axios.get(`https://nexnews.leaknews.net/blog/apis.php?update_views=true&post_id=${post?.id}`);
         
         console.log('Successfully updated views for post', post?.id); // Debug: confirm the post views were updated
         

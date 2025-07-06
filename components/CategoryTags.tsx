@@ -99,7 +99,7 @@ const CategoryTags: React.FC = () => {
     const fetchCategories = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get('https://blog.tourismofkashmir.com/apis?categories&order_index=asc&header_menu_is_included=TRUE');
+        const response = await axios.get('https://nexnews.leaknews.net/blog/apis?categories&order_index=asc&header_menu_is_included=TRUE');
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);

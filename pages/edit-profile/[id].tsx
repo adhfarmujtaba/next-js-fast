@@ -32,7 +32,7 @@ const Profile = () => {
     const fetchUserData = async () => {
       if (userId) {
         try {
-          const response = await axios.get(`https://blog.tourismofkashmir.com/api_update_profile.php?id=${userId}`);
+          const response = await axios.get(`https://nexnews.leaknews.net/blog/api_update_profile.php?id=${userId}`);
           if (response.data.status === 'success') {
             setUsername(response.data.data.username);
             setName(response.data.data.name);
@@ -74,7 +74,7 @@ const Profile = () => {
     formData.append('avatar', selectedFile);
 
     try {
-      const response = await axios.post('https://blog.tourismofkashmir.com/api_update_profile.php', formData, {
+      const response = await axios.post('https://nexnews.leaknews.net/blog/api_update_profile.php', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -111,7 +111,7 @@ const Profile = () => {
     if (password) formData.append('password', password);
 
     try {
-      const response = await axios.post('https://blog.tourismofkashmir.com/api_update_profile.php', formData, {
+      const response = await axios.post('https://nexnews.leaknews.net/blog/api_update_profile.php', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -142,7 +142,7 @@ const Profile = () => {
 
       <div className={styles.avatarContainer}>
         <div className={styles.AvatarImageContainer}>
-        <img className={styles.imgPreview} src={preview || `https://blog.tourismofkashmir.com/${avatar}`} alt="Avatar" />
+        <img className={styles.imgPreview} src={preview || `https://nexnews.leaknews.net/blog/${avatar}`} alt="Avatar" />
         <div className={styles.editIconContainer}>
           <FaEdit className={styles.editIcon} onClick={() => document.getElementById('avatar-input')?.click()} />
         </div>

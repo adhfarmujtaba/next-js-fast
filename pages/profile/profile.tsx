@@ -49,7 +49,7 @@ const Profile: React.FC<ProfileProps> = ({ username, currentUserID }) => {
     setIsLoading(true);
     try {
       const userResponse = await axios.get(
-        `https://blog.tourismofkashmir.com/api_profile.php?username=${username}&requesting_user_id=${currentUserID}`
+        `https://nexnews.leaknews.net/blog/api_profile.php?username=${username}&requesting_user_id=${currentUserID}`
       );
       const { user, is_following } = userResponse.data;
 
@@ -66,7 +66,7 @@ const Profile: React.FC<ProfileProps> = ({ username, currentUserID }) => {
   const fetchUserPosts = async (pageNumber: number) => {
     try {
       const postsResponse = await axios.get(
-        `https://blog.tourismofkashmir.com/get_user_posts.php?username=${username}&page=${pageNumber}&sortBy=${sortOption}`
+        `https://nexnews.leaknews.net/blog/get_user_posts.php?username=${username}&page=${pageNumber}&sortBy=${sortOption}`
       );
       const { posts } = postsResponse.data;
 
@@ -85,7 +85,7 @@ const Profile: React.FC<ProfileProps> = ({ username, currentUserID }) => {
   const fetchFollowerFollowingCounts = async () => {
     try {
       const response = await axios.get(
-        `https://blog.tourismofkashmir.com/api_profile.php?username=${username}&requesting_user_id=${currentUserID}`
+        `https://nexnews.leaknews.net/blog/api_profile.php?username=${username}&requesting_user_id=${currentUserID}`
       );
       const { followers_count, following_count } = response.data;
       setFollowersCount(parseInt(followers_count, 10)); // Convert to integer
@@ -98,7 +98,7 @@ const Profile: React.FC<ProfileProps> = ({ username, currentUserID }) => {
   const handleFollow = async () => {
     if (!currentUserID || !userData) return;
     try {
-      await axios.get(`https://blog.tourismofkashmir.com/api_followandunfollow.php?follow=true&follower_id=${currentUserID}&followee_id=${userData.id}`);
+      await axios.get(`https://nexnews.leaknews.net/blog/api_followandunfollow.php?follow=true&follower_id=${currentUserID}&followee_id=${userData.id}`);
       setIsFollowing(true);
       setFollowersCount(prevCount => prevCount + 1);
     } catch (error) {
@@ -109,7 +109,7 @@ const Profile: React.FC<ProfileProps> = ({ username, currentUserID }) => {
   const handleUnfollow = async () => {
     if (!currentUserID || !userData) return;
     try {
-      await axios.get(`https://blog.tourismofkashmir.com/api_followandunfollow.php?removefollower=true&follower_id=${currentUserID}&followee_id=${userData.id}`);
+      await axios.get(`https://nexnews.leaknews.net/blog/api_followandunfollow.php?removefollower=true&follower_id=${currentUserID}&followee_id=${userData.id}`);
       setIsFollowing(false);
       setFollowersCount(prevCount => prevCount - 1);
     } catch (error) {
